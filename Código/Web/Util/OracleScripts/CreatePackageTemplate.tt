@@ -1,0 +1,561 @@
+﻿<#@ output extension=".txt" #>
+<#@ assembly name="System.Data" #>
+<#@ assembly name="Oracle.DataAccess" #>
+<#@ assembly name="System.Xml" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Data" #>
+<#@ import namespace="System.Xml" #>
+<#@ import namespace="Oracle.DataAccess.Client" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#+
+
+public class CreatePackageTemplate : Template
+{
+	/// <summary>
+	/// Database connection string. Specifies database where CRUD templates will 
+	/// be looking for the table for which they will generate stored procedures.
+	/// </summary>
+	public string ConnectionString { get; set; }
+		
+	/// <summary>
+	/// Table name for which CRUD templates will generate stored procedures.
+	/// </summary>
+	public string TableName { get; set; }
+	
+	public string TableNameCorto { get { return TableName.Substring(2);} }
+
+	public string CampoId { get { return this.Table.Rows[0]["ColumnName"].ToString();}  }
+	public string CampoNombre { get { 
+		DataTable table = Table;
+		for (int i = 1; i < table.Rows.Count; i++)
+		{
+			if (table.Rows[i]["DataType"].ToString().EndsWith("System.String"))
+				return table.Rows[i]["ColumnName"].ToString();
+		}
+		return table.Rows[1]["ColumnName"].ToString();
+	}  }
+
+	string campoFechaBaja = "";
+	public string CampoFechaBaja { get { 
+		if (campoFechaBaja != "")
+			return campoFechaBaja;
+		DataTable table = Table;
+		for (int i = 1; i < table.Rows.Count; i++)
+		{
+			if (table.Rows[i]["ColumnName"].ToString().EndsWith("_BAJA"))
+			{
+				campoFechaBaja = table.Rows[i]["ColumnName"].ToString();
+				return campoFechaBaja;
+			}
+		}
+		campoFechaBaja = "__CampoFechaBajaInexistente";
+		return campoFechaBaja;
+	}  }
+	
+	/// <summary>
+	/// Name of the schema that contains target table. CRUD templates will generate
+	/// stored procedures in this schema as well.
+	/// </summary>
+	public string SchemaName { get; set; }
+	
+	/// <summary>
+	/// Name of the template file.
+	/// </summary>
+	public string TemplateFile { get; set; }
+	
+	// ---------------------------------------------------------------------------------------------
+	// Implementation methods common for all CRUD templates
+	// ---------------------------------------------------------------------------------------------
+	
+	DataTable _table;
+
+	/// <summary>
+	///	Returns table for which stored procedures need to be generated.
+	/// </summary>
+	DataTable Table
+	{
+		get
+		{
+			if (_table == null)
+			{
+				using (OracleConnection oracleConnection = new OracleConnection(ConnectionString)) 
+				{
+					oracleConnection.Open();
+					
+					OracleCommand oracleCommand = new OracleCommand();
+					oracleCommand.Connection = oracleConnection;
+					oracleCommand.CommandText = String.Format("select * from {0}.{1} where rownum < 2", SchemaName, TableName);
+					OracleDataReader oracleDataReader = oracleCommand.ExecuteReader();
+					
+					_table = oracleDataReader.GetSchemaTable();
+				}
+			}
+
+			return _table;
+		}
+	}
+	
+	/// <summary>
+	/// Writes list of column names.
+	/// </summary>
+	void WriteColumnNames(DataTable table, bool Select = true)
+	{
+		PushIndent("\t");
+		bool bNombre = false;
+		string alias = (Select? "t.":"");
+		int j=0;
+		for (int i = 0; i < table.Rows.Count; i++)
+		{
+			PushIndent("\t");
+
+			DataRow row = table.Rows[i];
+ 	        if ( row["ColumnName"].ToString() == this.CampoFechaBaja && !Select)
+				continue;
+			if (j > 0) 
+			{
+				WriteLine(",");
+			}
+			j++;
+			
+			if (Select && i==0)
+				Write(alias + row["ColumnName"].ToString() + " Id");
+			else if (Select && row["ColumnName"].ToString().StartsWith("N_") && !bNombre)
+			{
+				bNombre = true;
+				Write(alias + row["ColumnName"].ToString() + " Nombre");
+				}
+			else if ( row["ColumnName"].ToString() == this.CampoFechaBaja)
+			{
+				Write(alias + row["ColumnName"].ToString() + " FechaBaja");
+			}
+			else
+				Write(alias + row["ColumnName"].ToString());
+
+
+			PopIndent();
+		}
+
+		PopIndent();
+	}
+
+	/// <summary>
+	/// Generates where clause for UPDATE and DELETE statements for the specified
+	/// table.
+	/// </summary>
+	void WriteWhereClause()
+	{
+		PushIndent("\t");
+
+		List<string> indices = GetIndicesForTable();
+
+		for (int i = 0; i < indices.Count; i++)
+		{
+			PushIndent("\t");
+
+			Write("t.{0} = p_id", indices[i]);
+			
+			if (i + 1 < indices.Count) 
+			{
+				WriteLine(" and");
+			}
+
+			PopIndent();
+		}
+
+		PopIndent();
+	}
+
+	/// <summary>
+	/// Writes set clause of the update statement.
+	/// </summary>
+	void WriteSetClause(DataTable table)
+	{
+		List<string> primaryKeyIndices = GetIndicesForTable();
+		
+		PushIndent("\t");
+		int j = 0;
+		for (int i = 0; i < table.Rows.Count; i++)
+		{
+			DataRow row = table.Rows[i];
+			string columnName = row["ColumnName"].ToString();
+			
+			// Only add non-primary keys to update's set clause
+			if (!String.IsNullOrEmpty(columnName) && !primaryKeyIndices.Contains(columnName)
+				&& columnName != this.CampoFechaBaja
+			)
+			{
+				PushIndent("\t");
+
+				if (j > 0) 
+				{
+					WriteLine(",");
+				}
+
+				Write(@"{0} = p_{0}", columnName);
+
+				PopIndent();			
+				j++;
+			}
+		}
+
+		PopIndent();
+	}
+
+	/// <summary>
+	/// Writes list of parameter names for VALUES clause of the INSERT statement
+	/// </summary>
+	void WriteValuesClause(DataTable table)
+	{
+		PushIndent("\t");
+		int j=0;
+		for (int i = 0; i < table.Rows.Count; i++)
+		{
+			DataRow row = table.Rows[i];
+			if ( row["ColumnName"].ToString() == this.CampoFechaBaja)
+				continue;
+			PushIndent("\t");
+			if (j>0) 
+			{
+				WriteLine(",");
+			}
+			j++;
+			
+			if (j==1)
+				Write("p_id");
+			else
+				Write("p_" + row["ColumnName"].ToString());
+
+
+			PopIndent();					
+		}
+
+		PopIndent();
+	}
+
+	/// <summary>
+	/// Gets the indices of the given table.
+	/// </summary>
+	List<string> GetIndicesForTable()
+	{
+		List<string> indices = new List<string>();
+
+		using (OracleConnection oracleConnection = new OracleConnection(ConnectionString))
+		{
+			oracleConnection.Open();
+
+			// Get the primary key for the table
+			string tablesPrimaryKey = GetTablesPrimaryKey();
+
+			// Only query the table if it has a primary key
+			if (!String.IsNullOrEmpty(tablesPrimaryKey)) 
+			{
+				// Get the table's schema's info based on the primary key index
+				string[] restrictions = new string[] { null, tablesPrimaryKey, SchemaName, TableName };
+				DataTable indexTable = oracleConnection.GetSchema("IndexColumns", restrictions);
+
+				foreach (DataRow row in indexTable.Rows)
+				{
+					// Get each column that is within the index
+					indices.Add(row["COLUMN_NAME"].ToString());
+				}
+			}
+		}
+
+		return indices;
+	}
+
+	/// <summary>
+	/// Gets the primary key for the table.
+	/// </summary>
+	/// <returns>Primary key</returns>
+	public string GetTablesPrimaryKey()
+	{
+		using (OracleConnection oracleConnection = new OracleConnection(ConnectionString))
+		{
+			oracleConnection.Open();
+
+			OracleCommand oracleCommand = new OracleCommand();
+			oracleCommand.Connection = oracleConnection;
+			oracleCommand.CommandText = "SELECT A.CONSTRAINT_NAME FROM ALL_CONS_COLUMNS A JOIN ALL_CONSTRAINTS C ON A.CONSTRAINT_NAME = C.CONSTRAINT_NAME WHERE C.TABLE_NAME = '" + TableName + 
+										"' AND C.CONSTRAINT_TYPE = 'P'";
+			OracleDataReader oracleDataReader = oracleCommand.ExecuteReader();
+
+			if (oracleDataReader.Read()) 
+			{			
+				return oracleDataReader["CONSTRAINT_NAME"].ToString();
+			}
+			else 
+			{
+				// No primary key on table
+				return null;
+			}
+		};
+	}
+
+	/// <summary>
+	/// Writes stored procedure parameter declarations for all columns of the specified table.
+	/// </summary>
+	void WriteInsertUpdateParameterDeclarations(DataTable table)
+	{
+		PushIndent("\t");
+		int j=0;
+		for (int i = 0; i < table.Rows.Count; i++)
+		{
+			DataRow row = table.Rows[i];
+			if ( row["ColumnName"].ToString() == this.CampoFechaBaja)
+				continue;
+			if (j>0) 
+			{
+				WriteLine(",");
+			}
+			j++;
+			//string letra = (i==0 : 'o' , 'i');
+			if (i == 0)
+				Write( @"p_id in out {1}.{0}%type", row["ColumnName"].ToString(), this.TableName);			
+			else
+				Write( @"p_{0} in {1}.{0}%type", row["ColumnName"].ToString(), this.TableName);
+
+		}
+
+		PopIndent();
+	}
+
+	/// <summary>
+	/// Writes stored procedure parameter declarations for all columns of the specified table.
+	/// </summary>
+	void WriteSfParameterDeclarations(DataTable table)
+	{
+		PushIndent("\t");
+		int j = 0;
+		for (int i = 1; i < table.Rows.Count; i++)
+		{
+			DataRow row = table.Rows[i];
+			if ( row["ColumnName"].ToString() == this.CampoFechaBaja)
+				continue;
+			if (j > 0) 
+			{
+				WriteLine(",");
+			}
+			j++;
+			Write(@"p_{0} in {1}.{0}%type", row["ColumnName"].ToString(), this.TableName);
+
+			
+		}
+
+		PopIndent();
+	}
+
+	
+	/// <summary>
+	/// Writes stored procedure parameter declarations for all columns of the specified table.
+	/// </summary>
+	void WriteWhereClauseSF(DataTable table)
+	{
+		PushIndent("\t");
+		int j=0;
+		for (int i = 1; i < table.Rows.Count; i++)
+		{
+			DataRow row = table.Rows[i];
+			if ( row["ColumnName"].ToString() == this.CampoFechaBaja)
+				continue;
+			if (j>0) 
+			{
+				WriteLine(" and ");
+			}
+			j++;
+			if (table.Rows[i]["DataType"].ToString().EndsWith("System.String"))
+			{
+				Write(@"(p_{0} is null or t.{0} like  '%' ||p_{0}|| '%')", row["ColumnName"].ToString());
+			}
+			else
+			{
+				Write(@"(p_{0} is null or t.{0} = p_{0})", row["ColumnName"].ToString());
+			}
+
+		}
+
+		PopIndent();
+	}
+
+	/// <summary>
+	/// Writes stored procedure parameter declarations for all primary key columns of the specified table.
+	/// </summary>
+	void WritePrimaryKeyColumnsParameterDeclarations()
+	{
+		PushIndent("\t");
+
+		List<string> indices = GetIndicesForTable();
+
+		for (int i = 0; i < indices.Count; i++)
+		{
+			Write(@"p_id in {1}.{0}%type", indices[i], TableName);
+			
+			if (i + 1 < indices.Count) 
+			{
+				WriteLine(",");
+			}
+		}
+
+		PopIndent();
+	}
+	
+	public override string TransformText()
+	{
+#>
+
+/******************************************************************************
+    Procedimientos para la tabla  <#= this.SchemaName #>.<#= this.TableName #>
+	segun modelo de ABMC simples
+	Generado: <#= DateTime.Today.ToShortDateString() #>	  <#= Environment.UserName #>
+******************************************************************************/
+------------------------------------------------------------
+------------------------------------------------------------
+create or replace procedure pr_<#= this.TableNameCorto #>_set
+(
+    p_cursor out sys_refcursor
+)
+as
+begin
+
+    open p_cursor for
+    select t.<#= this.CampoId#> Id, t.<#= this.CampoNombre#> Nombre 
+	from <#=this.SchemaName#>.<#= this.TableName #> t
+	order by <#= this.CampoNombre#>;
+    
+end;
+------------------------------------------------------------
+------------------------------------------------------------
+create or replace procedure pr_<#= this.TableNameCorto #>_sf(
+	<#+ WriteSfParameterDeclarations(this.Table); #>,
+	p_activo          IN OUT VARCHAR2 
+   ,p_NumeroPaginaListado in number
+   ,p_TotalRegistrosListado OUT NUMBER
+   ,p_cursor          OUT SYS_REFCURSOR) 
+   AS
+    v_registro_desde  number(10) := (p_NumeroPaginaListado * 10) - 9 ;
+    v_registro_hasta  number(10) := v_registro_desde + 9;
+begin
+
+-- contar resultados
+  select count(*)
+    into p_TotalRegistrosListado
+    from <#=this.SchemaName#>.<#= this.TableName #> t
+    where 
+		<#+ WriteWhereClauseSF(this.Table); #>
+        and 1 = case when  p_activo is null  then 1
+             when p_activo = 'SI' and  t.<#= this.CampoFechaBaja#> is null then 1
+             when p_activo = 'NO' and not t.<#= this.CampoFechaBaja#> is null then 1
+             else 0 end;
+    
+    
+    open p_cursor for
+  -- <paginacion>
+     select * from (select pag.*, rownum rnum from (
+  -- <paginacion>
+     select
+		<#+ WriteColumnNames(this.Table); #>	
+        , case when t.<#= this.CampoFechaBaja#> is null then 'SI' else 'NO' end activo
+	 from <#=this.SchemaName#>.<#= this.TableName #> t
+     where 
+	 	  <#+ WriteWhereClauseSF(this.Table); #>
+          and 1 = case when  p_activo is null  then 1
+          when p_activo = 'SI' and  t.<#= this.CampoFechaBaja#> is null then 1
+          when p_activo = 'NO' and not t.<#= this.CampoFechaBaja#> is null then 1
+          else 0 end
+    order by <#= this.CampoNombre #>
+  -- <paginacion>
+     ) pag where rownum <= v_registro_hasta) where rnum >= v_registro_desde;
+  -- <paginacion>
+    
+end;
+------------------------------------------------------------
+------------------------------------------------------------
+create or replace procedure pr_<#= this.TableNameCorto #>_s
+(
+	<#+ WritePrimaryKeyColumnsParameterDeclarations(); #>,
+	p_cursor out SYS_REFCURSOR
+)
+as
+begin
+ open p_cursor for
+   select  
+		<#+ WriteColumnNames(this.Table); #>	
+	    , case when t.<#= this.CampoFechaBaja#> is null then 'SI' else 'NO' end activo
+	from <#=this.SchemaName#>.<#= this.TableName #> t
+	where
+		<#+ WriteWhereClause(); #>;
+end;
+------------------------------------------------------------
+------------------------------------------------------------
+create or replace procedure pr_<#= this.TableNameCorto #>_g 
+(
+<#+ WriteInsertUpdateParameterDeclarations(this.Table); #> 
+)
+as
+begin
+  if p_id is null then 
+        -- alta  (eliminar los campos que no se insertan; ej fec_baja)
+		
+		p_id := <#=this.SchemaName#>.seq_<#= this.TableNameCorto #>_id.nextval;
+		insert into <#=this.SchemaName#>.<#= this.TableName #>
+		(
+			<#+ WriteColumnNames(this.Table, false); #>	
+		)
+		values 
+		(
+			<#+ WriteValuesClause(this.Table); #> 
+		);
+	  else
+      -- modificacion (eliminar los campos que no se actualizan; ej fec_baja)
+       update <#=this.SchemaName#>.<#= this.TableName #> t
+		set
+			<#+ WriteSetClause(this.Table); #>	
+		where
+			<#+ WriteWhereClause(); #>;
+
+  end if;
+  exception when others then
+    seg_ciu.pr_error_msg(sqlerrm);
+end;
+------------------------------------------------------------
+------------------------------------------------------------
+create or replace procedure pr_<#= this.TableNameCorto #>_dl (
+ <#+ WritePrimaryKeyColumnsParameterDeclarations(); #>,
+ p_activo_nuevo in varchar2  
+ )
+as
+
+begin
+  
+  update <#=this.SchemaName#>.<#= this.TableName #> t set t.<#= this.CampoFechaBaja#> = case when p_activo_nuevo ='SI' then null else sysdate end
+       where
+		<#+ WriteWhereClause(); #>;
+  -- auditoria?
+end;
+
+
+------------------------------------------------------------
+------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Dto
+{
+    public class Dto<#= this.TableNameCorto #>: DtoAbmBase
+    {
+        public string Nombre { get; set; }
+
+    }
+}
+
+
+
+
+<#+
+		return this.GenerationEnvironment.ToString();
+	}
+}
+#>

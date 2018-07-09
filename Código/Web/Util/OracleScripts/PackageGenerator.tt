@@ -1,0 +1,80 @@
+﻿<#@ output extension=".txt" #>
+<#@ include file="CreatePackageTemplate.tt" #>
+<#+
+
+public class PackageGenerator : Generator
+{
+ 	public string ConnectionString { get; set; } 
+       
+    public string SchemaName { get; set; } 
+	
+	public string TemplateFile { get; set; }
+	      
+	List<string> getTableNames() 
+	{
+		List<string> tableNames = new List<string>();
+		
+		using (OracleConnection oracleConnection = new OracleConnection(ConnectionString)) 
+		{
+			oracleConnection.Open();
+			
+			OracleCommand oracleCommand = new OracleCommand();
+			oracleCommand.Connection = oracleConnection;
+			oracleCommand.CommandText = "SELECT DISTINCT OBJECT_NAME FROM ALL_OBJECTS WHERE OBJECT_TYPE = 'TABLE' AND OWNER = '" + SchemaName + "' and OBJECT_NAME = upper('t_hechos_delictuoso') ";
+			OracleDataReader oracleDataReader = oracleCommand.ExecuteReader();
+			
+			while (oracleDataReader.Read()) 
+			{
+				string tableName = oracleDataReader[0].ToString();
+				
+				if (!String.IsNullOrEmpty(tableName)) 
+				{
+					tableNames.Add(tableName);
+				}
+			}
+		}
+		
+		return tableNames;
+	}
+	
+   	protected override void RunCore()
+   	{         
+		string currentTableName = null;
+		
+		try 
+		{
+			// Get a list of all table names
+			List<string> tableNames = getTableNames();
+			
+			if (tableNames != null && tableNames.Count > 0) 
+			{
+				// Loop through each table and output the Oracle package
+				foreach (string tableName in tableNames) 
+				{
+					currentTableName = tableName;
+					
+					CreatePackageTemplate template = new CreatePackageTemplate();
+					template.ConnectionString = ConnectionString;
+				    template.TableName = tableName;
+				    template.SchemaName = SchemaName;
+					template.TemplateFile = TemplateFile;
+					
+					string primaryKey = template.GetTablesPrimaryKey();
+					
+					// Only output package if the table has a primary key
+					if (!String.IsNullOrEmpty(primaryKey)) 
+					{
+				    	template.RenderToFile(tableName + "_DML_PAK.pck");
+					}
+				}
+			}
+		}
+		catch (Exception ex) 
+		{
+			string errorMessage = String.Format("Exception thrown while processing table '{0}': {1}{2}{3}", currentTableName, ex.Message, Environment.NewLine, ex.StackTrace);
+			throw new Exception(errorMessage);
+		}
+	}
+}
+#>
+
