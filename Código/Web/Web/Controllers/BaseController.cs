@@ -45,6 +45,18 @@ namespace Web.Controllers
         //Cuando los llamo desde base.Setup tambien deben estar ordenados de la forma anteriormente nombrada
         /// </summary>
         /// <returns>Lista de Listas de combos</returns>
+        /// 
+
+
+        [Route("Test")]
+        public virtual IHttpActionResult Test()
+        {
+           
+                var message = string.Format("Mensaje de TEST");
+                return Content(HttpStatusCode.OK, message);
+            
+        }
+
         [Route("GetCombos")]
         public virtual IHttpActionResult GetCombos()
         {
