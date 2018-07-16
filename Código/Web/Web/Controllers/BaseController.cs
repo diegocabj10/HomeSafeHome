@@ -52,7 +52,7 @@ namespace Web.Controllers
         public virtual IHttpActionResult Test()
         {
            
-                var message = string.Format("Mensaje de TEST");
+                var message = string.Format("Mensaje de test: ¡Diego tragasable!");
                 return Content(HttpStatusCode.OK, message);
             
         }
