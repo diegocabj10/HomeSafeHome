@@ -46,7 +46,7 @@ namespace Web.Controllers
         /// </summary>
         /// <returns>Lista de Listas de combos</returns>
         /// 
-        [Route("GetCombos")]
+       
        // http://sigesasdesa.cba.gov.ar:2475/api/Perfiles
         public virtual IHttpActionResult GetCombos()
         {
