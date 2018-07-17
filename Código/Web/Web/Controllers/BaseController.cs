@@ -45,6 +45,7 @@ namespace Web.Controllers
         //Cuando los llamo desde base.Setup tambien deben estar ordenados de la forma anteriormente nombrada
         /// </summary>
         /// <returns>Lista de Listas de combos</returns>
+        /// 
         [Route("GetCombos")]
        // http://sigesasdesa.cba.gov.ar:2475/api/Perfiles
         public virtual IHttpActionResult GetCombos()
