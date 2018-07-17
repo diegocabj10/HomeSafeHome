@@ -46,6 +46,7 @@ namespace Web.Controllers
         /// </summary>
         /// <returns>Lista de Listas de combos</returns>
         [Route("GetCombos")]
+       // http://sigesasdesa.cba.gov.ar:2475/api/Perfiles
         public virtual IHttpActionResult GetCombos()
         {
             List<List<object>> Listas = rnAbm.SetIds(SetIdNumerico, SetIdString, SetIdNombreIdTipo, IdRoles);
@@ -76,7 +77,7 @@ namespace Web.Controllers
             }
             return Ok(resultado);
         }
-        [Route("GetById/{Id:int}")]
+        //http://sigesasdesa.cba.gov.ar:2475/api/Perfiles/1
         public virtual IHttpActionResult GetById(int Id)
         {
             Tentidad Dto = rnAbm.BuscarPorId(Id);
@@ -91,12 +92,14 @@ namespace Web.Controllers
             }
 
         }
-
-        public virtual IHttpActionResult GetAll([FromUri]int NumeroPagListado)
+        // api/Perfiles? NumeroPagListado = 1 & Descripcion = "" & Activo = "SI"
+        [HttpPost]
+        [Route("Buscar")]
+        public virtual IHttpActionResult GetAll(Tentidad DtoFiltro)
         {
-            Tentidad DtoFiltro = new Tentidad();
+          
             DtoAbmBase dto = DtoFiltro as DtoAbmBase;
-            dto.NumeroPaginaListado = NumeroPagListado;
+            
             IList Lista = rnAbm.Buscar(DtoFiltro);
 
             var TotalRegistrosListado = (DtoFiltro as DtoAbmBase).TotalRegistrosListado;
