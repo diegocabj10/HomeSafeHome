@@ -4,12 +4,19 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using DTO;
 using BL;
-using System.Dynamic;
+using DTO;
 using System.Collections;
+using System.Web.Http.Filters;
+using System.Dynamic;
+
 namespace Web.Controllers
-{
+{/// <summary>
+/// Clase base generica con los metodos basicos del protocolo TCP
+/// </summary>
+/// <typeparam name="Tentidad"></typeparam>
+/// <typeparam name="Trepositorio"></typeparam>
+
     public class BaseController<Tentidad, Trepositorio> : ApiController where Tentidad : new() where Trepositorio : rnAbmBase<Tentidad>, new()
     {
         protected rnAbmBase<Tentidad> rnAbm;
@@ -45,9 +52,7 @@ namespace Web.Controllers
         //Cuando los llamo desde base.Setup tambien deben estar ordenados de la forma anteriormente nombrada
         /// </summary>
         /// <returns>Lista de Listas de combos</returns>
-        /// 
-       
-       // http://sigesasdesa.cba.gov.ar:2475/api/Perfiles
+        //http://sigesasdesa.cba.gov.ar:2475/api/Perfiles
         public virtual IHttpActionResult GetCombos()
         {
             List<List<object>> Listas = rnAbm.SetIds(SetIdNumerico, SetIdString, SetIdNombreIdTipo, IdRoles);
@@ -93,14 +98,17 @@ namespace Web.Controllers
             }
 
         }
-        // api/Perfiles? NumeroPagListado = 1 & Descripcion = "" & Activo = "SI"
-        [HttpPost]
-        [Route("Buscar")]
-        public virtual IHttpActionResult GetAll(Tentidad DtoFiltro)
+        //http://sigesasdesa.cba.gov.ar:2475/api/Perfiles?numeroPagina=1&Estado=NO&Descripcion= 
+        //http://sigesasdesa.cba.gov.ar:2475/api/Perfiles?numeroPagina=1&Estado=NO
+        //http://sigesasdesa.cba.gov.ar:2475/api/Perfiles?numeroPagina=1
+        public virtual IHttpActionResult GetAll([FromUri] int numeroPagina, string Descripcion = "", string Estado = "")
         {
-          
+            Tentidad DtoFiltro = new Tentidad();
             DtoAbmBase dto = DtoFiltro as DtoAbmBase;
-            
+            dto.Nombre = Descripcion;
+            dto.Activo = Estado;
+            dto.NumeroPaginaListado = numeroPagina;
+
             IList Lista = rnAbm.Buscar(DtoFiltro);
 
             var TotalRegistrosListado = (DtoFiltro as DtoAbmBase).TotalRegistrosListado;
@@ -141,6 +149,7 @@ namespace Web.Controllers
         public virtual IHttpActionResult Put(Tentidad DtoSel)
         {
             DtoAbmBase dto = DtoSel as DtoAbmBase;
+            //dto.Id = FuncionesSeguridad.DesEncriptarWeb(dto.Id);
             rnAbm.Grabar(DtoSel);
             return Content(HttpStatusCode.Accepted, DtoSel);
 
@@ -148,7 +157,8 @@ namespace Web.Controllers
 
         public virtual IHttpActionResult Delete(DtoAbmBase Dto)
         {
-            DtoAbmBase dto = (DtoAbmBase)Dto;           
+            DtoAbmBase dto = (DtoAbmBase)Dto;
+            //Dto.Id = FuncionesSeguridad.DesEncriptarWeb(Dto.Id);
             Dto.Activo = Dto.Activo == "SI" ? "NO" : "SI";  // invertir activo
             rnAbm.ActivarDesactivar(Dto);
             return Ok();
@@ -200,4 +210,6 @@ namespace Web.Controllers
         //}
 
     }
+
+
 }
