@@ -30,10 +30,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Oracle.DataAccess, Version=4.112.2.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Libs\OracleDriver32\Oracle.DataAccess.dll</HintPath>
-    </Reference>
+    <Reference Include="Oracle.DataAccess, Version=4.112.2.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=x86" />
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -47,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DbOracle.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="ParametroOracle.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -48,6 +48,7 @@
     <Compile Include="Encriptador.cs" />
     <Compile Include="ExcepcionBase.cs" />
     <Compile Include="Extensiones.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Logueo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

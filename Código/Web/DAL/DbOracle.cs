@@ -18,7 +18,8 @@ namespace DAL
     public class DbOracle : IDisposable
     {
 
-        public string Esquema = "sigesas";
+        //public string Esquema = "sigesas";
+        public string Esquema = "HOMESAFEHOME";
         public delegate void dMetodoLectura(IDataReader dr);
         private static object syncRootDbOracle = new Object();
         protected static string PilaUltimaLlamada;
