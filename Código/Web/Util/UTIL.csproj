@@ -94,7 +94,6 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Content Include="OracleScripts\CreatePackageTemplate.tt">
       <Generator>TextTemplatingFileGenerator</Generator>

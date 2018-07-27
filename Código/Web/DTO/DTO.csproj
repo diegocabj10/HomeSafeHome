@@ -78,10 +78,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DtoAbmBase.cs" />
+    <Compile Include="DtoId.cs" />
     <Compile Include="DtoIdNombre.cs" />
     <Compile Include="DtoIdNombreIdTipo.cs" />
     <Compile Include="DtoIdNumericoNombre.cs" />
     <Compile Include="DtoItemsSeguridad.cs" />
+    <Compile Include="DtoItemsUsuario.cs" />
     <Compile Include="DtoMenuHijo.cs" />
     <Compile Include="DtoMenuPadre.cs" />
     <Compile Include="DtoPerfiles.cs" />

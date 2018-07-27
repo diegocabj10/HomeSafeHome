@@ -81,6 +81,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Funciones.cs" />
+    <Compile Include="FuncionesSeguridad.cs" />
+    <Compile Include="ManejoEstado.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositorio.cs" />
     <Compile Include="rnAbmBase.cs" />

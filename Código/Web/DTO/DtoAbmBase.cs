@@ -7,8 +7,8 @@ using System.ComponentModel.DataAnnotations;
 /// <summary>
 /// Descripción breve de IDtoAbm
 /// </summary>
-namespace DTO{
-    
+namespace DTO
+{
     public class DtoAbmBase
     {
         [Required(ErrorMessage = "El Id es un dato requerido")]
