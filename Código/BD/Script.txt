@@ -379,7 +379,7 @@ CREATE OR REPLACE PROCEDURE homesafehome.pr_perfiles_g(p_id          IN OUT t_pe
                                                  ,p_id_procesos IN pkg_array.inttabletype) IS
   ex_empty_array EXCEPTION;
 BEGIN
-  IF p_id IS NULL
+  IF p_id = 0
   THEN
     -- Alta del perfil
     p_id := seq_perfil.nextval;
@@ -523,7 +523,7 @@ CREATE OR REPLACE PROCEDURE homesafehome.pr_usuarios_g(p_id          IN OUT t_us
                                                       ,p_id_perfiles IN pkg_array.inttabletype) AS
   ex_empty_array EXCEPTION;
 BEGIN
-  IF p_id IS NULL
+  IF p_id = 0
   THEN
     --Alta
     p_id := homesafehome.seq_usuario.nextval;
