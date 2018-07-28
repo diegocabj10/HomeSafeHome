@@ -101,12 +101,12 @@ namespace Web.Controllers
         //http://sigesasdesa.cba.gov.ar:2475/api/Perfiles?numeroPagina=1&Estado=NO&Descripcion= 
         //http://sigesasdesa.cba.gov.ar:2475/api/Perfiles?numeroPagina=1&Estado=NO
         //http://sigesasdesa.cba.gov.ar:2475/api/Perfiles?numeroPagina=1
-        public virtual IHttpActionResult GetAll([FromUri] int numeroPagina, string Descripcion = "", string Estado = "")
+        public virtual IHttpActionResult GetAll([FromUri] int numeroPagina, string Descripcion = "", string Activo = "")
         {
             Tentidad DtoFiltro = new Tentidad();
             DtoAbmBase dto = DtoFiltro as DtoAbmBase;
             dto.Nombre = Descripcion;
-            dto.Activo = Estado;
+            dto.Activo = Activo;
             dto.NumeroPaginaListado = numeroPagina;
 
             IList Lista = rnAbm.Buscar(DtoFiltro);
