@@ -21,6 +21,6 @@ CREATE TABLE t_eventos (
     FOREIGN KEY (id_dispositivo)
     REFERENCES t_dispositivos(id_dispositivo),
   CONSTRAINT seniales_fk
-    FOREIGN KEY (id_senial)
+    FOREIGN KEY (department_id)
     REFERENCES t_seniales(id_senial)
 );
