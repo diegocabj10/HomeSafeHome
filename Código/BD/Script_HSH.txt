@@ -6,10 +6,6 @@ create table HOMESAFEHOME.T_USUARIOS
 (
   ID_USUARIO    NUMBER(10) not null,
   LOGIN         VARCHAR2(30),
-  ID_SEXO       VARCHAR2(2),
-  NRO_DOCUMENTO VARCHAR2(12),
-  CODIGO_PAIS  VARCHAR2(5),
-  ID_NUMERO     NUMBER(10),
   FECHA_INICIO  DATE,
   FECHA_FIN     DATE,
   CUIL          VARCHAR2(12),
@@ -44,7 +40,7 @@ create table HOMESAFEHOME.T_AUDITORIAS_PROCESO
   ID_AUDITORIA_PROCESO NUMBER(10) not null,
   N_AUDITORIA_PROCESO  VARCHAR2(100),
   DESCRIPCION VARCHAR2(200),
-  FEC_BAJA    DATE
+  FECHA_BAJA    DATE
 );
 
 alter table HOMESAFEHOME.T_AUDITORIAS_PROCESO
@@ -65,14 +61,13 @@ alter table HOMESAFEHOME.T_AUDITORIAS
   add constraint PK_AUDITORIAS primary key (ID_AUDITORIA);
 alter table HOMESAFEHOME.T_AUDITORIAS
   add constraint FK_AUD_SES foreign key (ID_SESION)
-  references HOMESAFEHOME.T_SESIONES (ID_SESION);
-  
+  references HOMESAFEHOME.T_SESIONES (ID_SESION);  
 alter table HOMESAFEHOME.T_AUDITORIAS
   add constraint FK_AUD_PROC foreign key (ID_AUDITORIA_PROCESO)
   references HOMESAFEHOME.T_AUDITORIAS_PROCESO (ID_AUDITORIA_PROCESO);
 ---------------------------------------------------------------------------------------
 ----------------------------------PERFILES---------------------------------------------
---------------------------------------------------------------------------------------- 
+---------------------------------------------------------------------------------------
 create table HOMESAFEHOME.T_PERFILES
 (
   ID_PERFIL NUMBER(10) not null,
@@ -98,7 +93,7 @@ create table HOMESAFEHOME.T_PROCESOS
   ID_PROCESO_PADRE NUMBER(10)
 );
 alter table HOMESAFEHOME.T_PROCESOS
-  add constraint PK_T_PROCESOS primary key (ID_PROCESO);
+  add constraint PK_PROCESOS primary key (ID_PROCESO);
 alter table HOMESAFEHOME.T_PROCESOS
   add constraint FK_PROCESO_PADRE foreign key (ID_PROCESO_PADRE)
   references HOMESAFEHOME.T_PROCESOS (ID_PROCESO);
@@ -122,7 +117,7 @@ alter table HOMESAFEHOME.T_PERFILES_PROCESO
 ---------------------------------------------------------------------------------------
 ----------------------------------USUARIO_PERFIL---------------------------------------
 ---------------------------------------------------------------------------------------
-create table HOMESAFEHOME.T_USUARIO_PERFIL
+create table HOMESAFEHOME.T_USUARIOS_PERFIL
 (
   ID_USUARIO_PERFIL NUMBER(10) not null,
   ID_USUARIO        NUMBER(10),
@@ -137,47 +132,53 @@ alter table HOMESAFEHOME.T_USUARIO_PERFIL
   add constraint FK_PERFIL_USUARIO foreign key (ID_USUARIO)
   references HOMESAFEHOME.T_USUARIOS (ID_USUARIO);
 ---------------------------------------------------------------------------------------
-----------------------------------DISPOSITIVOS-----------------------------------------
----------------------------------------------------------------------------------------  
-CREATE TABLE t_dispositivos (
-  id_dispositivo NUMBER,
-  descripcion VARCHAR2(50),
-  CONSTRAINT dispositivos_pk PRIMARY KEY (id_dispositivo)
-);
----------------------------------------------------------------------------------------
-----------------------------------SENIALES---------------------------------------------
---------------------------------------------------------------------------------------- 
-CREATE TABLE t_seniales (
-  id_senial NUMBER,
-  descripcion VARCHAR2(50),
-  CONSTRAINT seniales_pk PRIMARY KEY (id_senial)
-);
----------------------------------------------------------------------------------------
-----------------------------------EVENTOS----------------------------------------------
---------------------------------------------------------------------------------------- 
-CREATE TABLE t_eventos (
-  id_evento NUMBER,
-  fecha DATE,
-  valor NUMBER(10,2),
-  id_dispositivo NUMBER,
-  id_senial NUMBER,
-  CONSTRAINT eventos_pk PRIMARY KEY (id_evento),
-  CONSTRAINT dispositivos_fk
-    FOREIGN KEY (id_dispositivo)
-    REFERENCES t_dispositivos(id_dispositivo),
-  CONSTRAINT seniales_fk
-    FOREIGN KEY (id_senial)
-    REFERENCES t_seniales(id_senial)
-);
-
-  
----------------------------------------------------------------------------------------
 -------------------------------------TABLE_NUMBER--------------------------------------
 ---------------------------------------------------------------------------------------
 CREATE OR REPLACE TYPE HOMESAFEHOME.table_number is table of number
-
-
-
+---------------------------------------------------------------------------------------
+----------------------------------DISPOSITIVOS-----------------------------------------
+---------------------------------------------------------------------------------------
+create table HOMESAFEHOME.T_DISPOSITIVOS
+(
+  ID_DISPOSITIVO NUMBER(10) not null,
+  N_DISPOSITIVO  VARCHAR2(200),
+  FECHA_BAJA  DATE
+);
+alter table HOMESAFEHOME.T_DISPOSITIVOS
+  add constraint PK_DISPOSITIVO primary key (ID_DISPOSITIVO);
+alter table HOMESAFEHOME.T_DISPOSITIVOS
+  add constraint UK_DISPOSITIVO unique (N_DISPOSITIVO);
+---------------------------------------------------------------------------------------
+----------------------------------SENIALES---------------------------------------------
+---------------------------------------------------------------------------------------
+create table HOMESAFEHOME.T_SENIALES
+(
+  ID_SENIAL NUMBER(10) not null,
+  N_SENIAL  VARCHAR2(200),
+  FECHA_BAJA  DATE
+);
+alter table HOMESAFEHOME.T_SENIALES
+  add constraint PK_SENIAL primary key (ID_SENIAL);
+alter table HOMESAFEHOME.T_SENIALES
+  add constraint UK_SENIAL unique (N_SENIAL);
+---------------------------------------------------------------------------------------
+----------------------------------EVENTOS----------------------------------------------
+---------------------------------------------------------------------------------------CREATE TABLE HOMESAFEHOME.T_EVENTOS (
+ ID_EVENTO NUMBER(10) not null,
+ FECHA_EVENTO  DATE,
+ ID_SENIAL NUMBER(10) not null,
+ ID_DISPOSITIVO NUMBER(10) not null,
+ VALOR  NUMBER(10),
+ FECHA_BAJA  DATE
+);
+alter table HOMESAFEHOME.T_EVENTOS
+  add constraint PK_EVENTOS primary key (ID_EVENTO);
+alter table HOMESAFEHOME.T_EVENTOS
+  add constraint FK_EVENTOS_SENIAL foreign key (ID_SENIAL)
+  references HOMESAFEHOME.T_SENIALES (ID_SENIAL);
+alter table HOMESAFEHOME.T_EVENTOS
+  add constraint FK_EVENTOS_DISPOSITIVOS foreign key (ID_DISPOSITIVO)
+  references HOMESAFEHOME.T_DISPOSITIVOS (ID_DISPOSITIVO);
 
 --Secuencias
 ---------------------------------------------------------------------------------------
@@ -409,389 +410,26 @@ BEGIN
      ORDER BY p4.orden_menu, p4.nombre;
 END;
 
-CREATE OR REPLACE PACKAGE BODY pkg_perfiles IS
-  ---------------------------------------------------------------------------------------
-  ----------------------------------pr_perfiles_dl---------------------------------------
-  ---------------------------------------------------------------------------------------
-  CREATE OR REPLACE PROCEDURE pr_perfiles_dl(p_id           IN t_perfiles.id_perfil%TYPE
-                                                         ,p_activo_nuevo IN VARCHAR2) AS
-  BEGIN
-    UPDATE t_perfiles p
-       SET p.fecha_baja = CASE
-                          WHEN p_activo_nuevo = 'SI' THEN
-                           NULL
-                          ELSE
-                           SYSDATE
-                        END
-     WHERE p.id_perfil = p_id;
-    -- auditoria?
-  EXCEPTION
-    WHEN OTHERS THEN
-      RAISE;
-  END pr_perfiles_dl;
-  ---------------------------------------------------------------------------------------
-  ----------------------------------pr_perfiles_g----------------------------------------
-  ---------------------------------------------------------------------------------------
-  CREATE OR REPLACE PROCEDURE pr_perfiles_g(p_id          IN OUT t_perfiles.id_perfil%TYPE
-                                                   ,p_nombre      IN t_perfiles.n_perfil%TYPE
-                                                   ,p_id_procesos IN pkg_array.inttabletype) IS
-    ex_empty_array EXCEPTION;
-  BEGIN
-    IF p_id = 0
-    THEN
-      -- Alta del perfil
-      p_id := seq_perfil.nextval;
-      INSERT INTO t_perfiles (id_perfil, n_perfil) VALUES (p_id, p_nombre);
-    ELSE
-      -- Modificar un perfil existente
-      UPDATE t_perfiles p SET p.n_perfil = p_nombre WHERE p.id_perfil = p_id;
-      -- En la modificacion se borrar el conjunto de procesos vinculados a ese perfil
-      DELETE FROM t_perfiles_proceso pp WHERE pp.id_perfil = p_id;
-    END IF;
-    --En alta y modificacion, insertamos los nuevos pefiles del usuario
-    IF (p_id_procesos.first IS NULL)
-    THEN
-      RAISE ex_empty_array;
-    ELSE
-      -- en alta y modificacion agregamos los procesos
-      FOR i IN p_id_procesos.first .. p_id_procesos.last
-      LOOP
-        INSERT INTO t_perfiles_proceso
-          (id_perfil_proceso, id_perfil, id_proceso)
-        VALUES
-          (seq_perfil_proceso.nextval, p_id, p_id_procesos(i));
-      END LOOP;
-    END IF;
-  EXCEPTION
-    WHEN ex_empty_array THEN
-      raise_application_error(-20999, 'Debe seleccionar procesos.');
-    WHEN dup_val_on_index THEN
-      raise_application_error(-20999, 'El perfil ingresado ya existe.');
-    WHEN OTHERS THEN
-      RAISE;
-  END pr_perfiles_g;
-  ---------------------------------------------------------------------------------------
-  ----------------------------------pr_perfiles_s----------------------------------------
-  ---------------------------------------------------------------------------------------
-  CREATE OR REPLACE PROCEDURE pr_perfiles_s(p_id          IN t_perfiles.id_perfil%TYPE
-                                                        ,p_id_procesos OUT pkg_array.inttabletype
-                                                        ,p_cursor      OUT SYS_REFCURSOR) AS
-  BEGIN
-    SELECT pp.id_proceso BULK COLLECT
-      INTO p_id_procesos
-      FROM t_perfiles_proceso pp
-     WHERE pp.id_perfil = p_id;
-    OPEN p_cursor FOR
-      SELECT p.id_perfil id
-            ,p.n_perfil nombre
-            ,p.fecha_baja fechabaja
-            ,CASE
-               WHEN p.fecha_baja IS NULL THEN
-                'SI'
-               ELSE
-                'NO'
-             END activo
-        FROM t_perfiles p
-       WHERE p.id_perfil = p_id;
-  EXCEPTION
-    WHEN OTHERS THEN
-      RAISE;
-  END pr_perfiles_s;
-  ---------------------------------------------------------------------------------------
-  ----------------------------------pr_perfiles_set--------------------------------------
-  ---------------------------------------------------------------------------------------
-  CREATE OR REPLACE PROCEDURE pr_perfiles_set(p_procesos OUT SYS_REFCURSOR) AS
-  BEGIN
-    OPEN p_procesos FOR
-      SELECT p.id_proceso id, p.nombre nombre, p.id_proceso_padre idtipo
-        FROM t_procesos p
-       WHERE p.tipo IN ('H', 'T')
-         AND p.fecha_baja IS NULL
-       ORDER BY p.id_proceso_padre, p.orden_menu, p.nombre;
-  EXCEPTION
-    WHEN OTHERS THEN
-      RAISE;
-  END pr_perfiles_set;
-  ---------------------------------------------------------------------------------------
-  ----------------------------------pr_perfiles_sf---------------------------------------
-  ---------------------------------------------------------------------------------------
-  CREATE OR REPLACE PROCEDURE pr_perfiles_sf(p_nombre                IN t_perfiles.n_perfil%TYPE
-                                                         ,p_activo                IN OUT VARCHAR2
-                                                         ,p_numeropaginalistado   IN NUMBER
-                                                         ,p_totalregistroslistado OUT NUMBER
-                                                         ,p_cursor                OUT SYS_REFCURSOR) AS
-    v_registro_desde NUMBER(10) := (p_numeropaginalistado * 10) - 9;
-    v_registro_hasta NUMBER(10) := v_registro_desde + 9;
-    v_sql_count      VARCHAR2(4000);
-    v_sql_datos      VARCHAR2(4000);
-    v_with           VARCHAR2(2000) := 'WITH param as (SELECT :p1 p_nombre, :p2 p_activo FROM dual) ';
-    v_where          VARCHAR2(2000);
-  BEGIN
-    -- contar resultados para el paginado
-    v_sql_count := v_with || 'SELECT COUNT(*) FROM t_perfiles t';
-    IF p_nombre IS NOT NULL
-    THEN
-      v_where := v_where ||
-                 ' AND t.n_perfil LIKE ''%'' || p_nombre || ''%'' ';
-      -- (p_nombre IS NULL OR p.n_perfil LIKE '%' || p_nombre || '%') AND
-    END IF;
-    IF p_activo = 'SI'
-    THEN
-      v_where := v_where || ' AND t.fec_baja IS NULL ';
-    END IF;
-    IF p_activo = 'NO'
-    THEN
-      v_where := v_where || ' AND t.fec_baja IS NOT NULL ';
-    END IF;
-    IF (v_where IS NOT NULL)
-    THEN
-      v_where     := substr(v_where, 5);
-      v_where     := ', param where ' || v_where;
-      v_sql_count := v_sql_count || v_where;
-    END IF;
-    EXECUTE IMMEDIATE v_sql_count
-      INTO p_totalregistroslistado
-      USING p_nombre, p_activo;
-    v_sql_datos := v_with || 'SELECT c.id_perfil Id
-          ,c.n_perfil nombre
-          ,c.fecha_baja fechaBaja
-          ,CASE
-             WHEN c.fecha_baja IS NULL THEN
-              '' SI ''
-             ELSE
-              '' NO ''
-           END activo
-  FROM (SELECT a.*,rownum rnum FROM ' ||
-                   '(SELECT t.* FROM t_perfiles t' || v_where || ' )a ' ||
-                   'WHERE rownum <= ' || v_registro_hasta ||
-                   ') c WHERE rnum >= ' || v_registro_desde ||
-                   ' ORDER BY c.n_perfil';
-    OPEN p_cursor FOR v_sql_datos
-      USING p_nombre, p_activo;
-  EXCEPTION
-    WHEN OTHERS THEN
-      RAISE;
-  END pr_perfiles_sf;
-  
-END pkg_perfiles;
 
-CREATE OR REPLACE PACKAGE pkg_usuarios IS
 
-  CREATE OR REPLACE PROCEDURE pr_usuarios_g(p_id          IN OUT t_usuarios.id_usuario%TYPE
-                                            ,p_cuil        IN t_usuarios.cuil%TYPE
-                                            ,p_id_perfiles IN pkg_array.inttabletype);
-                                                        
-  CREATE OR REPLACE PROCEDURE pr_usuarios_login(p_cuil       IN t_usuarios.cuil%TYPE
-                                                ,p_id_sesion  IN t_sesiones.id_sesion%TYPE
-                                                ,p_ip         IN t_sesiones.ip%TYPE
-                                                ,p_id_usuario OUT t_usuarios.id_usuario%TYPE
-                                                ,p_cursor     OUT SYS_REFCURSOR);
-                                                            
-  CREATE OR REPLACE PROCEDURE pr_usuarios_logout(p_id_sesion       IN t_sesiones.id_sesion%TYPE
-                                                             ,p_timeout_minutos IN NUMBER);
-  
-  CREATE OR REPLACE PROCEDURE pr_usuarios_s(p_id          IN t_usuarios.id_usuario%TYPE
-                                                        ,p_id_perfiles OUT pkg_array.inttabletype
-                                                        ,p_cursor      OUT SYS_REFCURSOR);
-  
-  CREATE OR REPLACE PROCEDURE pr_usuarios_set(p_perfiles OUT SYS_REFCURSOR);
-  
-  CREATE OR REPLACE PROCEDURE pr_usuarios_sf(p_cuil                  IN t_usuarios.cuil%TYPE
-                                                    ,p_activo                IN OUT VARCHAR2
-                                                    ,p_numeropaginalistado   IN NUMBER
-                                                    ,p_totalregistroslistado OUT NUMBER
-                                                    ,p_cursor                OUT SYS_REFCURSOR);
-  
-END pkg_usuarios;
 
-CREATE OR REPLACE PACKAGE BODY pkg_usuarios IS
-  ---------------------------------------------------------------------------------------
-  ----------------------------------pr_usuarios_g----------------------------------------
-  ---------------------------------------------------------------------------------------
-  CREATE OR REPLACE PROCEDURE pr_usuarios_g(p_id          IN OUT t_usuarios.id_usuario%TYPE
-                                                        ,p_cuil        IN t_usuarios.cuil%TYPE
-                                                        ,p_id_perfiles IN pkg_array.inttabletype) AS
-    ex_empty_array EXCEPTION;
-  BEGIN
-    IF p_id = 0
-    THEN
-      --Alta
-      p_id := homesafehome.seq_usuario.nextval;
-      INSERT INTO homesafehome.t_usuarios
-        (id_usuario, fecha_inicio, cuil)
-      VALUES
-        (p_id, SYSDATE, p_cuil);
-    ELSE
-      --Modificacion
-      UPDATE homesafehome.t_usuarios t
-         SET t.cuil = p_cuil
-       WHERE t.id_usuario = p_id;
-      --Se eliminan todos los perfiles del usuario modificado
-      DELETE FROM homesafehome.t_usuario_perfil up
-       WHERE up.id_usuario = p_id;
-    END IF;
-    IF (p_id_perfiles.first IS NULL)
-    THEN
-      RAISE ex_empty_array;
-    ELSE
-      FOR i IN p_id_perfiles.first .. p_id_perfiles.last
-      LOOP
-        INSERT INTO homesafehome.t_usuario_perfil
-          (id_usuario_perfil, id_usuario, id_perfil)
-        VALUES
-          (homesafehome.seq_usuario_perfil.nextval, p_id, p_id_perfiles(i));
-      END LOOP;
-    END IF;
-  EXCEPTION
-    WHEN ex_empty_array THEN
-      raise_application_error(-20999, 'Debe seleccionar perfiles.');
-    WHEN dup_val_on_index THEN
-      raise_application_error(-20999, 'El perfil ingresado ya existe.');
-    WHEN OTHERS THEN
-      RAISE;
-  END pr_usuarios_g;
-  ---------------------------------------------------------------------------------------
-  ----------------------------------pr_usuarios_login------------------------------------
-  ---------------------------------------------------------------------------------------
-  CREATE OR REPLACE PROCEDURE pr_usuarios_login(p_cuil       IN t_usuarios.cuil%TYPE
-                                                            ,p_id_sesion  IN t_sesiones.id_sesion%TYPE
-                                                            ,p_ip         IN t_sesiones.ip%TYPE
-                                                            ,p_id_usuario OUT t_usuarios.id_usuario%TYPE
-                                                            ,p_cursor     OUT SYS_REFCURSOR) AS
-  BEGIN
-    SELECT u.id_usuario
-      INTO p_id_usuario
-      FROM t_usuarios u
-     WHERE u.cuil = p_cuil
-       AND nvl(u.fecha_fin, SYSDATE + 1) > SYSDATE;
-    UPDATE t_usuarios u
-       SET u.ultimo_login = SYSDATE
-     WHERE u.id_usuario = p_id_usuario;
-    INSERT INTO t_sesiones
-      (id_sesion, ip, fecha_inicio, id_usuario)
-    VALUES
-      (p_id_sesion, p_ip, SYSDATE, p_id_usuario);
-    OPEN p_cursor FOR
-      SELECT p.id_perfil id
-        FROM t_perfiles p
-       INNER JOIN t_usuario_perfil up
-          ON p.id_perfil = up.id_perfil
-       WHERE up.id_usuario = p_id_usuario;
-  END pr_usuarios_login;
-  ---------------------------------------------------------------------------------------
-  ----------------------------------pr_usuarios_logout-----------------------------------
-  ---------------------------------------------------------------------------------------
-  CREATE OR REPLACE PROCEDURE pr_usuarios_logout(p_id_sesion       IN t_sesiones.id_sesion%TYPE
-                                                             ,p_timeout_minutos IN NUMBER) AS
-  BEGIN
-    UPDATE t_sesiones s
-       SET s.fecha_fin = CASE
-                         WHEN p_timeout_minutos IS NOT NULL
-                              AND
-                              s.fecha_inicio <
-                              SYSDATE - (1 / 24 / 60 * (p_timeout_minutos + 1)) THEN
-                          SYSDATE - (1 / 24 / 60 * (p_timeout_minutos + 1))
-                         ELSE
-                          SYSDATE
-                       END
-     WHERE s.id_sesion = p_id_sesion
-       AND s.fecha_fin IS NULL;
-  END pr_usuarios_logout;
-  ---------------------------------------------------------------------------------------
-  ----------------------------------pr_usuarios_s----------------------------------------
-  ---------------------------------------------------------------------------------------
-  CREATE OR REPLACE PROCEDURE pr_usuarios_s(p_id          IN t_usuarios.id_usuario%TYPE
-                                                        ,p_id_perfiles OUT pkg_array.inttabletype
-                                                        ,p_cursor      OUT SYS_REFCURSOR) AS
-  BEGIN
-    --Selecciono todos los perfiles para el usuario determinado por el id
-    SELECT up.id_perfil BULK COLLECT
-      INTO p_id_perfiles
-      FROM t_usuario_perfil up
-     WHERE up.id_usuario = p_id;
-    --Selecciono todos los datos para el usuario determinado por el id
-    OPEN p_cursor FOR
-      SELECT t.id_usuario id
-            ,t.fecha_inicio fechainicio
-            ,c.apellido || ', ' || c.nombre nombre
-            ,t.fecha_fin fechabaja
-            ,t.cuil
-            ,t.ultimo_login ultimologin
-            ,CASE
-               WHEN t.fecha_fin IS NULL THEN
-                'SI'
-               ELSE
-                'NO'
-             END activo
-        FROM t_usuarios t
-       WHERE id_usuario = p_id;
-  END pr_usuarios_s;
-  ---------------------------------------------------------------------------------------
-  ----------------------------------pr_usuarios_set--------------------------------------
-  ---------------------------------------------------------------------------------------
-  CREATE OR REPLACE PROCEDURE pr_usuarios_set(p_perfiles OUT SYS_REFCURSOR) AS
-  BEGIN
-    OPEN p_perfiles FOR
-      SELECT t.id_perfil id, t.n_perfil nombre FROM t_perfiles t;
-  END pr_usuarios_set;
-  ---------------------------------------------------------------------------------------
-  ----------------------------------pr_usuarios_sf--------------------------------------
-  ---------------------------------------------------------------------------------------
-  CREATE OR REPLACE PROCEDURE pr_usuarios_sf(p_cuil                  IN t_usuarios.cuil%TYPE
-                                                    ,p_activo                IN OUT VARCHAR2
-                                                    ,p_numeropaginalistado   IN NUMBER
-                                                    ,p_totalregistroslistado OUT NUMBER
-                                                    ,p_cursor                OUT SYS_REFCURSOR) AS
-    v_registro_desde NUMBER(10) := (p_numeropaginalistado * 10) - 9;
-    v_registro_hasta NUMBER(10) := v_registro_desde + 9;
-    v_sql_count      VARCHAR2(4000);
-    v_sql_datos      VARCHAR2(4000);
-    v_with           VARCHAR2(2000) := 'WITH param as (SELECT :p1 p_nombre, :p2 p_activo FROM dual) ';
-    v_where          VARCHAR2(2000);
-  BEGIN
-    v_sql_count := v_with || 'SELECT COUNT(*) FROM t_usuarios u';
-    IF p_cuil IS NOT NULL
-    THEN
-      v_where := v_where || ' AND u.cuil LIKE ''%'' || p_nombre || ''%'' ';
-    END IF;
-    IF p_activo = 'SI'
-    THEN
-      v_where := v_where || ' AND p.fec_baja IS NULL ';
-    END IF;
-    IF p_activo = 'NO'
-    THEN
-      v_where := v_where || ' AND p.fec_baja IS NOT NULL ';
-    END IF;
-    IF (v_where IS NOT NULL)
-    THEN
-      v_where     := substr(v_where, 5);
-      v_where     := ', param where ' || v_where;
-      v_sql_count := v_sql_count || v_where;
-    END IF;
-    EXECUTE IMMEDIATE v_sql_count
-      INTO p_totalregistroslistado
-      USING p_cuil, p_activo;
-    v_sql_datos := v_with || 'SELECT c.id_usuario id
-            ,c.fecha_inicio fechainicio
-            ,c.fecha_fin fechabaja
-            ,c.cuil
-            ,c.ultimo_login ultimologin
-            ,CASE
-             WHEN c.fec_baja IS NULL THEN
-              '' SI ''
-             ELSE
-              '' NO ''
-           END activo
-           FROM (SELECT a.*,rownum rnum FROM ' ||
-                   '(SELECT t.* FROM t_usuarios' ||
-                   v_where || ' )a ' || 'WHERE rownum <= ' ||
-                   v_registro_hasta || ') c WHERE rnum >= ' ||
-                   v_registro_desde || ' ORDER BY c.cuil';
-    OPEN p_cursor FOR v_sql_datos
-      USING p_cuil, p_activo;
-  END pr_usuarios_sf;
-  
-END pkg_usuarios;
+
+
+
+
+
+
+
+
+
+
+
+
+/*********************************************************************************************************/
+
+
+
+
 
 CREATE OR REPLACE PACKAGE pkg_seniales IS
 

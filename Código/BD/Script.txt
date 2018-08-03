@@ -6,10 +6,6 @@ create table HOMESAFEHOME.T_USUARIOS
 (
   ID_USUARIO    NUMBER(10) not null,
   LOGIN         VARCHAR2(30),
-  ID_SEXO       VARCHAR2(2),
-  NRO_DOCUMENTO VARCHAR2(12),
-  CODIGO_PAIS  VARCHAR2(5),
-  ID_NUMERO     NUMBER(10),
   FECHA_INICIO  DATE,
   FECHA_FIN     DATE,
   CUIL          VARCHAR2(12),
@@ -44,7 +40,7 @@ create table HOMESAFEHOME.T_AUDITORIAS_PROCESO
   ID_AUDITORIA_PROCESO NUMBER(10) not null,
   N_AUDITORIA_PROCESO  VARCHAR2(100),
   DESCRIPCION VARCHAR2(200),
-  FEC_BAJA    DATE
+  FECHA_BAJA    DATE
 );
 
 alter table HOMESAFEHOME.T_AUDITORIAS_PROCESO
@@ -65,8 +61,7 @@ alter table HOMESAFEHOME.T_AUDITORIAS
   add constraint PK_AUDITORIAS primary key (ID_AUDITORIA);
 alter table HOMESAFEHOME.T_AUDITORIAS
   add constraint FK_AUD_SES foreign key (ID_SESION)
-  references HOMESAFEHOME.T_SESIONES (ID_SESION);
-  
+  references HOMESAFEHOME.T_SESIONES (ID_SESION);  
 alter table HOMESAFEHOME.T_AUDITORIAS
   add constraint FK_AUD_PROC foreign key (ID_AUDITORIA_PROCESO)
   references HOMESAFEHOME.T_AUDITORIAS_PROCESO (ID_AUDITORIA_PROCESO);
@@ -98,7 +93,7 @@ create table HOMESAFEHOME.T_PROCESOS
   ID_PROCESO_PADRE NUMBER(10)
 );
 alter table HOMESAFEHOME.T_PROCESOS
-  add constraint PK_T_PROCESOS primary key (ID_PROCESO);
+  add constraint PK_PROCESOS primary key (ID_PROCESO);
 alter table HOMESAFEHOME.T_PROCESOS
   add constraint FK_PROCESO_PADRE foreign key (ID_PROCESO_PADRE)
   references HOMESAFEHOME.T_PROCESOS (ID_PROCESO);
@@ -122,7 +117,7 @@ alter table HOMESAFEHOME.T_PERFILES_PROCESO
 ---------------------------------------------------------------------------------------
 ----------------------------------USUARIO_PERFIL---------------------------------------
 ---------------------------------------------------------------------------------------
-create table HOMESAFEHOME.T_USUARIO_PERFIL
+create table HOMESAFEHOME.T_USUARIOS_PERFIL
 (
   ID_USUARIO_PERFIL NUMBER(10) not null,
   ID_USUARIO        NUMBER(10),
