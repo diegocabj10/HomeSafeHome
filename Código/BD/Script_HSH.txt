@@ -688,511 +688,192 @@ FROM (SELECT a.*,rownum rnum FROM ' ||
 END pkg_perfiles;
 
 
-/*********************************************************************************************************/
+---------------------------------------------------------------------------------------
+----------------------------------PKG_USUARIOS-----------------------------------------
+---------------------------------------------------------------------------------------
 
-/*********************************************************************************************************/
+CREATE OR REPLACE PACKAGE pkg_usuarios IS
 
-/*********************************************************************************************************/
+  -- Author  : DIEGO
+  -- Created : 3/7/2018 21:18:55
+  -- Purpose : Gestionar usuarios
+  PROCEDURE pr_getcombos(p_perfiles OUT SYS_REFCURSOR);
 
-/*********************************************************************************************************/
+  PROCEDURE pr_getbyid(p_id          IN t_usuarios.id_usuario%TYPE
+                      ,p_id_perfiles OUT pkg_array.inttabletype
+                      ,p_cursor      OUT SYS_REFCURSOR);
 
+  PROCEDURE pr_getall(p_cuil                  IN t_usuarios.cuil%TYPE
+                     ,p_activo                IN OUT VARCHAR2
+                     ,p_numeropaginalistado   IN NUMBER
+                     ,p_totalregistroslistado OUT NUMBER
+                     ,p_cursor                OUT SYS_REFCURSOR);
 
-CREATE OR REPLACE PACKAGE pkg_seniales IS
+  PROCEDURE pr_postput(p_id          IN OUT t_usuarios.id_usuario%TYPE
+                      ,p_cuil        IN t_usuarios.cuil%TYPE
+                      ,p_id_perfiles IN pkg_array.inttabletype);
 
-  CREATE OR REPLACE PROCEDURE pr_seniales_dl(p_id IN t_seniales.id_senial%TYPE,
-                                             p_activo_nuevo IN VARCHAR2);
+  PROCEDURE pr_delete(p_id           IN t_perfiles.id_perfil%TYPE
+                     ,p_activo_nuevo IN VARCHAR2);
 
-  CREATE OR REPLACE PROCEDURE pr_seniales_g(p_id IN OUT t_seniales.id_senial%TYPE,
-                                            p_descripcion IN t_seniales.valor%TYPE);
+END pkg_usuarios;
 
-  CREATE OR REPLACE PROCEDURE pr_seniales_s(p_id IN t_seniales.id_senial%TYPE,
-                                            p_cursor OUT SYS_REFCURSOR);
+CREATE OR REPLACE PACKAGE BODY pkg_usuarios IS
 
-  CREATE OR REPLACE PROCEDURE pr_seniales_sf(p_activo IN OUT VARCHAR2,
-                                             p_numeropaginalistado IN NUMBER,
-                                             p_totalregistroslistado OUT NUMBER,
-                                             p_cursor OUT SYS_REFCURSOR);
-
-  CREATE OR REPLACE PROCEDURE pr_seniales_set(p_cursor_senial OUT SYS_REFCURSOR);
-
-END pkg_seniales;
-
------------------Seniales--------------------
-
-CREATE OR REPLACE PACKAGE BODY pkg_seniales IS
-
-  CREATE OR REPLACE PROCEDURE pr_seniales_dl(p_id in t_senial.id_senial%TYPE,
-                                                 p_activo_nuevo IN VARCHAR2) AS
-    BEGIN
-      UPDATE t_seniales d
-         SET d.fecha_baja = CASE
-                              WHEN p_activo_nuevo = 'SI' THEN
-                               NULL
-                              ELSE
-                               SYSDATE
-                            END
-       WHERE e.id_senial = p_id;
-    EXCEPTION
-      WHEN OTHERS THEN
-        RAISE;
-  END pr_seniales_dl;
-
-  CREATE OR REPLACE PROCEDURE pr_seniales_g(p_id IN OUT t_seniales.id_senial%TYPE,
-                                            p_descripcion IN t_seniales.descripcion%TYPE) AS
-    BEGIN
-
-      IF p_id IS NULL THEN  -- alta
-        p_id := seq_senial.nextval;
-        INSERT INTO t_perfil (id_senial, descripcion) 
-               VALUES (p_id, p_descripcion);
-      ELSE  -- modificacion
-        UPDATE t_seniales s
-        SET    s.descripcion = p_descripcion
-        WHERE  s.id_senial = p_id;
-      END IF;
-
-    EXCEPTION
-      WHEN OTHERS THEN
-        RAISE;
-    END;
-  END pr_seniales_g;
-
-  CREATE OR REPLACE PROCEDURE pr_seniales_s(p_id IN t_seniales.id_senial%TYPE,
-                                            p_cursor OUT SYS_REFCURSOR) AS
+  PROCEDURE pr_getcombos(p_perfiles OUT SYS_REFCURSOR) AS
   BEGIN
-    
+    OPEN p_perfiles FOR
+      SELECT t.id_perfil id, t.n_perfil nombre FROM t_perfiles t;
+  END pr_getcombos;
+
+  --------------------------------------------------------------------------------------------------------------------------------------------
+  PROCEDURE pr_getbyid(p_id          IN t_usuarios.id_usuario%TYPE
+                      ,p_id_perfiles OUT pkg_array.inttabletype
+                      ,p_cursor      OUT SYS_REFCURSOR) AS
+  BEGIN
+    --Selecciono todos los perfiles para el usuario determinado por el id
+    SELECT up.id_perfil BULK COLLECT
+      INTO p_id_perfiles
+      FROM t_usuarios_perfil up
+     WHERE up.id_usuario = p_id;
+    --Selecciono todos los datos para el usuario determinado por el id
     OPEN p_cursor FOR
-      SELECT s.id_senial id,
-             s.descripcion descripcion,
-             CASE
-               WHEN s.fecha_baja IS NULL THEN
+      SELECT t.id_usuario id
+            ,t.fecha_inicio fechainicio
+            ,t.fecha_fin fechabaja
+            ,t.cuil
+            ,t.ultimo_login ultimologin
+            ,CASE
+               WHEN t.fecha_fin IS NULL THEN
                 'SI'
                ELSE
                 'NO'
              END activo
-        FROM t_seniales s
-       WHERE p.id_senial = p_id;
+        FROM t_usuarios t
+       WHERE id_usuario = p_id;
+  END pr_getbyid;
 
-  EXCEPTION
-    WHEN OTHERS THEN
-      RAISE;
-  END pr_seniales_s;
-  
-  CREATE OR REPLACE PROCEDURE pr_seniales_sf(p_activo IN OUT VARCHAR2,
-                                             p_numeropaginalistado IN NUMBER,
-                                             p_totalregistroslistado OUT NUMBER,
-                                             p_cursor OUT SYS_REFCURSOR) AS
-      v_registro_desde number(10) := (p_numeropaginalistado * 10) - 9;
-      v_registro_hasta number(10) := v_registro_desde + 9;
-      v_sql_count      VARCHAR2(4000);
-      v_sql_datos      VARCHAR2(4000);
-      v_with           varchar2(2000) := 'WITH param as (SELECT :p1 p_activo FROM dual) ';
-      v_where          VARCHAR2(2000);
-    BEGIN
-      -- contar resultados para el paginado
-
-      v_sql_count := v_with || 'SELECT COUNT(*) FROM t_seniales s';
-
-      IF p_activo = 'SI' THEN
-        v_where := v_where || ' AND s.fec_baja IS NULL ';
-      END IF;
-      IF p_activo = 'NO' THEN
-        v_where := v_where || ' AND s.fec_baja IS NOT NULL ';
-      END IF;
-
-      IF (v_where IS NOT NULL) THEN
-        v_where     := substr(v_where, 5);
-        v_where     := ', param where ' || v_where;
-        v_sql_count := v_sql_count || v_where;
-      END IF;
-
-      EXECUTE IMMEDIATE v_sql_count
-        INTO p_totalregistroslistado
-        USING p_activo;
-
-      v_sql_datos := v_with || 'SELECT s.id_senial Id,
-            s.descripcion descripcion,
-            s.fecha_baja fechaBaja,
-            CASE
-               WHEN s.fecha_baja IS NULL THEN
-                '' SI ''
-               ELSE
-                '' NO ''
-             END activo
-             FROM (SELECT a.*,rownum rnum FROM ' ||
-                     '(SELECT se.* FROM t_seniales se' || v_where || ' )a ' ||
-                     'WHERE rownum <= ' || v_registro_hasta ||
-                     ') c WHERE rownum >= ' || v_registro_desde ||
-                     ' ORDER BY c.descripcion';
-
-      OPEN p_cursor FOR v_sql_datos
-        USING p_activo;
-
-    EXCEPTION
-      WHEN OTHERS THEN
-        RAISE;
-    END pr_seniales_sf;
-    
-  CREATE OR REPLACE PROCEDURE pr_seniales_set(p_cursor_senial OUT SYS_REFCURSOR) AS
-  
-    OPEN p_cursor_senial FOR
-        SELECT s.id_senial id, s.descripcion descripcion
-        FROM   t_seniales s
-        WHERE  s.fecha_baja IS NULL
-        ORDER  BY s.descripcion;        
-    EXCEPTION
-      WHEN OTHERS THEN
-        RAISE;               
-  END pr_seniales_set;                                  
-
-END pkg_seniales;
-
------------------Dispositivos--------------------
-CREATE OR REPLACE PACKAGE pkg_dispositivos IS
-
-  CREATE OR REPLACE PROCEDURE pr_dispositivos_dl(p_id IN t_dispositivos.id_dispositivo%TYPE,
-                                                 p_activo_nuevo IN VARCHAR2);
-
-  CREATE OR REPLACE PROCEDURE pr_dispositivos_g(p_id IN OUT t_dispositivos.id_dispositivo%TYPE,
-                                                p_descripcion IN t_dispositivos.valor%TYPE);
-
-  CREATE OR REPLACE PROCEDURE pr_dispositivos_s(p_id IN t_dispositivos.id_dispositivo%TYPE,
-                                                p_cursor OUT SYS_REFCURSOR);
-
-  CREATE OR REPLACE PROCEDURE pr_dispositivos_sf(p_activo IN OUT VARCHAR2,
-                                                 p_numeropaginalistado IN NUMBER,
-                                                 p_totalregistroslistado OUT NUMBER,
-                                                 p_cursor OUT SYS_REFCURSOR);
-
-  CREATE OR REPLACE PROCEDURE pr_dispositivos_set(p_cursor_dispositivo OUT SYS_REFCURSOR);
-
-END pkg_dispositivos;
-
-CREATE OR REPLACE PACKAGE BODY pkg_dispositivos IS
-
-  CREATE OR REPLACE PROCEDURE pr_dispositivos_dl(p_id in t_dispositivo.id_dispositivo%TYPE,
-                                                 p_activo_nuevo IN VARCHAR2) AS
-    BEGIN
-      UPDATE t_dispositivos d
-         SET d.fecha_baja = CASE
-                              WHEN p_activo_nuevo = 'SI' THEN
-                               NULL
-                              ELSE
-                               SYSDATE
-                            END
-       WHERE e.id_dispositivo = p_id;
-    EXCEPTION
-      WHEN OTHERS THEN
-        RAISE;
-  END pr_dispositivos_dl;
-
-  CREATE OR REPLACE PROCEDURE pr_dispositivos_g(p_id IN OUT t_dispositivos.id_dispositivo%TYPE,
-                                                p_descripcion IN t_dispositivos.descripcion%TYPE) AS
-    BEGIN
-
-      IF p_id IS NULL THEN  -- alta
-        p_id := seq_dispositivo.nextval;
-        INSERT INTO t_perfil (id_dispositivo, descripcion) 
-               VALUES (p_id, p_descripcion);
-      ELSE  -- modificacion
-        UPDATE t_dispositivos e
-        SET    e.descripcion = p_descripcion
-        WHERE  e.id_dispositivo = p_id;
-      END IF;
-
-    EXCEPTION
-      WHEN OTHERS THEN
-        RAISE;
-    END;
-  END pr_dispositivos_g;
-
-  CREATE OR REPLACE PROCEDURE pr_dispositivos_s(p_id IN t_dispositivos.id_dispositivo%TYPE,
-                                                p_cursor OUT SYS_REFCURSOR) AS
+  --------------------------------------------------------------------------------------------------------------------------------------------
+  PROCEDURE pr_getall(p_cuil                  IN t_usuarios.cuil%TYPE
+                     ,p_activo                IN OUT VARCHAR2
+                     ,p_numeropaginalistado   IN NUMBER
+                     ,p_totalregistroslistado OUT NUMBER
+                     ,p_cursor                OUT SYS_REFCURSOR) AS
+    v_registro_desde NUMBER(10) := (p_numeropaginalistado * 10) - 9;
+    v_registro_hasta NUMBER(10) := v_registro_desde + 9;
+    v_sql_count      VARCHAR2(4000);
+    v_sql_datos      VARCHAR2(4000);
+    v_with           VARCHAR2(2000) := 'WITH param as (SELECT :p1 p_nombre, :p2 p_activo FROM dual) ';
+    v_where          VARCHAR2(2000);
   BEGIN
-    
-    OPEN p_cursor FOR
-      SELECT e.id_dispositivo id,
-             e.descripcion descripcion,
-             CASE
-               WHEN e.fecha_baja IS NULL THEN
-                'SI'
-               ELSE
-                'NO'
-             END activo
-        FROM t_dispositivos e
-       WHERE p.id_dispositivo = p_id;
-
-  EXCEPTION
-    WHEN OTHERS THEN
-      RAISE;
-  END pr_dispositivos_s;
-  
-  CREATE OR REPLACE PROCEDURE pr_dispositivos_sf(p_activo IN OUT VARCHAR2,
-                                                 p_numeropaginalistado IN NUMBER,
-                                                 p_totalregistroslistado OUT NUMBER,
-                                                 p_cursor OUT SYS_REFCURSOR) AS
-      v_registro_desde number(10) := (p_numeropaginalistado * 10) - 9;
-      v_registro_hasta number(10) := v_registro_desde + 9;
-      v_sql_count      VARCHAR2(4000);
-      v_sql_datos      VARCHAR2(4000);
-      v_with           varchar2(2000) := 'WITH param as (SELECT :p1 p_activo FROM dual) ';
-      v_where          VARCHAR2(2000);
-    BEGIN
-      -- contar resultados para el paginado
-
-      v_sql_count := v_with || 'SELECT COUNT(*) FROM t_dispositivos d';
-
-      IF p_activo = 'SI' THEN
-        v_where := v_where || ' AND d.fec_baja IS NULL ';
-      END IF;
-      IF p_activo = 'NO' THEN
-        v_where := v_where || ' AND d.fec_baja IS NOT NULL ';
-      END IF;
-
-      IF (v_where IS NOT NULL) THEN
-        v_where     := substr(v_where, 5);
-        v_where     := ', param where ' || v_where;
-        v_sql_count := v_sql_count || v_where;
-      END IF;
-
-      EXECUTE IMMEDIATE v_sql_count
-        INTO p_totalregistroslistado
-        USING p_activo;
-
-      v_sql_datos := v_with || 'SELECT d.id_dispositivo Id,
-            d.descripcion descripcion,
-            d.fecha_baja fechaBaja,
-            CASE
-               WHEN d.fecha_baja IS NULL THEN
-                '' SI ''
-               ELSE
-                '' NO ''
-             END activo
-             FROM (SELECT a.*,rownum rnum FROM ' ||
-                     '(SELECT di.* FROM t_dispositivos di' || v_where || ' )a ' ||
-                     'WHERE rownum <= ' || v_registro_hasta ||
-                     ') c WHERE rownum >= ' || v_registro_desde ||
-                     ' ORDER BY c.descripcion';
-
-      OPEN p_cursor FOR v_sql_datos
-        USING p_activo;
-
-    EXCEPTION
-      WHEN OTHERS THEN
-        RAISE;
-    END pr_dispositivos_sf;
-
-  CREATE OR REPLACE PROCEDURE pr_dispositivos_set(p_cursor_senial OUT SYS_REFCURSOR) AS
-    OPEN p_cursor_dispositivo FOR
-        SELECT d.id_dispositivo id, d.descripcion descripcion
-        FROM   t_dispositivos d
-        WHERE  d.fecha_baja IS NULL
-        ORDER  BY d.descripcion;
-        
-    EXCEPTION
-      WHEN OTHERS THEN
-        RAISE;               
-  END pr_dispositivos_set;                                  
-
-END pkg_dispositivos;
-
------------------Eventos--------------------
-CREATE OR REPLACE PACKAGE pkg_eventos IS
-
-  CREATE OR REPLACE PROCEDURE pr_eventos_dl(p_id IN t_eventos.id_evento%TYPE,
-                                            p_activo_nuevo IN VARCHAR2);
-
-  CREATE OR REPLACE PROCEDURE pr_eventos_g(p_id IN OUT t_eventos.id_evento%TYPE,
-                                           p_valor IN t_eventos.valor%TYPE,
-                                           p_id_dispositivo IN t_eventos.id_dispositivo%TYPE,
-                                           p_id_senial IN t_eventos.id_senial%TYPE);
-
-  CREATE OR REPLACE PROCEDURE pr_eventos_s(p_id IN t_eventos.id_evento%TYPE,
-                                           p_id_senial OUT pkg_array.inttabletype,
-                                           p_id_dispositivo OUT pkg_array.inttabletype,
-                                           p_cursor OUT SYS_REFCURSOR);
-
-  CREATE OR REPLACE PROCEDURE pr_eventos_sf(p_id_dispositivo IN t_eventos.id_dispositivo%TYPE,
-                                            p_id_senial IN t_eventos.id_senial%TYPE,
-                                            p_activo IN OUT VARCHAR2,
-                                            p_numeropaginalistado IN NUMBER,
-                                            p_totalregistroslistado OUT NUMBER,
-                                            p_cursor OUT SYS_REFCURSOR);
-                                            
-  CREATE OR REPLACE PROCEDURE pr_eventos_set(p_cursor_senial OUT SYS_REFCURSOR,
-                                             p_cursor_dispositivo OUT SYS_REFCURSOR);
-                                           
-END pkg_eventos;
-
-CREATE OR REPLACE PACKAGE BODY pkg_eventos IS
-
-  CREATE OR REPLACE PROCEDURE pr_eventos_dl(p_id in t_evento.id_evento%TYPE,
-                                            p_activo_nuevo IN VARCHAR2) AS
-    BEGIN
-      UPDATE t_eventos e
-         SET e.fecha_baja = CASE
-                              WHEN p_activo_nuevo = 'SI' THEN
-                               NULL
-                              ELSE
-                               SYSDATE
-                            END
-       WHERE e.id_evento = p_id;
-    EXCEPTION
-      WHEN OTHERS THEN
-        RAISE;
-  END pr_eventos_dl;
-
-  CREATE OR REPLACE PROCEDURE pr_eventos_g(p_id          IN OUT t_evento.id_evento%TYPE,
-                                           p_valor      IN t_evento.valor%TYPE,
-                                           p_id_dispositivo IN t_evento.id_dispositivo%TYPE,
-                                           p_id_senial  IN t_evento.id_senial%TYPE,
-                                           p_id_Procesos IN pkg_array.inttabletype) IS
-      ex_empty_array EXCEPTION;
-    BEGIN
-
-      IF p_id IS NULL THEN  -- alta
-        p_id := seq_evento.nextval;
-        INSERT INTO t_perfil (id_evento, fecha, valor, id_dispositivo, id_senial) 
-               VALUES (p_id, SYSDATE, p_valor, p_id_dispositivo, p_id_senial);
-      ELSE  -- modificacion
-        UPDATE t_eventos e
-        SET    e.valor = p_valor,
-               e.id_dispositivo = p_id_dispositivo,
-               e.id_senial = p_id_senial
-        WHERE  e.id_evento = p_id;
-      END IF;
-
-    EXCEPTION
-      WHEN OTHERS THEN
-        RAISE;
-    END;
-  END pr_eventos_g;
-
-  CREATE OR REPLACE PROCEDURE pr_eventos_s(p_id             IN t_eventos.id_evento%TYPE,
-                                           p_id_senial      OUT pkg_array.inttabletype,
-                                           p_id_dispositivo OUT pkg_array.inttabletype,
-                                           p_cursor         OUT SYS_REFCURSOR) AS
-  BEGIN
-
-    SELECT e.id_senial BULK COLLECT
-      INTO p_id_senial
-      FROM t_eventos e
-     WHERE e.id_evento = p_id;
-
-    SELECT e.id_dispositivo BULK COLLECT
-      INTO p_id_dispositivo
-      FROM t_eventos e
-     WHERE e.id_evento = p_id;
-
-    OPEN p_cursor FOR
-      SELECT e.id_evento id,
-             e.id_senial idSenial,
-             e.id_dispositivo idDispositivo,
-             e.fec_baja fechabaja,
-             CASE
-               WHEN e.fec_baja IS NULL THEN
-                'SI'
-               ELSE
-                'NO'
-             END activo
-        FROM t_eventos e
-       WHERE p.id_evento = p_id;
-
-  EXCEPTION
-    WHEN OTHERS THEN
-      RAISE;
-  END pr_eventos_s;
-  
-  CREATE OR REPLACE PROCEDURE pr_eventos_sf(p_id_dispositivo        IN t_eventos.id_dispositivo%TYPE,
-                                            p_id_senial             IN t_eventos.id_senial%TYPE,
-                                            p_activo                IN OUT VARCHAR2,
-                                            p_numeropaginalistado   IN NUMBER,
-                                            p_totalregistroslistado OUT NUMBER,
-                                            p_cursor                OUT SYS_REFCURSOR) AS
-  v_registro_desde number(10) := (p_numeropaginalistado * 10) - 9;
-  v_registro_hasta number(10) := v_registro_desde + 9;
-  v_sql_count      VARCHAR2(4000);
-  v_sql_datos      VARCHAR2(4000);
-  v_with           varchar2(2000) := 'WITH param as (SELECT :p1 p_id_dispositivo, :p2 p_id_senial, p3: p_activo FROM dual) ';
-  v_where          VARCHAR2(2000);
-BEGIN
-  -- contar resultados para el paginado
-
-  v_sql_count := v_with || 'SELECT COUNT(*) FROM t_eventos e';
-
-  IF p_id_dispositivo <> 0 THEN
-    v_where := v_where || ' AND e.p_id_dispositivo = ' || p_id_dispositivo;
-  END IF;
-  
-  IF p_id_senial <> 0 THEN
-    v_where := v_where || ' AND e.p_id_senial = ' || p_id_senial;
-  END IF;
-
-  IF p_activo = 'SI' THEN
-    v_where := v_where || ' AND p.fec_baja IS NULL ';
-  END IF;
-  IF p_activo = 'NO' THEN
-    v_where := v_where || ' AND p.fec_baja IS NOT NULL ';
-  END IF;
-
-  IF (v_where IS NOT NULL) THEN
-    v_where     := substr(v_where, 5);
-    v_where     := ', param where ' || v_where;
-    v_sql_count := v_sql_count || v_where;
-  END IF;
-
-  EXECUTE IMMEDIATE v_sql_count
-    INTO p_totalregistroslistado
-    USING p_id_dispositivo, p_id_senial, p_activo;
-
-  v_sql_datos := v_with || 'SELECT e.id_evento Id,
-        e.fecha fecha,
-        e.valor valor,
-        e.id_dispositivo idDispositivo,
-        e.id_senial idSenial,
-        e.fecha_baja fechaBaja,
-        CASE
-           WHEN e.fecha_baja IS NULL THEN
+    v_sql_count := v_with || 'SELECT COUNT(*) FROM t_usuarios u';
+    IF p_cuil IS NOT NULL
+    THEN
+      v_where := v_where || ' AND u.cuil LIKE ''%'' || p_nombre || ''%'' ';
+    END IF;
+    IF p_activo = 'SI'
+    THEN
+      v_where := v_where || ' AND p.fec_baja IS NULL ';
+    END IF;
+    IF p_activo = 'NO'
+    THEN
+      v_where := v_where || ' AND p.fec_baja IS NOT NULL ';
+    END IF;
+    IF (v_where IS NOT NULL)
+    THEN
+      v_where     := substr(v_where, 5);
+      v_where     := ', param where ' || v_where;
+      v_sql_count := v_sql_count || v_where;
+    END IF;
+    EXECUTE IMMEDIATE v_sql_count
+      INTO p_totalregistroslistado
+      USING p_cuil, p_activo;
+    v_sql_datos := v_with || 'SELECT c.id_usuario id
+          ,c.fecha_inicio fechainicio
+          ,c.fecha_fin fechabaja
+          ,c.cuil
+          ,c.ultimo_login ultimologin
+          ,CASE
+           WHEN c.fec_baja IS NULL THEN
             '' SI ''
            ELSE
             '' NO ''
          END activo
          FROM (SELECT a.*,rownum rnum FROM ' ||
-                 '(SELECT ev.* FROM t_eventos ev' || v_where || ' )a ' ||
-                 'WHERE rownum <= ' || v_registro_hasta ||
-                 ') c WHERE rnum >= ' || v_registro_desde ||
-                 ' ORDER BY c.fecha desc';
+                   '(SELECT t.* FROM t_usuarios' || v_where || ' )a ' ||
+                   'WHERE rownum <= ' || v_registro_hasta ||
+                   ') c WHERE rnum >= ' || v_registro_desde ||
+                   ' ORDER BY c.cuil';
+    OPEN p_cursor FOR v_sql_datos
+      USING p_cuil, p_activo;
+  END pr_getall;
 
-  OPEN p_cursor FOR v_sql_datos
-    USING p_id_dispositivo, p_id_senial, p_activo;
+  --------------------------------------------------------------------------------------------------------------------------------------------
+  PROCEDURE pr_postput(p_id          IN OUT t_usuarios.id_usuario%TYPE
+                      ,p_cuil        IN t_usuarios.cuil%TYPE
+                      ,p_id_perfiles IN pkg_array.inttabletype) AS
+    ex_empty_array EXCEPTION;
+  BEGIN
+    IF p_id = 0
+    THEN
+      --Alta
+      p_id := seq_usuario.nextval;
+      INSERT INTO t_usuarios
+        (id_usuario, fecha_inicio, cuil)
+      VALUES
+        (p_id, SYSDATE, p_cuil);
+    ELSE
+      --Modificacion
+      UPDATE t_usuarios t SET t.cuil = p_cuil WHERE t.id_usuario = p_id;
+      --Se eliminan todos los perfiles del usuario modificado
+      DELETE FROM t_usuarios_perfil up WHERE up.id_usuario = p_id;
+    END IF;
+    IF (p_id_perfiles.first IS NULL)
+    THEN
+      RAISE ex_empty_array;
+    ELSE
+      FOR i IN p_id_perfiles.first .. p_id_perfiles.last
+      LOOP
+        INSERT INTO t_usuarios_perfil
+          (id_usuario_perfil, id_usuario, id_perfil)
+        VALUES
+          (seq_usuario_perfil.nextval, p_id, p_id_perfiles(i));
+      END LOOP;
+    END IF;
+  EXCEPTION
+    WHEN ex_empty_array THEN
+      raise_application_error(-20999, 'Debe seleccionar perfiles.');
+    WHEN dup_val_on_index THEN
+      raise_application_error(-20999, 'El perfil ingresado ya existe.');
+    WHEN OTHERS THEN
+      RAISE;
+  END pr_postput;
 
-EXCEPTION
-  WHEN OTHERS THEN
-    RAISE;
-END pr_eventos_sf;
+  --------------------------------------------------------------------------------------------------------------------------------------------
+  PROCEDURE pr_delete(p_id           IN t_perfiles.id_perfil%TYPE
+                     ,p_activo_nuevo IN VARCHAR2) AS
+  BEGIN
+    UPDATE t_usuarios p
+       SET p.fecha_baja = CASE
+                            WHEN p_activo_nuevo = 'SI' THEN
+                             NULL
+                            ELSE
+                             SYSDATE
+                          END
+     WHERE p.id_usuario = p_id;
+    -- auditoria?
+  EXCEPTION
+    WHEN OTHERS THEN
+      RAISE;
+  END pr_delete;
 
-  CREATE OR REPLACE PROCEDURE pr_eventos_set(p_cursor_senial OUT SYS_REFCURSOR,
-                                             p_cursor_dispositivo OUT SYS_REFCURSOR) AS
-    pkg_dispositivos.pr_eventos_set(p_cursor_senial);
-    pkg_dispositivos.pr_dispositivos_set(p_cursor_dispositivo);
-    /*OPEN p_cursor_senial FOR
-        SELECT s.id_senial id, s.descripcion descripcion
-        FROM   t_seniales s
-        WHERE  s.fecha_baja IS NULL
-        ORDER  BY s.descripcion;OPEN p_cursor_senial FOR
-        SELECT d.id_dispositivo id, d.descripcion descripcion
-        FROM   t_dispositivos d
-        WHERE  d.fecha_baja IS NULL
-        ORDER  BY d.descripcion;*/
-    EXCEPTION
-      WHEN OTHERS THEN
-        RAISE;               
-  END pr_eventos_set;                                  
+END pkg_usuarios;
 
-END pkg_eventos;
 
----------------------------------------------------------------------------------------
-----------------------------------PKG_USUARIOS-----------------------------------------
----------------------------------------------------------------------------------------
+
+
+/*********************************************************************************************************/
+
+/*********************************************************************************************************/
 
 
