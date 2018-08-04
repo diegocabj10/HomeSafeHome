@@ -9,11 +9,11 @@ using DTO;
 namespace Web.Controllers
 {
     [RoutePrefix("api/Eventos")]
-    public class EventosController : BaseController<DtoAbmBase, rnAbmBase<DtoAbmBase>>
+    public class EventosController : BaseController<DtoEvento, rnAbmBase<DtoEvento>>
     {
         public EventosController()
         {
-            base.Setup(Entidad: "Eventos", SetIdNumerico: "", SetIdNombreIdTipo: "");
+            base.Setup(Entidad: "Eventos", SetIdNumerico: "Seniales,Dispositivos", SetIdNombreIdTipo: "");
         }
     }
 }
