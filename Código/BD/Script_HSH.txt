@@ -277,6 +277,9 @@ increment by 1;
 ----------------------------------PKG_ARRAY--------------------------------------------
 ---------------------------------------------------------------------------------------
 CREATE OR REPLACE PACKAGE pkg_array AS
+  -- Author  : DIEGO
+  -- Created : 3/7/2018 20:33:36
+  -- Purpose : Gestionar Array de int y varchar2
   TYPE stringtabletype IS TABLE OF VARCHAR2(50) INDEX BY BINARY_INTEGER;
   TYPE inttabletype IS TABLE OF NUMBER(10) INDEX BY BINARY_INTEGER;
   FUNCTION fn_get_table_number(asociativearray IN pkg_array.inttabletype)
@@ -301,6 +304,9 @@ END pkg_array;
 ----------------------------------PKG_AUDITORIA----------------------------------------
 ---------------------------------------------------------------------------------------
 CREATE OR REPLACE PACKAGE HOMESAFEHOME.PKG_AUDITORIA AS
+  -- Author  : DIEGO
+  -- Created : 3/7/2018 20:33:36
+  -- Purpose : Gestionar Auditorias
   FUNCTION check_val(l_new       IN VARCHAR2
                     ,l_old       IN VARCHAR2
                     ,column_name IN VARCHAR2) RETURN VARCHAR2;
@@ -354,81 +360,273 @@ END;
 ---------------------------------------------------------------------------------------
 ----------------------------------PKG_SEGURIDAD----------------------------------------
 ---------------------------------------------------------------------------------------
-CREATE OR REPLACE PACKAGE homesafehome.pkg_seguridad IS
-id_session VARCHAR2(40);
-FUNCTION fn_id_session RETURN VARCHAR2;
-END pkg_seguridad; 
+CREATE OR REPLACE PACKAGE pkg_seguridad IS
+  -- Author  : DIEGO
+  -- Created : 3/7/2018 20:33:36
+  -- Purpose : Gestionar Seguridad
+  id_session VARCHAR2(40);
 
+  FUNCTION fn_id_session RETURN VARCHAR2;
 
-CREATE OR REPLACE PACKAGE BODY homesafehome.pkg_seguridad IS
-FUNCTION fn_id_session RETURN VARCHAR2 IS
-pp_id_session VARCHAR2(40) := id_session;
+  PROCEDURE pr_items_seguridad_dto_s(p_cursor1 OUT SYS_REFCURSOR
+                                    ,p_cursor2 OUT SYS_REFCURSOR
+                                    ,p_cursor3 OUT SYS_REFCURSOR
+                                    ,p_cursor4 OUT SYS_REFCURSOR);
 
-BEGIN
-IF id_session IS
-NULL THEN SELECT substr(sys_context('userenv', 'terminal', 50) || ' - ' || sys_context('userenv', 'os_user', 30) || ' - ' || USER, 1, 40) INTO pp_id_session FROM dual;
-END IF; RETURN pp_id_session;
-
-END;
 END pkg_seguridad;
 
+CREATE OR REPLACE PACKAGE BODY pkg_seguridad IS
+
+  FUNCTION fn_id_session RETURN VARCHAR2 IS
+    pp_id_session VARCHAR2(40) := id_session;
+  BEGIN
+    IF id_session IS NULL
+    THEN
+      SELECT substr(sys_context('userenv', 'terminal', 50) || ' - ' ||
+                    sys_context('userenv', 'os_user', 30) || ' - ' || USER, 1, 40)
+        INTO pp_id_session
+        FROM dual;
+    END IF;
+    RETURN pp_id_session;
+  END;
+
+  PROCEDURE pr_items_seguridad_dto_s(p_cursor1 OUT SYS_REFCURSOR
+                                    ,p_cursor2 OUT SYS_REFCURSOR
+                                    ,p_cursor3 OUT SYS_REFCURSOR
+                                    ,p_cursor4 OUT SYS_REFCURSOR) AS
+  BEGIN
+    --MenuesHijos
+    OPEN p_cursor1 FOR
+      SELECT p.id_proceso
+            ,p.nombre           nombre
+            ,p.url
+            ,p.id_proceso_padre id_proceso_padre
+        FROM t_procesos p
+       WHERE p.tipo = 'H'
+         AND p.fecha_baja IS NULL
+       ORDER BY p.orden_menu, p.nombre;
+    --MenuesPadres
+    OPEN p_cursor2 FOR
+      SELECT p2.id_proceso, p2.nombre nombre, p2.orden_menu orden
+        FROM t_procesos p2
+       WHERE p2.tipo = 'P'
+         AND p2.fecha_baja IS NULL
+       ORDER BY p2.orden_menu, p2.nombre;
+    --PerfilesProcesos
+    OPEN p_cursor3 FOR
+      SELECT id_perfil, id_proceso FROM t_perfiles_proceso pepr;
+    --Procesos
+    OPEN p_cursor4 FOR
+      SELECT p4.id_proceso id, p4.nombre nombre, p4.url
+        FROM t_procesos p4
+       WHERE p4.tipo <> 'P' -- menues hijos (H) y tareas (T)
+         AND p4.fecha_baja IS NULL
+       ORDER BY p4.orden_menu, p4.nombre;
+  END;
+
+END pkg_seguridad;
 
 ---------------------------------------------------------------------------------------
-----------------------------------pr_items_seguridad_dto_s-----------------------------
+----------------------------------PKG_PERFILES-----------------------------------------
 ---------------------------------------------------------------------------------------
-CREATE OR REPLACE PROCEDURE pr_items_seguridad_dto_s(p_cursor1 OUT SYS_REFCURSOR
-                                                            ,p_cursor2 OUT SYS_REFCURSOR
-                                                            ,p_cursor3 OUT SYS_REFCURSOR
-                                                            ,p_cursor4 OUT SYS_REFCURSOR) AS
-BEGIN
-  --MenuesHijos
-  OPEN p_cursor1 FOR
-    SELECT p.id_proceso
-          ,p.nombre        nombre
-          ,p.url
-          ,p.id_proceso_padre id_proceso_padre
-      FROM t_procesos p
-     WHERE p.tipo = 'H'
-       AND p.fecha_baja IS NULL
-     ORDER BY p.orden_menu, p.nombre;
-  --MenuesPadres
-  OPEN p_cursor2 FOR
-    SELECT p2.id_proceso, p2.nombre nombre, p2.orden_menu orden
-      FROM t_procesos p2
-     WHERE p2.tipo = 'P'
-       AND p2.fecha_baja IS NULL
-     ORDER BY p2.orden_menu, p2.nombre;
-  --PerfilesProcesos
-  OPEN p_cursor3 FOR
-    SELECT id_perfil, id_proceso FROM t_perfiles_proceso pepr;
-  --Procesos
-  OPEN p_cursor4 FOR
-    SELECT p4.id_proceso id, p4.nombre nombre, p4.url
-      FROM t_procesos p4
-     WHERE p4.tipo <> 'P' -- menues hijos (H) y tareas (T)
-       AND p4.fecha_baja IS NULL
-     ORDER BY p4.orden_menu, p4.nombre;
-END;
+
+CREATE OR REPLACE PACKAGE pkg_perfiles IS
+
+  -- Author  : DIEGO
+  -- Created : 3/7/2018 20:33:36
+  -- Purpose : Gestionar Perfiles
+  PROCEDURE pr_getcombos(p_procesos OUT SYS_REFCURSOR);
+
+  PROCEDURE pr_getbyid(p_id          IN t_perfiles.id_perfil%TYPE
+                      ,p_id_procesos OUT pkg_array.inttabletype
+                      ,p_cursor      OUT SYS_REFCURSOR);
+
+  PROCEDURE pr_getall(p_nombre                IN t_perfiles.n_perfil%TYPE
+                     ,p_activo                IN OUT VARCHAR2
+                     ,p_numeropaginalistado   IN NUMBER
+                     ,p_totalregistroslistado OUT NUMBER
+                     ,p_cursor                OUT SYS_REFCURSOR);
+
+  PROCEDURE pr_postput(p_id          IN OUT t_perfiles.id_perfil%TYPE
+                      ,p_nombre      IN t_perfiles.n_perfil%TYPE
+                      ,p_id_procesos IN pkg_array.inttabletype);
+
+  PROCEDURE pr_delete(p_id           IN t_perfiles.id_perfil%TYPE
+                     ,p_activo_nuevo IN VARCHAR2);
+
+END pkg_perfiles;
 
 
+CREATE OR REPLACE PACKAGE BODY pkg_perfiles IS
 
+  PROCEDURE pr_getcombos(p_procesos OUT SYS_REFCURSOR) AS
+  BEGIN
+    OPEN p_procesos FOR
+      SELECT p.id_proceso id, p.nombre nombre, p.id_proceso_padre idtipo
+        FROM t_procesos p
+       WHERE p.tipo IN ('H', 'T')
+         AND p.fecha_baja IS NULL
+       ORDER BY p.id_proceso_padre, p.orden_menu, p.nombre;
+  EXCEPTION
+    WHEN OTHERS THEN
+      RAISE;
+  END pr_getcombos;
 
+  --------------------------------------------------------------------------------------------------------------------------------------------
+  PROCEDURE pr_getbyid(p_id          IN t_perfiles.id_perfil%TYPE
+                      ,p_id_procesos OUT pkg_array.inttabletype
+                      ,p_cursor      OUT SYS_REFCURSOR) IS
+  BEGIN
+    SELECT pp.id_proceso BULK COLLECT
+      INTO p_id_procesos
+      FROM t_perfiles_proceso pp
+     WHERE pp.id_perfil = p_id;
+    OPEN p_cursor FOR
+      SELECT p.id_perfil id
+            ,p.n_perfil nombre
+            ,p.fecha_baja fechabaja
+            ,CASE
+               WHEN p.fecha_baja IS NULL THEN
+                'SI'
+               ELSE
+                'NO'
+             END activo
+        FROM t_perfiles p
+       WHERE p.id_perfil = p_id;
+  EXCEPTION
+    WHEN OTHERS THEN
+      RAISE;
+  END pr_getbyid;
 
+  --------------------------------------------------------------------------------------------------------------------------------------------
+  PROCEDURE pr_getall(p_nombre                IN t_perfiles.n_perfil%TYPE
+                     ,p_activo                IN OUT VARCHAR2
+                     ,p_numeropaginalistado   IN NUMBER
+                     ,p_totalregistroslistado OUT NUMBER
+                     ,p_cursor                OUT SYS_REFCURSOR) AS
+    v_registro_desde NUMBER(10) := (p_numeropaginalistado * 10) - 9;
+    v_registro_hasta NUMBER(10) := v_registro_desde + 9;
+    v_sql_count      VARCHAR2(4000);
+    v_sql_datos      VARCHAR2(4000);
+    v_with           VARCHAR2(2000) := 'WITH param as (SELECT :p1 p_nombre, :p2 p_activo FROM dual) ';
+    v_where          VARCHAR2(2000);
+  BEGIN
+    -- contar resultados para el paginado
+    v_sql_count := v_with || 'SELECT COUNT(*) FROM t_perfiles t';
+    IF p_nombre IS NOT NULL
+    THEN
+      v_where := v_where ||
+                 ' AND t.n_perfil LIKE ''%'' || p_nombre || ''%'' ';
+      -- (p_nombre IS NULL OR p.n_perfil LIKE '%' || p_nombre || '%') AND
+    END IF;
+    IF p_activo = 'SI'
+    THEN
+      v_where := v_where || ' AND t.fec_baja IS NULL ';
+    END IF;
+    IF p_activo = 'NO'
+    THEN
+      v_where := v_where || ' AND t.fec_baja IS NOT NULL ';
+    END IF;
+    IF (v_where IS NOT NULL)
+    THEN
+      v_where     := substr(v_where, 5);
+      v_where     := ', param where ' || v_where;
+      v_sql_count := v_sql_count || v_where;
+    END IF;
+    EXECUTE IMMEDIATE v_sql_count
+      INTO p_totalregistroslistado
+      USING p_nombre, p_activo;
+    v_sql_datos := v_with || 'SELECT c.id_perfil Id
+        ,c.n_perfil nombre
+        ,c.fecha_baja fechaBaja
+        ,CASE
+           WHEN c.fecha_baja IS NULL THEN
+            '' SI ''
+           ELSE
+            '' NO ''
+         END activo
+FROM (SELECT a.*,rownum rnum FROM ' ||
+                   '(SELECT t.* FROM t_perfiles t' || v_where || ' )a ' ||
+                   'WHERE rownum <= ' || v_registro_hasta ||
+                   ') c WHERE rnum >= ' || v_registro_desde ||
+                   ' ORDER BY c.n_perfil';
+    OPEN p_cursor FOR v_sql_datos
+      USING p_nombre, p_activo;
+  EXCEPTION
+    WHEN OTHERS THEN
+      RAISE;
+  END pr_getall;
 
+  --------------------------------------------------------------------------------------------------------------------------------------------
+  PROCEDURE pr_postput(p_id          IN OUT t_perfiles.id_perfil%TYPE
+                      ,p_nombre      IN t_perfiles.n_perfil%TYPE
+                      ,p_id_procesos IN pkg_array.inttabletype) IS
+    ex_empty_array EXCEPTION;
+  BEGIN
+    IF p_id = 0
+    THEN
+      -- Alta del perfil
+      p_id := seq_perfil.nextval;
+      INSERT INTO t_perfiles (id_perfil, n_perfil) VALUES (p_id, p_nombre);
+    ELSE
+      -- Modificar un perfil existente
+      UPDATE t_perfiles p
+         SET p.n_perfil = p_nombre
+       WHERE p.id_perfil = p_id;
+      -- En la modificacion se borrar el conjunto de procesos vinculados a ese perfil
+      DELETE FROM t_perfiles_proceso pp WHERE pp.id_perfil = p_id;
+    END IF;
+    --En alta y modificacion, insertamos los nuevos pefiles del usuario
+    IF (p_id_procesos.first IS NULL)
+    THEN
+      RAISE ex_empty_array;
+    ELSE
+      -- en alta y modificacion agregamos los procesos
+      FOR i IN p_id_procesos.first .. p_id_procesos.last
+      LOOP
+        INSERT INTO t_perfiles_proceso
+          (id_perfil_proceso, id_perfil, id_proceso)
+        VALUES
+          (seq_perfil_proceso.nextval, p_id, p_id_procesos(i));
+      END LOOP;
+    END IF;
+  EXCEPTION
+    WHEN ex_empty_array THEN
+      raise_application_error(-20999, 'Debe seleccionar procesos.');
+    WHEN dup_val_on_index THEN
+      raise_application_error(-20999, 'El perfil ingresado ya existe.');
+    WHEN OTHERS THEN
+      RAISE;
+  END pr_postput;
 
+  --------------------------------------------------------------------------------------------------------------------------------------------
+  PROCEDURE pr_delete(p_id           IN t_perfiles.id_perfil%TYPE
+                     ,p_activo_nuevo IN VARCHAR2) IS
+  BEGIN
+    UPDATE t_perfiles p
+       SET p.fecha_baja = CASE
+                            WHEN p_activo_nuevo = 'SI' THEN
+                             NULL
+                            ELSE
+                             SYSDATE
+                          END
+     WHERE p.id_perfil = p_id;
+    -- auditoria?
+  EXCEPTION
+    WHEN OTHERS THEN
+      RAISE;
+  END pr_delete;
 
-
-
-
-
-
-
+END pkg_perfiles;
 
 
 /*********************************************************************************************************/
 
+/*********************************************************************************************************/
 
+/*********************************************************************************************************/
 
+/*********************************************************************************************************/
 
 
 CREATE OR REPLACE PACKAGE pkg_seniales IS

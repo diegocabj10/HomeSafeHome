@@ -55,7 +55,7 @@ namespace Web.Controllers
         //http://sigesasdesa.cba.gov.ar:2475/api/Perfiles
         public virtual IHttpActionResult GetCombos()
         {
-            List<List<object>> Listas = rnAbm.SetIds(SetIdNumerico, SetIdString, SetIdNombreIdTipo, IdRoles);
+            List<List<object>> Listas = rnAbm.GetCombos(SetIdNumerico, SetIdString, SetIdNombreIdTipo, IdRoles);
             int i = 0;
             IDictionary<string, object> resultado = new ExpandoObject();
             var items = SetIdNumerico.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
@@ -86,7 +86,7 @@ namespace Web.Controllers
         //http://sigesasdesa.cba.gov.ar:2475/api/Perfiles/1
         public virtual IHttpActionResult GetById(int Id)
         {
-            Tentidad Dto = rnAbm.BuscarPorId(Id);
+            Tentidad Dto = rnAbm.GetById(Id);
             if (Dto == null)
             {
                 var message = string.Format("El registro con el identificador = {0} no fue encontrado", Id);
@@ -109,7 +109,7 @@ namespace Web.Controllers
             dto.Activo = Activo;
             dto.NumeroPaginaListado = numeroPagina;
 
-            IList Lista = rnAbm.Buscar(DtoFiltro);
+            IList Lista = rnAbm.GetAll(DtoFiltro);
 
             var TotalRegistrosListado = (DtoFiltro as DtoAbmBase).TotalRegistrosListado;
 
@@ -135,7 +135,7 @@ namespace Web.Controllers
             var Id = int.Parse(dto.Id);
             if (Id == 0)
             {
-                rnAbm.Grabar(DtoSel);
+                rnAbm.PostPut(DtoSel);
             }
             else
             {
@@ -150,7 +150,7 @@ namespace Web.Controllers
         {
             DtoAbmBase dto = DtoSel as DtoAbmBase;
             //dto.Id = FuncionesSeguridad.DesEncriptarWeb(dto.Id);
-            rnAbm.Grabar(DtoSel);
+            rnAbm.PostPut(DtoSel);
             return Content(HttpStatusCode.Accepted, DtoSel);
 
         }
@@ -160,7 +160,7 @@ namespace Web.Controllers
             DtoAbmBase dto = (DtoAbmBase)Dto;
             //Dto.Id = FuncionesSeguridad.DesEncriptarWeb(Dto.Id);
             Dto.Activo = Dto.Activo == "SI" ? "NO" : "SI";  // invertir activo
-            rnAbm.ActivarDesactivar(Dto);
+            rnAbm.Delete(Dto);
             return Ok();
         }
 

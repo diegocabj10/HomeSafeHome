@@ -17,49 +17,15 @@ namespace BL
             this.Entidad = Entidad;
         }
 
-        /// <summary>
-        /// usarlo siempre que devuelva id numerico
-        /// </summary>
-        /// <returns></returns>
-        public virtual List<DtoIdNumericoNombre> SetIdNumericoNombre()
-        {
-            return Repositorio.CargarDTOs<DtoIdNumericoNombre>("pr_" + Entidad + "_set", null);
-        }
+     
 
-        //public virtual List<DtoIdNombreIdTipo> SetIdIndecNombre()
-        //{
-        //    return Repositorio.CargarDTOs<DtoIdNombreIdTipo>("pr_" + Entidad + "_seti", null);
-        //}
-
-
-        /// <summary>
-        /// usarlo siempre que devuelva id numerico
-        /// </summary>
-        /// <param name="lista"></param>
-        /// <returns></returns>
-        public virtual List<List<DtoIdNumericoNombre>> SetIdNumericoNombreLista()
-        {
-            List<List<DtoIdNumericoNombre>> ListaDeLista = Repositorio.CargarDTOsLista<DtoIdNumericoNombre>("pr_" + Entidad + "_set", null);
-            return ListaDeLista;
-        }
-
-        /// <summary>
-        /// usarlo siempre que devuelva id index
-        /// </summary>
-        /// <returns></returns>
-        //public virtual List<List<DtoIdNombreIdTipo>> SetIdIndecNombreLista()
-        //{
-        //    List<List<DtoIdNombreIdTipo>> ListaDeLista = Repositorio.CargarDTOsLista<DtoIdNombreIdTipo>("pr_" + Entidad + "_seti", null);
-        //    return ListaDeLista;
-        //}
-
-        public List<List<object>> SetIds(string setIdNumerico, string setIdString, string SetIdNombreIdTipo, List<int> IdRoles = null)
+        public List<List<object>> GetCombos(string setIdNumerico, string setIdString, string SetIdNombreIdTipo, List<int> IdRoles = null)
         {
             List<List<object>> listas = new List<List<object>>();
             object[] parametros = null;
             if (IdRoles != null)
                 parametros = new object[] { IdRoles.ToArray() };
-            Repositorio.ExecuteReader("pr_" + Entidad + "_set", parametros, delegate (IDataReader dred)
+            Repositorio.ExecuteReader("PKG_" + Entidad + ".PR_GETCOMBOS", parametros, delegate (IDataReader dred)
             {
                 var items = setIdNumerico.Split(new char[] {','}, StringSplitOptions.RemoveEmptyEntries);
                 for (int j = 0; j < items.Length; j++)
@@ -90,32 +56,21 @@ namespace BL
         }
 
 
-            /// <summary>
-            /// usarlo siempre que devuelva id string
-            /// </summary>
-            /// <returns></returns>
-        public virtual List<DtoIdNombre> SetIdNombre()
+        public virtual IList GetAll(Tentidad Filtro)
         {
-            return Repositorio.CargarDTOs<DtoIdNombre>("pr_" + Entidad + "_set", null);
-        }
-
-
-
-        public virtual IList Buscar(Tentidad Filtro)
-        {
-            var lista = Repositorio.CargarDTOs<Tentidad, Tentidad>("pr_" + Entidad + "_SF", null, Filtro);
+            var lista = Repositorio.CargarDTOs<Tentidad, Tentidad>("PKG_" + Entidad + ".PR_GETALL", null, Filtro);
             return lista;
         }
 
 
-        public virtual Tentidad BuscarPorId(int Id)
+        public virtual Tentidad GetById(int Id)
         {
-            return Repositorio.CargarDTOs<Tentidad>("pr_" + Entidad + "_s", new object[] { Id }).FirstOrDefault();
+            return Repositorio.CargarDTOs<Tentidad>("PKG_" + Entidad + ".PR_GETBYID", new object[] { Id }).FirstOrDefault();
         }
 
-        public virtual void Grabar(Tentidad dto)
+        public virtual void PostPut(Tentidad dto)
         {
-            Repositorio.ExecuteNonQuery("pr_" + Entidad + "_g", dto);
+            Repositorio.ExecuteNonQuery("PKG_" + Entidad + ".PR_POSTPUT", dto);
         }
 
         //public virtual void Grabar(Tentidad dto, DtoDomicilioActualizar DtoDomicilio)
@@ -135,9 +90,9 @@ namespace BL
         //    }
         //}
 
-        public virtual void ActivarDesactivar(DtoAbmBase dto)
+        public virtual void Delete(DtoAbmBase dto)
         {
-            Repositorio.ExecuteNonQuery("pr_" + Entidad + "_dl", new object[] { dto.Id, dto.Activo });
+            Repositorio.ExecuteNonQuery("PKG_" + Entidad + ".PR_DELETE", new object[] { dto.Id, dto.Activo });
         }
 
     }

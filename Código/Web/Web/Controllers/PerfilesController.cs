@@ -19,7 +19,7 @@ namespace Web.Controllers
         {
             // Tentidad Dto = rnAbm.BuscarPorId(Id);
             object[] parametros = new object[] { Id, null };
-            DtoPerfil Dto = Repositorio.CargarDTOs<DtoPerfil>("PR_PERFILES_S", parametros).FirstOrDefault();
+            DtoPerfil Dto = Repositorio.CargarDTOs<DtoPerfil>("pkg_perfiles.pr_getbyid", parametros).FirstOrDefault();
             if (Dto == null)
             {
                 var message = string.Format("El registro con el identificador = {0} no fue encontrado", Id);
