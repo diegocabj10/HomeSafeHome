@@ -361,22 +361,38 @@ END;
 ----------------------------------PKG_SEGURIDAD----------------------------------------
 ---------------------------------------------------------------------------------------
 CREATE OR REPLACE PACKAGE pkg_seguridad IS
+
   -- Author  : DIEGO
   -- Created : 3/7/2018 20:33:36
-  -- Purpose : Gestionar Seguridad
+  -- Purpose : Gestionar Modulo seguridad
+  --Valor de la session o token que utiliza el usuario conectado en ese momento
   id_session VARCHAR2(40);
 
+  --Funcion que devuelve el valor de la session
   FUNCTION fn_id_session RETURN VARCHAR2;
 
+  --Devuelve cursores necesarios para crear el menu dinamicamente
   PROCEDURE pr_items_seguridad_dto_s(p_cursor1 OUT SYS_REFCURSOR
                                     ,p_cursor2 OUT SYS_REFCURSOR
                                     ,p_cursor3 OUT SYS_REFCURSOR
                                     ,p_cursor4 OUT SYS_REFCURSOR);
 
+  --Registra en la tabla t_sesiones el login del usuario
+  PROCEDURE pr_usuarios_login(p_cuil       IN t_usuarios.cuil%TYPE
+                             ,p_id_sesion  IN t_sesiones.id_sesion%TYPE
+                             ,p_ip         IN t_sesiones.ip%TYPE
+                             ,p_id_usuario OUT t_usuarios.id_usuario%TYPE
+                             ,p_cursor     OUT SYS_REFCURSOR);
+
+  --Registra en la tabla t_sesiones el logout del usuario
+  PROCEDURE pr_usuarios_logout(p_id_sesion       IN t_sesiones.id_sesion%TYPE
+                              ,p_timeout_minutos IN NUMBER);
+
 END pkg_seguridad;
 
 CREATE OR REPLACE PACKAGE BODY pkg_seguridad IS
 
+  -------------------------------------------------------------------------------------------------------------------------------
   FUNCTION fn_id_session RETURN VARCHAR2 IS
     pp_id_session VARCHAR2(40) := id_session;
   BEGIN
@@ -390,6 +406,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_seguridad IS
     RETURN pp_id_session;
   END;
 
+  -------------------------------------------------------------------------------------------------------------------------------
   PROCEDURE pr_items_seguridad_dto_s(p_cursor1 OUT SYS_REFCURSOR
                                     ,p_cursor2 OUT SYS_REFCURSOR
                                     ,p_cursor3 OUT SYS_REFCURSOR
@@ -424,7 +441,58 @@ CREATE OR REPLACE PACKAGE BODY pkg_seguridad IS
        ORDER BY p4.orden_menu, p4.nombre;
   END;
 
+  ----------------------------------------------------------------------------------------------------------------------------
+  PROCEDURE pr_usuarios_login(p_cuil       IN t_usuarios.cuil%TYPE
+                             ,p_id_sesion  IN t_sesiones.id_sesion%TYPE
+                             ,p_ip         IN t_sesiones.ip%TYPE
+                             ,p_id_usuario OUT t_usuarios.id_usuario%TYPE
+                             ,p_cursor     OUT SYS_REFCURSOR) AS
+  BEGIN
+    --Obtiene el id_usuario a traves del cuil
+    SELECT u.id_usuario
+      INTO p_id_usuario
+      FROM t_usuarios u
+     WHERE u.cuil = p_cuil
+       AND nvl(u.fecha_fin, SYSDATE + 1) > SYSDATE;
+    --Actualiza el ultimo login del usuario
+    UPDATE t_usuarios u
+       SET u.ultimo_login = SYSDATE
+     WHERE u.id_usuario = p_id_usuario;
+    --Inserta en t_sesiones
+    INSERT INTO t_sesiones
+      (id_sesion, ip, fecha_inicio, id_usuario)
+    VALUES
+      (p_id_sesion, p_ip, SYSDATE, p_id_usuario);
+    --Devuelve un cursor con los perfiles del usuario
+    OPEN p_cursor FOR
+      SELECT p.id_perfil id
+        FROM t_perfiles p
+       INNER JOIN t_usuarios_perfil up
+          ON p.id_perfil = up.id_perfil
+       WHERE up.id_usuario = p_id_usuario;
+  END pr_usuarios_login;
+
+  --------------------------------------------------------------------------------------------------------------------------
+  PROCEDURE pr_usuarios_logout(p_id_sesion       IN t_sesiones.id_sesion%TYPE
+                              ,p_timeout_minutos IN NUMBER) AS
+  BEGIN
+    UPDATE t_sesiones s
+       SET s.fecha_fin = CASE
+                           WHEN p_timeout_minutos IS NOT NULL
+                                AND s.fecha_inicio <
+                                SYSDATE -
+                                (1 / 24 / 60 * (p_timeout_minutos + 1)) THEN
+                            SYSDATE - (1 / 24 / 60 * (p_timeout_minutos + 1))
+                           ELSE
+                            SYSDATE
+                         END
+     WHERE s.id_sesion = p_id_sesion
+       AND s.fecha_fin IS NULL;
+  END pr_usuarios_logout;
+
+-------------------------------------------------------------------------------------------------------------------------
 END pkg_seguridad;
+
 
 ---------------------------------------------------------------------------------------
 ----------------------------------PKG_PERFILES-----------------------------------------
@@ -1122,4 +1190,9 @@ END pr_eventos_sf;
   END pr_eventos_set;                                  
 
 END pkg_eventos;
-/
+
+---------------------------------------------------------------------------------------
+----------------------------------PKG_USUARIOS-----------------------------------------
+---------------------------------------------------------------------------------------
+
+

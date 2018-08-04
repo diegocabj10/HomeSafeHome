@@ -121,7 +121,7 @@ namespace BL
             List<DtoId> PerfilesDelUsuario = null;
             try
             {
-                PerfilesDelUsuario = Repositorio.CargarDTOs<DtoId>("pr_usuarios_login", parametros);
+                PerfilesDelUsuario = Repositorio.CargarDTOs<DtoId>("pkg_seguridad.pr_usuarios_login", parametros);
             }
             catch (Exception ex)
             {
@@ -218,7 +218,7 @@ namespace BL
                 idSesion = HttpContext.Current.Items["_tk"].ToString();
 
             object[] parametros = { idSesion, FuncionesSeguridad.CacheSlidingTimeout };
-            Repositorio.ExecuteNonQuery("PR_USUARIOS_LOGOUT", parametros);
+            Repositorio.ExecuteNonQuery("pkg_seguridad.pr_usuarios_logout", parametros);
         }
 
 
