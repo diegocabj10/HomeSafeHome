@@ -912,7 +912,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_eventos IS
         FROM t_seniales s
        WHERE s.fecha_baja IS NULL;
     OPEN p_dispositivos FOR
-      SELECT d.id_dispositivo, d.n_dispositivo nombre
+      SELECT d.id_dispositivo id, d.n_dispositivo nombre
         FROM t_dispositivos d
        WHERE d.fecha_baja IS NULL;
   END pr_getcombos;
@@ -951,27 +951,26 @@ CREATE OR REPLACE PACKAGE BODY pkg_eventos IS
     v_registro_hasta NUMBER(10) := v_registro_desde + 9;
     v_sql_count      VARCHAR2(4000);
     v_sql_datos      VARCHAR2(4000);
-    v_with           VARCHAR2(2000) := 'WITH param as (SELECT :p1 p_id_dispositivo, :p2 p_id_senial, p3: p_activo FROM dual) ';
+    v_with           VARCHAR2(2000) := 'WITH param as (SELECT :p1 p_id_dispositivo, :p2 p_id_senial, :p3 p_activo FROM dual) ';
     v_where          VARCHAR2(2000);
   BEGIN
     -- contar resultados para el paginado
     v_sql_count := v_with || 'SELECT COUNT(*) FROM t_eventos e';
     IF p_id_dispositivo IS NOT NULL
     THEN
-      v_where := v_where || ' AND e.p_id_dispositivo = ' ||
-                 p_id_dispositivo;
+      v_where := v_where || ' AND e.id_dispositivo = ' || p_id_dispositivo;
     END IF;
     IF p_id_senial IS NOT NULL
     THEN
-      v_where := v_where || ' AND e.p_id_senial = ' || p_id_senial;
+      v_where := v_where || ' AND e.id_senial = ' || p_id_senial;
     END IF;
     IF p_activo = 'SI'
     THEN
-      v_where := v_where || ' AND p.fec_baja IS NULL ';
+      v_where := v_where || ' AND e.fecha_baja IS NULL ';
     END IF;
     IF p_activo = 'NO'
     THEN
-      v_where := v_where || ' AND p.fec_baja IS NOT NULL ';
+      v_where := v_where || ' AND e.fecha_baja IS NOT NULL ';
     END IF;
     IF (v_where IS NOT NULL)
     THEN
@@ -982,23 +981,23 @@ CREATE OR REPLACE PACKAGE BODY pkg_eventos IS
     EXECUTE IMMEDIATE v_sql_count
       INTO p_totalregistroslistado
       USING p_id_dispositivo, p_id_senial, p_activo;
-    v_sql_datos := v_with || 'SELECT e.id_evento Id,
-        e.fecha fecha,
-        e.valor valor,
-        e.id_dispositivo idDispositivo,
-        e.id_senial idSenial,
-        e.fecha_baja fechaBaja,
+    v_sql_datos := v_with || 'SELECT c.id_evento Id,
+        c.fecha_evento fecha,
+        c.valor valor,
+        c.id_dispositivo idDispositivo,
+        c.id_senial idSenial,
+        c.fecha_baja fechaBaja,
         CASE
-           WHEN e.fecha_baja IS NULL THEN
+           WHEN c.fecha_baja IS NULL THEN
             '' SI ''
            ELSE
             '' NO ''
          END activo
-         FROM (SELECT a.*,rownum rnum FROM ' ||
-                   '(SELECT ev.* FROM t_eventos ev' || v_where || ' )a ' ||
+        FROM (SELECT a.*,rownum rnum FROM ' ||
+                   '(SELECT t.* FROM t_eventos t' || v_where || ' )a ' ||
                    'WHERE rownum <= ' || v_registro_hasta ||
                    ') c WHERE rnum >= ' || v_registro_desde ||
-                   ' ORDER BY c.fecha desc';
+                   ' ORDER BY c.fecha_evento desc';
     OPEN p_cursor FOR v_sql_datos
       USING p_id_dispositivo, p_id_senial, p_activo;
   EXCEPTION
@@ -1052,6 +1051,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_eventos IS
 
 END pkg_eventos;
 
+
 ---------------------------------------------------------------------------------------
 ----------------------------------PKG_DISPOSITIVOS-------------------------------------
 ---------------------------------------------------------------------------------------
@@ -1083,7 +1083,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_dispositivos IS
   BEGIN
     OPEN p_cursor FOR
       SELECT d.id_dispositivo id
-            ,d.n_dispositivo n_dispositivo
+            ,d.n_dispositivo nombre
             ,CASE
                WHEN d.fecha_baja IS NULL THEN
                 'SI'
@@ -1107,27 +1107,24 @@ CREATE OR REPLACE PACKAGE BODY pkg_dispositivos IS
     v_registro_hasta NUMBER(10) := v_registro_desde + 9;
     v_sql_count      VARCHAR2(4000);
     v_sql_datos      VARCHAR2(4000);
-    v_with           VARCHAR2(2000) := 'WITH param as (SELECT :p1 p_activo FROM dual) ';
+    v_with           VARCHAR2(2000) := 'WITH param as (SELECT :p1 p_nombre, :p2 p_activo  FROM dual) ';
     v_where          VARCHAR2(2000);
   BEGIN
     -- contar resultados para el paginado
-    v_sql_count := v_with || 'SELECT COUNT(*) FROM t_dispositivos d';
+    v_sql_count := v_with || 'SELECT COUNT(*) FROM t_dispositivos t';
     IF p_nombre IS NOT NULL
     THEN
-      v_where := 'n_dispositivo LIKE ''%' || p_nombre || '%''';
-    END IF;
-    IF p_activo IS NOT NULL
-       AND p_nombre IS NOT NULL
-    THEN
-      v_where := v_where || ' AND ';
+      v_where := v_where ||
+                 ' AND t.n_dispositivo LIKE ''%'' || p_nombre || ''%'' ';
+      -- (p_nombre IS NULL OR p.n_perfil LIKE '%' || p_nombre || '%') AND
     END IF;
     IF p_activo = 'SI'
     THEN
-      v_where := v_where || 'd.fecha_baja IS NULL ';
+      v_where := v_where || ' AND t.fecha_baja IS NULL ';
     END IF;
     IF p_activo = 'NO'
     THEN
-      v_where := v_where || 'd.fecha_baja IS NOT NULL ';
+      v_where := v_where || ' AND t.fecha_baja IS NOT NULL ';
     END IF;
     IF (v_where IS NOT NULL)
     THEN
@@ -1137,13 +1134,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_dispositivos IS
     END IF;
     EXECUTE IMMEDIATE v_sql_count
       INTO p_totalregistroslistado
-      USING p_activo;
+      USING p_nombre, p_activo;
     v_sql_datos := v_with ||
-                   'SELECT d.id_dispositivo Id,
-            d.n_dispositivo nombre,
-            d.fecha_baja fechaBaja,
+                   'SELECT c.id_dispositivo Id,
+            c.n_dispositivo nombre,
+            c.fecha_baja fechaBaja,
             CASE
-               WHEN d.fecha_baja IS NULL THEN
+               WHEN c.fecha_baja IS NULL THEN
                 '' SI ''
                ELSE
                 '' NO ''
@@ -1154,7 +1151,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_dispositivos IS
                    ') c WHERE rownum >= ' || v_registro_desde ||
                    ' ORDER BY c.n_dispositivo';
     OPEN p_cursor FOR v_sql_datos
-      USING p_activo;
+      USING p_nombre, p_activo;
   EXCEPTION
     WHEN OTHERS THEN
       RAISE;
@@ -1201,6 +1198,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_dispositivos IS
   END pr_delete;
 
 END pkg_dispositivos;
+
 
 ---------------------------------------------------------------------------------------
 ----------------------------------PKG_SENIALES-----------------------------------------
@@ -1258,14 +1256,14 @@ CREATE OR REPLACE PACKAGE BODY pkg_seniales IS
     v_registro_hasta NUMBER(10) := v_registro_desde + 9;
     v_sql_count      VARCHAR2(4000);
     v_sql_datos      VARCHAR2(4000);
-    v_with           VARCHAR2(2000) := 'WITH param as (SELECT :p1 p_activo FROM dual) ';
+    v_with           VARCHAR2(2000) := 'WITH param as (SELECT :p1 p_nombre, :p2 p_activo FROM dual) ';
     v_where          VARCHAR2(2000);
   BEGIN
     -- contar resultados para el paginado
     v_sql_count := v_with || 'SELECT COUNT(*) FROM t_seniales s';
     IF p_nombre IS NOT NULL
     THEN
-      v_where := 'n_senial LIKE ''%' || p_nombre || '%''';
+      v_where := 's.n_senial LIKE ''%' || p_nombre || '%''';
     END IF;
     IF p_activo IS NOT NULL
        AND p_nombre IS NOT NULL
@@ -1274,11 +1272,11 @@ CREATE OR REPLACE PACKAGE BODY pkg_seniales IS
     END IF;
     IF p_activo = 'SI'
     THEN
-      v_where := v_where || 's.fec_baja IS NULL ';
+      v_where := v_where || 's.fecha_baja IS NULL ';
     END IF;
     IF p_activo = 'NO'
     THEN
-      v_where := v_where || 's.fec_baja IS NOT NULL ';
+      v_where := v_where || 's.fecha_baja IS NOT NULL ';
     END IF;
     IF (v_where IS NOT NULL)
     THEN
@@ -1288,13 +1286,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_seniales IS
     END IF;
     EXECUTE IMMEDIATE v_sql_count
       INTO p_totalregistroslistado
-      USING p_activo;
+      USING p_nombre,p_activo;
     v_sql_datos := v_with ||
-                   'SELECT s.id_senial Id,
-            s.n_senial nombre,
-            s.fecha_baja fechaBaja,
+                   'SELECT c.id_senial Id,
+            c.n_senial nombre,
+            c.fecha_baja fechaBaja,
             CASE
-               WHEN s.fecha_baja IS NULL THEN
+               WHEN c.fecha_baja IS NULL THEN
                 '' SI ''
                ELSE
                 '' NO ''
@@ -1304,8 +1302,9 @@ CREATE OR REPLACE PACKAGE BODY pkg_seniales IS
                    'WHERE rownum <= ' || v_registro_hasta ||
                    ') c WHERE rownum >= ' || v_registro_desde ||
                    ' ORDER BY c.n_senial';
+                   DBMS_OUTPUT.PUT_LINE(''||v_sql_datos);
     OPEN p_cursor FOR v_sql_datos
-      USING p_activo;
+      USING p_nombre,p_activo;
   EXCEPTION
     WHEN OTHERS THEN
       RAISE;

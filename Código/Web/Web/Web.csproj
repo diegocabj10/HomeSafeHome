@@ -97,6 +97,7 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\DispositivosController.cs" />
     <Compile Include="Controllers\EventosController.cs" />
+    <Compile Include="Controllers\UsuariosController.cs" />
     <Compile Include="Controllers\PerfilesController.cs" />
     <Compile Include="Controllers\SenialesController.cs" />
     <Compile Include="Controllers\UtilesController.cs" />

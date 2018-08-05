@@ -8,18 +8,17 @@ using DTO;
 using BL;
 namespace Web.Controllers
 {
-
-    public class PerfilesController : BaseController<DtoPerfil, rnAbmBase<DtoPerfil>>
+    public class UsuariosController : BaseController<DtoPerfil, rnAbmBase<DtoPerfil>>
     {
-        public PerfilesController()
+        public UsuariosController()
         {
-            base.Setup(Entidad: "Perfiles", SetIdNombreIdTipo: "Procesos");
+            base.Setup(Entidad: "Usuarios", SetIdNombreIdTipo: "Perfiles");
         }
         public override IHttpActionResult GetById(int Id)
         {
             // Tentidad Dto = rnAbm.BuscarPorId(Id);
             object[] parametros = new object[] { Id, null };
-            DtoPerfil Dto = Repositorio.CargarDTOs<DtoPerfil>("pkg_perfiles.pr_getbyid", parametros).FirstOrDefault();
+            DtoUsuario Dto = Repositorio.CargarDTOs<DtoUsuario>("pkg_usuarios.pr_getbyid", parametros).FirstOrDefault();
             if (Dto == null)
             {
                 var message = string.Format("El registro con el identificador = {0} no fue encontrado", Id);
@@ -27,12 +26,12 @@ namespace Web.Controllers
             }
             else
             {
-                Dto.IdProcesos = new List<int>();
+                Dto.IdPerfiles = new List<int>();
                 if (parametros[1] != null)
                 {
                     foreach (var item in ((decimal[])parametros[1]))
                     {
-                        Dto.IdProcesos.Add((int)item);
+                        Dto.IdPerfiles.Add((int)item);
                     }
 
                 }

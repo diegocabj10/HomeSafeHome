@@ -10,7 +10,7 @@ using System.Web;
 
 namespace Web.Controllers
 {
-    [RoutePrefix("api/Utiles")]
+
     public class UtilesController : ApiController
     {
         
