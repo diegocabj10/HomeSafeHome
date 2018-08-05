@@ -872,8 +872,480 @@ END pkg_usuarios;
 
 
 
-/*********************************************************************************************************/
-FALTA PASAR EL PACKAGE DE EVENTOS
-/*********************************************************************************************************/
+---------------------------------------------------------------------------------------
+----------------------------------PKG_EVENTOS------------------------------------------
+---------------------------------------------------------------------------------------
+CREATE OR REPLACE PACKAGE pkg_eventos IS
 
+  -- Author  : DIEGO y MARCOS
+  -- Created : 20/07/2018 21:18:55
+  -- Purpose : Gestionar usuarios
+  PROCEDURE pr_getcombos(p_seniales     OUT SYS_REFCURSOR
+                        ,p_dispositivos OUT SYS_REFCURSOR);
 
+  PROCEDURE pr_getbyid(p_id     IN t_eventos.id_evento%TYPE
+                      ,p_cursor OUT SYS_REFCURSOR);
+
+  PROCEDURE pr_getall(p_id_dispositivo        IN t_eventos.id_dispositivo%TYPE
+                     ,p_id_senial             IN t_eventos.id_senial%TYPE
+                     ,p_activo                IN OUT VARCHAR2
+                     ,p_numeropaginalistado   IN NUMBER
+                     ,p_totalregistroslistado OUT NUMBER
+                     ,p_cursor                OUT SYS_REFCURSOR);
+
+  PROCEDURE pr_postput(p_id             IN OUT t_eventos.id_evento%TYPE
+                      ,p_valor          IN t_eventos.valor%TYPE
+                      ,p_id_dispositivo IN t_eventos.id_dispositivo%TYPE
+                      ,p_id_senial      IN t_eventos.id_senial%TYPE);
+
+  PROCEDURE pr_delete(p_id           IN t_eventos.id_evento%TYPE
+                     ,p_activo_nuevo IN VARCHAR2);
+
+END pkg_eventos;
+CREATE OR REPLACE PACKAGE BODY pkg_eventos IS
+
+  PROCEDURE pr_getcombos(p_seniales     OUT SYS_REFCURSOR
+                        ,p_dispositivos OUT SYS_REFCURSOR) AS
+  BEGIN
+    OPEN p_seniales FOR
+      SELECT s.id_senial id, s.n_senial nombre
+        FROM t_seniales s
+       WHERE s.fecha_baja IS NULL;
+    OPEN p_dispositivos FOR
+      SELECT d.id_dispositivo, d.n_dispositivo nombre
+        FROM t_dispositivos d
+       WHERE d.fecha_baja IS NULL;
+  END pr_getcombos;
+
+  --------------------------------------------------------------------------------------------------------------------------------------------
+  PROCEDURE pr_getbyid(p_id     IN t_eventos.id_evento%TYPE
+                      ,p_cursor OUT SYS_REFCURSOR) AS
+  BEGIN
+    OPEN p_cursor FOR
+      SELECT e.id_evento id
+            ,e.id_senial idsenial
+            ,e.id_dispositivo iddispositivo
+            ,e.fecha_evento fechaevento
+            ,e.fecha_baja fechabaja
+            ,CASE
+               WHEN e.fecha_baja IS NULL THEN
+                'SI'
+               ELSE
+                'NO'
+             END activo
+        FROM t_eventos e
+       WHERE e.id_evento = p_id;
+  EXCEPTION
+    WHEN OTHERS THEN
+      RAISE;
+  END pr_getbyid;
+
+  --------------------------------------------------------------------------------------------------------------------------------------------
+  PROCEDURE pr_getall(p_id_dispositivo        IN t_eventos.id_dispositivo%TYPE
+                     ,p_id_senial             IN t_eventos.id_senial%TYPE
+                     ,p_activo                IN OUT VARCHAR2
+                     ,p_numeropaginalistado   IN NUMBER
+                     ,p_totalregistroslistado OUT NUMBER
+                     ,p_cursor                OUT SYS_REFCURSOR) AS
+    v_registro_desde NUMBER(10) := (p_numeropaginalistado * 10) - 9;
+    v_registro_hasta NUMBER(10) := v_registro_desde + 9;
+    v_sql_count      VARCHAR2(4000);
+    v_sql_datos      VARCHAR2(4000);
+    v_with           VARCHAR2(2000) := 'WITH param as (SELECT :p1 p_id_dispositivo, :p2 p_id_senial, p3: p_activo FROM dual) ';
+    v_where          VARCHAR2(2000);
+  BEGIN
+    -- contar resultados para el paginado
+    v_sql_count := v_with || 'SELECT COUNT(*) FROM t_eventos e';
+    IF p_id_dispositivo IS NOT NULL
+    THEN
+      v_where := v_where || ' AND e.p_id_dispositivo = ' ||
+                 p_id_dispositivo;
+    END IF;
+    IF p_id_senial IS NOT NULL
+    THEN
+      v_where := v_where || ' AND e.p_id_senial = ' || p_id_senial;
+    END IF;
+    IF p_activo = 'SI'
+    THEN
+      v_where := v_where || ' AND p.fec_baja IS NULL ';
+    END IF;
+    IF p_activo = 'NO'
+    THEN
+      v_where := v_where || ' AND p.fec_baja IS NOT NULL ';
+    END IF;
+    IF (v_where IS NOT NULL)
+    THEN
+      v_where     := substr(v_where, 5);
+      v_where     := ', param where ' || v_where;
+      v_sql_count := v_sql_count || v_where;
+    END IF;
+    EXECUTE IMMEDIATE v_sql_count
+      INTO p_totalregistroslistado
+      USING p_id_dispositivo, p_id_senial, p_activo;
+    v_sql_datos := v_with || 'SELECT e.id_evento Id,
+        e.fecha fecha,
+        e.valor valor,
+        e.id_dispositivo idDispositivo,
+        e.id_senial idSenial,
+        e.fecha_baja fechaBaja,
+        CASE
+           WHEN e.fecha_baja IS NULL THEN
+            '' SI ''
+           ELSE
+            '' NO ''
+         END activo
+         FROM (SELECT a.*,rownum rnum FROM ' ||
+                   '(SELECT ev.* FROM t_eventos ev' || v_where || ' )a ' ||
+                   'WHERE rownum <= ' || v_registro_hasta ||
+                   ') c WHERE rnum >= ' || v_registro_desde ||
+                   ' ORDER BY c.fecha desc';
+    OPEN p_cursor FOR v_sql_datos
+      USING p_id_dispositivo, p_id_senial, p_activo;
+  EXCEPTION
+    WHEN OTHERS THEN
+      RAISE;
+  END pr_getall;
+
+  --------------------------------------------------------------------------------------------------------------------------------------------
+  PROCEDURE pr_postput(p_id             IN OUT t_eventos.id_evento%TYPE
+                      ,p_valor          IN t_eventos.valor%TYPE
+                      ,p_id_dispositivo IN t_eventos.id_dispositivo%TYPE
+                      ,p_id_senial      IN t_eventos.id_senial%TYPE) AS
+  BEGIN
+    IF p_id IS NULL
+    THEN
+      -- alta
+      p_id := seq_evento.nextval;
+      INSERT INTO t_eventos
+        (id_evento, fecha_evento, id_dispositivo, id_senial, valor)
+      VALUES
+        (p_id, SYSDATE, p_id_dispositivo, p_id_senial, p_valor);
+    ELSE
+      -- modificacion
+      UPDATE t_eventos e
+         SET e.valor          = p_valor
+            ,e.id_dispositivo = p_id_dispositivo
+            ,e.id_senial      = p_id_senial
+       WHERE e.id_evento = p_id;
+    END IF;
+  EXCEPTION
+    WHEN OTHERS THEN
+      RAISE;
+  END pr_postput;
+
+  --------------------------------------------------------------------------------------------------------------------------------------------
+  PROCEDURE pr_delete(p_id           IN t_eventos.id_evento%TYPE
+                     ,p_activo_nuevo IN VARCHAR2) AS
+  BEGIN
+    UPDATE t_eventos e
+       SET e.fecha_baja = CASE
+                            WHEN p_activo_nuevo = 'SI' THEN
+                             NULL
+                            ELSE
+                             SYSDATE
+                          END
+     WHERE e.id_evento = p_id;
+  EXCEPTION
+    WHEN OTHERS THEN
+      RAISE;
+  END pr_delete;
+
+END pkg_eventos;
+
+---------------------------------------------------------------------------------------
+----------------------------------PKG_DISPOSITIVOS-------------------------------------
+---------------------------------------------------------------------------------------
+CREATE OR REPLACE PACKAGE pkg_dispositivos IS
+
+  -- Author  : MARCOS
+  -- Created : 04/08/2018 20:22:01
+  -- Purpose : Gestionar dispositivos
+  PROCEDURE pr_getbyid(p_id     IN t_dispositivos.id_dispositivo%TYPE
+                      ,p_cursor OUT SYS_REFCURSOR);
+
+  PROCEDURE pr_getall(p_activo                IN OUT VARCHAR2
+                     ,p_nombre                IN VARCHAR2
+                     ,p_numeropaginalistado   IN NUMBER
+                     ,p_totalregistroslistado OUT NUMBER
+                     ,p_cursor                OUT SYS_REFCURSOR);
+
+  PROCEDURE pr_postput(p_id     IN OUT t_dispositivos.id_dispositivo%TYPE
+                      ,p_nombre IN t_dispositivos.n_dispositivo%TYPE);
+
+  PROCEDURE pr_delete(p_id           IN t_dispositivos.id_dispositivo%TYPE
+                     ,p_activo_nuevo IN VARCHAR2);
+
+END pkg_dispositivos;
+CREATE OR REPLACE PACKAGE BODY pkg_dispositivos IS
+
+  PROCEDURE pr_getbyid(p_id     IN t_dispositivos.id_dispositivo%TYPE
+                      ,p_cursor OUT SYS_REFCURSOR) AS
+  BEGIN
+    OPEN p_cursor FOR
+      SELECT d.id_dispositivo id
+            ,d.n_dispositivo n_dispositivo
+            ,CASE
+               WHEN d.fecha_baja IS NULL THEN
+                'SI'
+               ELSE
+                'NO'
+             END activo
+        FROM t_dispositivos d
+       WHERE d.id_dispositivo = p_id;
+  EXCEPTION
+    WHEN OTHERS THEN
+      RAISE;
+  END pr_getbyid;
+
+  --------------------------------------------------------------------------------------------------------------------------------------------
+  PROCEDURE pr_getall(p_activo                IN OUT VARCHAR2
+                     ,p_nombre                IN VARCHAR2
+                     ,p_numeropaginalistado   IN NUMBER
+                     ,p_totalregistroslistado OUT NUMBER
+                     ,p_cursor                OUT SYS_REFCURSOR) AS
+    v_registro_desde NUMBER(10) := (p_numeropaginalistado * 10) - 9;
+    v_registro_hasta NUMBER(10) := v_registro_desde + 9;
+    v_sql_count      VARCHAR2(4000);
+    v_sql_datos      VARCHAR2(4000);
+    v_with           VARCHAR2(2000) := 'WITH param as (SELECT :p1 p_activo FROM dual) ';
+    v_where          VARCHAR2(2000);
+  BEGIN
+    -- contar resultados para el paginado
+    v_sql_count := v_with || 'SELECT COUNT(*) FROM t_dispositivos d';
+    IF p_nombre IS NOT NULL
+    THEN
+      v_where := 'n_dispositivo LIKE ''%' || p_nombre || '%''';
+    END IF;
+    IF p_activo IS NOT NULL
+       AND p_nombre IS NOT NULL
+    THEN
+      v_where := v_where || ' AND ';
+    END IF;
+    IF p_activo = 'SI'
+    THEN
+      v_where := v_where || 'd.fecha_baja IS NULL ';
+    END IF;
+    IF p_activo = 'NO'
+    THEN
+      v_where := v_where || 'd.fecha_baja IS NOT NULL ';
+    END IF;
+    IF (v_where IS NOT NULL)
+    THEN
+      v_where     := substr(v_where, 5);
+      v_where     := ', param where ' || v_where;
+      v_sql_count := v_sql_count || v_where;
+    END IF;
+    EXECUTE IMMEDIATE v_sql_count
+      INTO p_totalregistroslistado
+      USING p_activo;
+    v_sql_datos := v_with ||
+                   'SELECT d.id_dispositivo Id,
+            d.n_dispositivo nombre,
+            d.fecha_baja fechaBaja,
+            CASE
+               WHEN d.fecha_baja IS NULL THEN
+                '' SI ''
+               ELSE
+                '' NO ''
+             END activo
+             FROM (SELECT a.*,rownum rnum FROM ' ||
+                   '(SELECT di.* FROM t_dispositivos di' || v_where ||
+                   ' )a ' || 'WHERE rownum <= ' || v_registro_hasta ||
+                   ') c WHERE rownum >= ' || v_registro_desde ||
+                   ' ORDER BY c.n_dispositivo';
+    OPEN p_cursor FOR v_sql_datos
+      USING p_activo;
+  EXCEPTION
+    WHEN OTHERS THEN
+      RAISE;
+  END pr_getall;
+
+  --------------------------------------------------------------------------------------------------------------------------------------------
+  PROCEDURE pr_postput(p_id     IN OUT t_dispositivos.id_dispositivo%TYPE
+                      ,p_nombre IN t_dispositivos.n_dispositivo%TYPE) AS
+  BEGIN
+    IF p_id = 0
+    THEN
+      -- alta
+      p_id := seq_dispositivo.nextval;
+      INSERT INTO t_dispositivos
+        (id_dispositivo, n_dispositivo)
+      VALUES
+        (p_id, p_nombre);
+    ELSE
+      -- modificacion
+      UPDATE t_dispositivos e
+         SET e.n_dispositivo = p_nombre
+       WHERE e.id_dispositivo = p_id;
+    END IF;
+  EXCEPTION
+    WHEN OTHERS THEN
+      RAISE;
+  END pr_postput;
+
+  --------------------------------------------------------------------------------------------------------------------------------------------
+  PROCEDURE pr_delete(p_id           IN t_dispositivos.id_dispositivo%TYPE
+                     ,p_activo_nuevo IN VARCHAR2) AS
+  BEGIN
+    UPDATE t_dispositivos d
+       SET d.fecha_baja = CASE
+                            WHEN p_activo_nuevo = 'SI' THEN
+                             NULL
+                            ELSE
+                             SYSDATE
+                          END
+     WHERE d.id_dispositivo = p_id;
+  EXCEPTION
+    WHEN OTHERS THEN
+      RAISE;
+  END pr_delete;
+
+END pkg_dispositivos;
+
+---------------------------------------------------------------------------------------
+----------------------------------PKG_SENIALES-----------------------------------------
+---------------------------------------------------------------------------------------
+CREATE OR REPLACE PACKAGE pkg_seniales IS
+
+  -- Author  : MARCOS
+  -- Created : 04/08/2018 19:42:47
+  -- Purpose : Gestionar señales
+  PROCEDURE pr_getbyid(p_id     IN t_seniales.id_senial%TYPE
+                      ,p_cursor OUT SYS_REFCURSOR);
+
+  PROCEDURE pr_getall(p_activo                IN OUT VARCHAR2
+                     ,p_nombre                IN VARCHAR2
+                     ,p_numeropaginalistado   IN NUMBER
+                     ,p_totalregistroslistado OUT NUMBER
+                     ,p_cursor                OUT SYS_REFCURSOR);
+
+  PROCEDURE pr_postput(p_id     IN OUT t_seniales.id_senial%TYPE
+                      ,p_nombre IN t_seniales.n_senial%TYPE);
+
+  PROCEDURE pr_delete(p_id           IN t_seniales.id_senial%TYPE
+                     ,p_activo_nuevo IN VARCHAR2);
+
+END pkg_seniales;
+
+CREATE OR REPLACE PACKAGE BODY pkg_seniales IS
+
+  PROCEDURE pr_getbyid(p_id     IN t_seniales.id_senial%TYPE
+                      ,p_cursor OUT SYS_REFCURSOR) AS
+  BEGIN
+    OPEN p_cursor FOR
+      SELECT s.id_senial id
+            ,s.n_senial nombre
+            ,CASE
+               WHEN s.fecha_baja IS NULL THEN
+                'SI'
+               ELSE
+                'NO'
+             END activo
+        FROM t_seniales s
+       WHERE s.id_senial = p_id;
+  EXCEPTION
+    WHEN OTHERS THEN
+      RAISE;
+  END pr_getbyid;
+
+  --------------------------------------------------------------------------------------------------------------------------------------------
+  PROCEDURE pr_getall(p_activo                IN OUT VARCHAR2
+                     ,p_nombre                IN VARCHAR2
+                     ,p_numeropaginalistado   IN NUMBER
+                     ,p_totalregistroslistado OUT NUMBER
+                     ,p_cursor                OUT SYS_REFCURSOR) AS
+    v_registro_desde NUMBER(10) := (p_numeropaginalistado * 10) - 9;
+    v_registro_hasta NUMBER(10) := v_registro_desde + 9;
+    v_sql_count      VARCHAR2(4000);
+    v_sql_datos      VARCHAR2(4000);
+    v_with           VARCHAR2(2000) := 'WITH param as (SELECT :p1 p_activo FROM dual) ';
+    v_where          VARCHAR2(2000);
+  BEGIN
+    -- contar resultados para el paginado
+    v_sql_count := v_with || 'SELECT COUNT(*) FROM t_seniales s';
+    IF p_nombre IS NOT NULL
+    THEN
+      v_where := 'n_senial LIKE ''%' || p_nombre || '%''';
+    END IF;
+    IF p_activo IS NOT NULL
+       AND p_nombre IS NOT NULL
+    THEN
+      v_where := v_where || ' AND ';
+    END IF;
+    IF p_activo = 'SI'
+    THEN
+      v_where := v_where || 's.fec_baja IS NULL ';
+    END IF;
+    IF p_activo = 'NO'
+    THEN
+      v_where := v_where || 's.fec_baja IS NOT NULL ';
+    END IF;
+    IF (v_where IS NOT NULL)
+    THEN
+      v_where     := substr(v_where, 5);
+      v_where     := ', param where ' || v_where;
+      v_sql_count := v_sql_count || v_where;
+    END IF;
+    EXECUTE IMMEDIATE v_sql_count
+      INTO p_totalregistroslistado
+      USING p_activo;
+    v_sql_datos := v_with ||
+                   'SELECT s.id_senial Id,
+            s.n_senial nombre,
+            s.fecha_baja fechaBaja,
+            CASE
+               WHEN s.fecha_baja IS NULL THEN
+                '' SI ''
+               ELSE
+                '' NO ''
+             END activo
+             FROM (SELECT a.*,rownum rnum FROM ' ||
+                   '(SELECT se.* FROM t_seniales se' || v_where || ' )a ' ||
+                   'WHERE rownum <= ' || v_registro_hasta ||
+                   ') c WHERE rownum >= ' || v_registro_desde ||
+                   ' ORDER BY c.n_senial';
+    OPEN p_cursor FOR v_sql_datos
+      USING p_activo;
+  EXCEPTION
+    WHEN OTHERS THEN
+      RAISE;
+  END pr_getall;
+
+  --------------------------------------------------------------------------------------------------------------------------------------------
+  PROCEDURE pr_postput(p_id     IN OUT t_seniales.id_senial%TYPE
+                      ,p_nombre IN t_seniales.n_senial%TYPE) AS
+  BEGIN
+    IF p_id = 0
+    THEN
+      -- alta
+      p_id := seq_senial.nextval;
+      INSERT INTO t_seniales (id_senial, n_senial) VALUES (p_id, p_nombre);
+    ELSE
+      -- modificacion
+      UPDATE t_seniales s
+         SET s.n_senial = p_nombre
+       WHERE s.id_senial = p_id;
+    END IF;
+  EXCEPTION
+    WHEN OTHERS THEN
+      RAISE;
+  END pr_postput;
+
+  --------------------------------------------------------------------------------------------------------------------------------------------
+  PROCEDURE pr_delete(p_id           IN t_seniales.id_senial%TYPE
+                     ,p_activo_nuevo IN VARCHAR2) AS
+  BEGIN
+    UPDATE t_seniales s
+       SET s.fecha_baja = CASE
+                            WHEN p_activo_nuevo = 'SI' THEN
+                             NULL
+                            ELSE
+                             SYSDATE
+                          END
+     WHERE s.id_senial = p_id;
+  EXCEPTION
+    WHEN OTHERS THEN
+      RAISE;
+  END pr_delete;
+
+END pkg_seniales;
