@@ -25,7 +25,7 @@ namespace Web.Controllers
             var Id = int.Parse(DtoSel.Id);
             if (Id == 0)
             {
-                DtoSel.FechaBaja = TimeZoneInfo.ConvertTime(DateTime.Now, TimeZoneInfo.FindSystemTimeZoneById("Argentina Standard Time"));
+                DtoSel.FechaEvento = TimeZoneInfo.ConvertTime(DateTime.Now, TimeZoneInfo.FindSystemTimeZoneById("Argentina Standard Time"));
                 rnAbm.PostPut(DtoSel);
             }
             else

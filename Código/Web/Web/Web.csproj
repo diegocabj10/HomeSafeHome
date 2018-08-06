@@ -90,6 +90,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="angular.js" />
+    <Content Include="bootstrap.min.css" />
+    <Content Include="bootstrap.min.js" />
     <Content Include="Global.asax" />
     <Content Include="Index.html" />
     <Content Include="jquery-1.10.2.js" />
