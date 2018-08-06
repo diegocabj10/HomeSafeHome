@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+
+
+</head>
+<body ng-app="myApp" ng-controller="myCtrl">
+
+    <button ng-click="Buscar()"> Consultar</button>
+    <div class="alert alert-info">
+        <span class="glyphicon glyphicon-exclamation-sign"></span>Registros: {{Lista.length}}
+    </div>
+    <div >
+        <table id="tbAbm" class="table table-striped table-bordered">
+            <tr class="styleGrillaTitulo">
+                <th class="text-center">Id Evento</th>
+                <th class="text-center">Id Arduino</th>
+                <th class="text-center">Señal</th>
+                <th class="text-center">Valor</th>
+                <th class="text-center">Fecha Notifiacion</th>
+            </tr>
+            
+            <tr ng-repeat="dto in Lista">
+                <td>{{dto.Id}}</td>
+                <td>{{dto.IdDispositivo}}</td>
+                <td>{{dto.IdSenial}}</td>
+                <td>{{dto.Valor}}</td>
+                <td>{{dto.FechaEvento}}</td>
+            </tr>
+        </table>
+    </div>
+
+
+    <script src="jquery-1.10.2.js"></script>
+    <script src="angular.js"></script>
+    <script>
+        myApp = angular.module('myApp', []);
+        myApp.controller('myCtrl', function ($scope, $http, $interval) {
+            
+            $scope.Buscar = function () {
+                //$interval(function () {
+                $http.get('api/eventos', { params: { numeroPagina: 1 } })
+                    .then(
+                        function (successResponse) {
+                            $scope.Lista = successResponse.data.Lista;
+                            console.log(successResponse.data.Lista);
+                        }
+                    );
+                //}, 1000, 100
+                //);
+            };
+
+
+
+
+        })
+
+    </script>
+
+</body>
+</html>

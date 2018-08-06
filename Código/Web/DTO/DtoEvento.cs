@@ -8,7 +8,7 @@ namespace DTO
 
     public class DtoEvento : DtoAbmBase
     {
-        [Required]
+        
         public DateTime FechaEvento { get; set; }
         [Required]
         public int? IdSenial { get; set; }

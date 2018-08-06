@@ -18,7 +18,24 @@ namespace Web.Controllers
         }
 
 
+        //notificacion.Fecha_Notificacion = TimeZoneInfo.ConvertTime(DateTime.Now, TimeZoneInfo.FindSystemTimeZoneById("Argentina Standard Time"));
+        public override IHttpActionResult Post(DtoEvento DtoSel)
+        {
+           
+            var Id = int.Parse(DtoSel.Id);
+            if (Id == 0)
+            {
+                DtoSel.FechaBaja = TimeZoneInfo.ConvertTime(DateTime.Now, TimeZoneInfo.FindSystemTimeZoneById("Argentina Standard Time"));
+                rnAbm.PostPut(DtoSel);
+            }
+            else
+            {
+                var message = string.Format("El registro con el identificador = {0} no es correcto", DtoSel.Id);
+                return Content(HttpStatusCode.BadRequest, message);
+            }
 
+            return CreatedAtRoute("", new { id = DtoSel.Id }, DtoSel);
+        }
         public IHttpActionResult GetAll([FromUri] int numeroPagina, int? Dispositivo, int? Senial, string Activo = "")
         {
             DtoEvento DtoFiltro = new DtoEvento();
