@@ -36,7 +36,8 @@ namespace Web.Controllers
 
             return CreatedAtRoute("", new { id = DtoSel.Id }, DtoSel);
         }
-        public IHttpActionResult GetAll([FromUri] int numeroPagina, int? Dispositivo, int? Senial, string Activo = "")
+
+        public IHttpActionResult Notificaciones([FromUri] int numeroPagina, int? Dispositivo, int? Senial, string Activo = "")
         {
             DtoEvento DtoFiltro = new DtoEvento();
             DtoFiltro.IdSenial = Senial;

@@ -17,7 +17,7 @@ namespace Web
 
            // config.Filters.Add(new Excepciones());
             config.Filters.Add(new ModelValidate());
-
+                       
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",
@@ -29,8 +29,8 @@ namespace Web
             protected override IReadOnlyList<IDirectRouteFactory>
             GetActionRouteFactories(HttpActionDescriptor actionDescriptor)
             {
-                return actionDescriptor.GetCustomAttributes<IDirectRouteFactory>
-                (inherit: true);
+                return actionDescriptor.GetCustomAttributes<IDirectRouteFactory>(true);
+                
             }
         }
     }

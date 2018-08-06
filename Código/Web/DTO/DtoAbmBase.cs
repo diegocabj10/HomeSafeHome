@@ -11,7 +11,7 @@ namespace DTO
 {
     public class DtoAbmBase
     {
-        [Required(ErrorMessage = "El Id es un dato requerido")]
+        //[Required(ErrorMessage = "El Id es un dato requerido")]
         public virtual string Id { get; set; }
         public string Nombre { get; set; }
         public virtual DateTime? FechaBaja { get; set; }
