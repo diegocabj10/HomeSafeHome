@@ -12,6 +12,7 @@ PASOS MAGICOS:
 en cmd: 
 adb devices
 
+npm install
 borrar carpeta ios y android
 react-native upgrade
 react-native run-android
