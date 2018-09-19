@@ -138,6 +138,10 @@
       <Project>{819c2637-3f1d-4f8e-bf5a-043ebc82ed27}</Project>
       <Name>DTO</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Util\UTIL.csproj">
+      <Project>{0abd2c7c-03d5-4603-9911-9d0e9726f26b}</Project>
+      <Name>UTIL</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />

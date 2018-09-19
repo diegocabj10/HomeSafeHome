@@ -9,8 +9,8 @@ namespace DTO
     public class DtoPerfil : DtoAbmBase
     {
 
-        [Required(ErrorMessage = "La lista de procesos es un dato requerido")]
-        [MinLength(1)]
+        //[Required(ErrorMessage = "La lista de procesos es un dato requerido")]
+        //[MinLength(1)]
         public List<int> IdProcesos { get; set; }
 
     }

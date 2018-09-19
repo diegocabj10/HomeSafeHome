@@ -6,7 +6,9 @@ using System.Text;
 namespace DTO{
     public class DtoUsuario: DtoAbmBase
     {        
-        public string Cuil { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
+
         public DateTime? FechaInicio { get; set; }
         public DateTime? UltimoLogin { get; set; }
         public List<int> IdPerfiles { get; set; }

@@ -19,9 +19,10 @@ namespace Web.Controllers
         /// </summary>
         /// <returns></returns> 
 
-        [HttpGet]
-        public virtual IHttpActionResult GetLogin()
+      
+        public virtual IHttpActionResult PostLogin(DtoUsuario usuario)
         {
+            FuncionesSeguridad.LoginInterno(usuario.Email, usuario.Password);
             List<DtoMenuPadre> menuesPadres;
             List<DtoMenuHijo> menuesHijos;
             //Cargo menues

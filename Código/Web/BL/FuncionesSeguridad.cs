@@ -101,7 +101,7 @@ namespace BL
         /// </summary>
         /// <param name="usuarioNombre"></param>
         /// <returns></returns>
-        public static bool LoginInterno()
+        public static bool LoginInterno(string email, string password)
         {
             // CidiKit.Usuario UsuarioCidi = CidiKit.Funciones.ObtenerUsuario();
             //if (UsuarioCidi == null)
@@ -111,12 +111,11 @@ namespace BL
             //    //throw new ApplicationException("Redirect");  // para que corte la ejecucion del codigo
             //}
 
-            string UsuarioNombre = "";
-            string Cuil = "";
+            
 
             var _tk = Guid.NewGuid().ToString().ToUpper();
             var ip = HttpContext.Current.Request.UserHostAddress;
-            var parametros = new object[] { Cuil, _tk, ip, null };
+            var parametros = new object[] { email, password,_tk, ip, null };
 
             List<DtoId> PerfilesDelUsuario = null;
             try
@@ -126,7 +125,7 @@ namespace BL
             catch (Exception ex)
             {
                 // normalmente: No existe el usuario en el sistema."))
-                Logueo.LogueaError(ex, new object[] { "Error al loguearse || UsuarioNombre:" + UsuarioNombre + "|| Cuil:" + Cuil });
+                Logueo.LogueaError(ex, new object[] { "Error al loguearse || UsuarioNombre:" + email});
                 return false;
             }
 
@@ -134,7 +133,7 @@ namespace BL
             ManejoEstado.CiDi = HttpContext.Current.Request.Cookies["CiDi"].Value;
 
 
-            ManejoEstado.DtoUsuarioLogueado = new DtoUsuario() { Id = parametros[3].ToString(), Nombre = UsuarioNombre, Cuil = Cuil, DbSessionId = _tk};
+            ManejoEstado.DtoUsuarioLogueado = new DtoUsuario() { Id = parametros[3].ToString(), Email = email, DbSessionId = _tk};
             if (PerfilesDelUsuario.Count > 0)
                 ManejoEstado.DtoUsuarioLogueado.IdPerfiles = PerfilesDelUsuario.Select(x => int.Parse(x.Id)).ToList<int>();  //new List<int>() { 1 }; //rol administrador
 
@@ -147,7 +146,7 @@ namespace BL
         {
             if (perfiles == null)
             {
-                if (FuncionesSeguridad.LoginInterno())
+                if (FuncionesSeguridad.LoginInterno("",""))
                 {
                     perfiles = ManejoEstado.IdPerfiles;
                 }
