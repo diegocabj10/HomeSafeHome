@@ -1,0 +1,17 @@
+Side-menu: 
+https://github.com/react-native-community/react-native-side-menu
+
+Router-flux:
+https://www.npmjs.com/package/react-native-router-flux
+https://medium.com/differential/react-native-basics-using-react-native-router-flux-f11e5128aff9
+
+Splash Screen:
+https://github.com/crazycodeboy/react-native-splash-screen
+
+PASOS MAGICOS:
+en cmd: 
+adb devices
+
+borrar carpeta ios y android
+react-native upgrade
+react-native run-android
