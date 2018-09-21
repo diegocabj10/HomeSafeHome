@@ -74,18 +74,7 @@ namespace BL
             }
         }
 
-        public static string CiDi
-        {
-            get
-            {
-                return HttpContext.Current.Cache["_CiDi" + HttpContext.Current.Items["_tk"]] as string ?? "";
-            }
-            set
-            {
-                HttpContext.Current.Cache.Insert("_CiDi" + HttpContext.Current.Items["_tk"], value, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, FuncionesSeguridad.CacheSlidingTimeout, 0));
-            }
-        }
-
+       
 
 
 

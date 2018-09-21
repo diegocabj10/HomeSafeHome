@@ -101,7 +101,7 @@ namespace BL
         /// </summary>
         /// <param name="usuarioNombre"></param>
         /// <returns></returns>
-        public static bool LoginInterno(string email, string password)
+        public static DtoUsuario LoginInterno(string email, string password)
         {
             // CidiKit.Usuario UsuarioCidi = CidiKit.Funciones.ObtenerUsuario();
             //if (UsuarioCidi == null)
@@ -115,7 +115,7 @@ namespace BL
 
             var _tk = Guid.NewGuid().ToString().ToUpper();
             var ip = HttpContext.Current.Request.UserHostAddress;
-            var parametros = new object[] { email, password,_tk, ip, null };
+            var parametros = new object[] { email, password,_tk, ip, null, null };
 
             List<DtoId> PerfilesDelUsuario = null;
             try
@@ -126,32 +126,34 @@ namespace BL
             {
                 // normalmente: No existe el usuario en el sistema."))
                 Logueo.LogueaError(ex, new object[] { "Error al loguearse || UsuarioNombre:" + email});
-                return false;
+                return new DtoUsuario();
             }
 
             HttpContext.Current.Items["_tk"] = _tk;
-            ManejoEstado.CiDi = HttpContext.Current.Request.Cookies["CiDi"].Value;
+            // ManejoEstado.CiDi = HttpContext.Current.Request.Cookies["CiDi"].Value;
 
-
-            ManejoEstado.DtoUsuarioLogueado = new DtoUsuario() { Id = parametros[3].ToString(), Email = email, DbSessionId = _tk};
+            var usuario = new DtoUsuario();
+            usuario.Id = parametros[3].ToString();
+            usuario.Email = email;
+            usuario.DbSessionId = _tk;
             if (PerfilesDelUsuario.Count > 0)
-                ManejoEstado.DtoUsuarioLogueado.IdPerfiles = PerfilesDelUsuario.Select(x => int.Parse(x.Id)).ToList<int>();  //new List<int>() { 1 }; //rol administrador
+                usuario.IdPerfiles = PerfilesDelUsuario.Select(x => int.Parse(x.Id)).ToList<int>();  //new List<int>() { 1 }; //rol administrador
 
             HttpContext.Current.Response.Headers.Add("_tk", _tk);
-            return true;
+            return usuario;
 
         }
 
         public static bool ValidarPermisosWeb(string pagina, List<int> perfiles, bool Silencioso)
         {
-            if (perfiles == null)
-            {
-                if (FuncionesSeguridad.LoginInterno("",""))
-                {
-                    perfiles = ManejoEstado.IdPerfiles;
-                }
+            //if (perfiles == null)
+            //{
+            //    if (FuncionesSeguridad.LoginInterno("",""))
+            //    {
+            //        perfiles = ManejoEstado.IdPerfiles;
+            //    }
                 
-            }
+            //}
 
             var itemsSeguridad = FuncionesSeguridad.DevolverElementosDeSeguridad();
             List<DtoPerfilesProcesos> PerfilesProcesos = itemsSeguridad.PerfilesProcesos;
@@ -251,7 +253,7 @@ namespace BL
             if (elementosSeguridad == null)
             {
                 elementosSeguridad = new DtoItemsSeguridad();
-                Repositorio.ExecuteReader("pr_items_seguridad_dto_s", null,
+                Repositorio.ExecuteReader("pkg_seguridad.pr_items_seguridad_dto_s", null,
                     delegate (IDataReader dr)
                     {
                         elementosSeguridad.MenuesHijos = Repositorio.CargarDTOs<DtoMenuHijo>(dr);
@@ -271,14 +273,9 @@ namespace BL
 
         #region Menu          
 
-        public static void CrearMenuDinamico2(out List<DtoMenuHijo> menuesHijos, out List<DtoMenuPadre> menuesPadres)
+        public static void CrearMenuDinamico2(out List<DtoMenuHijo> menuesHijos, out List<DtoMenuPadre> menuesPadres, DtoUsuario usuario)
         {
-            if (ManejoEstado.IdPerfiles == null)
-            {
-                menuesHijos = new List<DtoMenuHijo>();
-                menuesPadres = new List<DtoMenuPadre>();
-                return;
-            }
+           
 
             var itemsSeguridad = DevolverElementosDeSeguridad();
 
@@ -286,7 +283,7 @@ namespace BL
             menuesHijos = (from PP in itemsSeguridad.PerfilesProcesos
                            join Pr in itemsSeguridad.Procesos on PP.IdProceso equals Pr.IdProceso
                            join MH in itemsSeguridad.MenuesHijos on Pr.IdProceso equals MH.IdProceso
-                           where ManejoEstado.IdPerfiles.Contains(PP.IdPerfil)
+                           where usuario.IdPerfiles.Contains(PP.IdPerfil)
                            select MH).Distinct().OrderBy(x => x.OrdenMenu).ThenBy(x => x.Nombre).ToList();
 
             //Filtro los menúes padres a partir de los hijos

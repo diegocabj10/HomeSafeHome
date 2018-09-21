@@ -7,6 +7,7 @@ using System.Web.Http;
 using BL;
 using DTO;
 using System.Web;
+using System.Dynamic;
 
 namespace Web.Controllers
 {
@@ -22,24 +23,21 @@ namespace Web.Controllers
       
         public virtual IHttpActionResult PostLogin(DtoUsuario usuario)
         {
-            FuncionesSeguridad.LoginInterno(usuario.Email, usuario.Password);
+            DtoUsuario UsuarioLogueado = FuncionesSeguridad.LoginInterno(usuario.Email, usuario.Password);
             List<DtoMenuPadre> menuesPadres;
             List<DtoMenuHijo> menuesHijos;
             //Cargo menues
-            FuncionesSeguridad.CrearMenuDinamico2(out menuesHijos, out menuesPadres);
+            FuncionesSeguridad.CrearMenuDinamico2(out menuesHijos, out menuesPadres, UsuarioLogueado);
 
             foreach (var padre in menuesPadres)
             {
                 padre.Hijos = menuesHijos.Where(x => x.IdProcesoPadre == padre.IdProceso).ToList();
             }
 
-            var ob = new TokenObject
-            {
-                menu = menuesPadres,
-                dtoUs = ManejoEstado.DtoUsuarioLogueado
-            };
-
-            return Ok(ob);
+            IDictionary<string, object> resultado = new ExpandoObject();
+            resultado["Usuario"] = UsuarioLogueado;
+            resultado["Menu"] = menuesPadres; 
+            return Ok(resultado);
         }
     }
 
