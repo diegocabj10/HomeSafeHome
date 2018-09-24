@@ -15,7 +15,7 @@ namespace Web
             // Rutas de API web
             config.MapHttpAttributeRoutes(new CustomDirectRouteProvider());
 
-           // config.Filters.Add(new Excepciones());
+            config.Filters.Add(new Excepciones());
             config.Filters.Add(new ModelValidate());
                        
             config.Routes.MapHttpRoute(

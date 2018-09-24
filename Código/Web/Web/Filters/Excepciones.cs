@@ -9,13 +9,20 @@ using System.Web.Http.Filters;
 
 namespace Web.Filters
 {
-    public class Excepciones: ExceptionFilterAttribute
+    public class Excepciones : ExceptionFilterAttribute
     {
         public override void OnException(HttpActionExecutedContext context)
         {
             //Log error
-          
-            context.Response = context.Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Ha ocurrido un error en el sistema, intente nuevamente");
+            var error = context.Exception.Message;
+            if (error.Contains("Credenciales incorrectas"))
+            {
+                context.Response = context.Request.CreateErrorResponse(HttpStatusCode.Unauthorized, "Las creedenciales ingresadas son incorrectas");
+            }
+            else
+            {
+                context.Response = context.Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Ha ocurrido un error en el sistema, intente nuevamente");
+            }
         }
     }
 }

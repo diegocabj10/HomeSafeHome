@@ -9,7 +9,7 @@ namespace DTO
     {
         public int IdProceso { get; set; }
         public string Nombre { get; set; }
-        public int Orden { get; set; }
+        public int OrdenMenu { get; set; }
         public List<DtoMenuHijo> Hijos { get; set; }
         public DtoMenuPadre()
         {

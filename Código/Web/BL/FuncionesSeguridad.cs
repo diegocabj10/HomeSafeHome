@@ -118,20 +118,11 @@ namespace BL
             var parametros = new object[] { email, password,_tk, ip, null, null };
 
             List<DtoId> PerfilesDelUsuario = null;
-            try
-            {
-                PerfilesDelUsuario = Repositorio.CargarDTOs<DtoId>("pkg_seguridad.pr_usuarios_login", parametros);
-            }
-            catch (Exception ex)
-            {
-                // normalmente: No existe el usuario en el sistema."))
-                Logueo.LogueaError(ex, new object[] { "Error al loguearse || UsuarioNombre:" + email});
-                return new DtoUsuario();
-            }
-
+            // normalmente: No existe el usuario en el sistema."))
+            PerfilesDelUsuario = Repositorio.CargarDTOs<DtoId>("pkg_seguridad.pr_usuarios_login", parametros);
+            
             HttpContext.Current.Items["_tk"] = _tk;
-            // ManejoEstado.CiDi = HttpContext.Current.Request.Cookies["CiDi"].Value;
-
+         
             var usuario = new DtoUsuario();
             usuario.Id = parametros[3].ToString();
             usuario.Email = email;
