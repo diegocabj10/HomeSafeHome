@@ -8,7 +8,7 @@ using DTO;
 using BL;
 namespace Web.Controllers
 {
-    public class UsuariosController : BaseController<DtoPerfil, rnAbmBase<DtoPerfil>>
+    public class UsuariosController : BaseController<DtoUsuario, rnAbmBase<DtoUsuario>>
     {
         public UsuariosController()
         {

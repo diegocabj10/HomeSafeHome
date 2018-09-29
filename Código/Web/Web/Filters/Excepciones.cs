@@ -17,7 +17,7 @@ namespace Web.Filters
             var error = context.Exception.Message;
             if (error.Contains("Credenciales incorrectas"))
             {
-                context.Response = context.Request.CreateErrorResponse(HttpStatusCode.Unauthorized, "Las creedenciales ingresadas son incorrectas");
+                context.Response = context.Request.CreateErrorResponse(HttpStatusCode.Unauthorized, "Las credenciales ingresadas son incorrectas");
             }
             else
             {
