@@ -124,7 +124,7 @@ namespace BL
             HttpContext.Current.Items["_tk"] = _tk;
          
             var usuario = new DtoUsuario();
-            usuario.Id = parametros[3].ToString();
+            usuario.Id = parametros[4].ToString();
             usuario.Email = email;
             usuario.DbSessionId = _tk;
             if (PerfilesDelUsuario.Count > 0)
