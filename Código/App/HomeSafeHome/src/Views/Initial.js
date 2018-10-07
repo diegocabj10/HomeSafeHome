@@ -11,13 +11,13 @@ import SideMenu from 'react-native-side-menu';
 import ViewOne from './ViewOne';
 import Menu from './Menu';
 import RenderIf from './RenderIf';
-
+var myStyles = require('./Styles');
 const image = require('../assets/menu.png');
 
 const styles = StyleSheet.create({
   button: {
     position: 'absolute',
-    top: 20,
+    
     padding: 10,
   },
   caption: {
@@ -54,6 +54,12 @@ export default class Initial extends Component {
       selectedItem: 'Initial',
     };
   }
+
+  handleOnNavigateBack = (foo) => {
+    this.setState({isOpen:false});
+  }
+    
+  
 
   toggle() {
     this.setState({
@@ -111,10 +117,14 @@ export default class Initial extends Component {
           onPress={this.toggle}
           style={styles.button}
         >
+        <View style={myStyles.titleContainerHSH}>
+        
           <Image
             source={image}
             style={{ width: 32, height: 32 }}
           />
+          <Text style={myStyles.titleHSH}> Home Safe Home </Text>
+          </View>
         </TouchableOpacity>
       </SideMenu>
     );
