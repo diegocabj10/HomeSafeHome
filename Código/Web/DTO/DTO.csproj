@@ -78,6 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DtoAbmBase.cs" />
+    <Compile Include="DtoAviso.cs" />
     <Compile Include="DtoId.cs" />
     <Compile Include="DtoIdNombre.cs" />
     <Compile Include="DtoIdNombreIdTipo.cs" />
@@ -90,6 +91,7 @@
     <Compile Include="DtoPerfil.cs" />
     <Compile Include="DtoPerfilesProcesos.cs" />
     <Compile Include="DtoProcesos.cs" />
+    <Compile Include="DtoReclamo.cs" />
     <Compile Include="DtoUsuario.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

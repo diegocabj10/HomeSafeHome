@@ -12,8 +12,10 @@ namespace DTO
         public DateTime FechaEvento { get; set; }
         [Required]
         public int? IdSenial { get; set; }
+        public string NombreSenial { get; set; }
         [Required]
         public int? IdDispositivo { get; set; }
+        public string NombreDispositivo { get; set; }
         [Required]
         public int Valor { get; set; }
 

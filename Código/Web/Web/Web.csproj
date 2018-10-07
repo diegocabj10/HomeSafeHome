@@ -100,9 +100,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\AvisosController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\DispositivosController.cs" />
     <Compile Include="Controllers\EventosController.cs" />
+    <Compile Include="Controllers\ReclamosController.cs" />
     <Compile Include="Controllers\UsuariosController.cs" />
     <Compile Include="Controllers\PerfilesController.cs" />
     <Compile Include="Controllers\SenialesController.cs" />

@@ -100,7 +100,7 @@ namespace Web.Controllers
         }
         //http://sigesasdesa.cba.gov.ar:2475/api/Perfiles?numeroPagina=1&Estado=NO&Descripcion= 
         //http://sigesasdesa.cba.gov.ar:2475/api/Perfiles?numeroPagina=1&Estado=NO
-        //http://sigesasdesa.cba.gov.ar:2475/api/Perfiles?numeroPagina=1
+        //http://sigesasdesa.cba.gov.ar:2475/api/Perfiles
         public virtual IHttpActionResult GetAll([FromUri] int numeroPagina, string Descripcion = "", string Activo = "")
         {
             Tentidad DtoFiltro = new Tentidad();
