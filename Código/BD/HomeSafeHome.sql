@@ -1,6 +1,6 @@
 ---------------------------------------------
 -- Export file for user HOMESAFEHOME       --
--- Created by diego on 29/9/2018, 18:11:42 --
+-- Created by diego on 6/10/2018, 23:44:07 --
 ---------------------------------------------
 
 spool HomeSafeHome.log
@@ -748,6 +748,17 @@ increment by 1
 cache 20;
 
 prompt
+prompt Creating sequence SEQ_AVISO
+prompt ===========================
+prompt
+create sequence HOMESAFEHOME.SEQ_AVISO
+minvalue 1
+maxvalue 9999999999
+start with 21
+increment by 1
+cache 20;
+
+prompt
 prompt Creating sequence SEQ_DISPOSITIVO
 prompt =================================
 prompt
@@ -799,6 +810,17 @@ create sequence HOMESAFEHOME.SEQ_PROCESO
 minvalue 1
 maxvalue 9999999999
 start with 1
+increment by 1
+cache 20;
+
+prompt
+prompt Creating sequence SEQ_RECLAMO
+prompt =============================
+prompt
+create sequence HOMESAFEHOME.SEQ_RECLAMO
+minvalue 1
+maxvalue 9999999999
+start with 21
 increment by 1
 cache 20;
 
@@ -889,6 +911,37 @@ END;
 /
 
 prompt
+prompt Creating package PKG_AVISOS
+prompt ===========================
+prompt
+CREATE OR REPLACE PACKAGE HOMESAFEHOME.pkg_avisos IS
+
+  -- Author  : DIEGO
+  -- Created : 6/10/2018 19:27:23
+  -- Purpose : Gestion avisos
+  PROCEDURE pr_getbyid(p_id     IN t_avisos.id_aviso%TYPE
+                      ,p_cursor OUT SYS_REFCURSOR);
+
+  PROCEDURE pr_getall(p_titulo                IN t_avisos.titulo%TYPE
+                     ,p_mensaje               IN t_avisos.mensaje%TYPE
+                     ,p_activo                IN OUT VARCHAR2
+                     ,p_numeropaginalistado   IN NUMBER
+                     ,p_totalregistroslistado OUT NUMBER
+                     ,p_cursor                OUT SYS_REFCURSOR);
+
+  PROCEDURE pr_postput(p_id          IN OUT t_avisos.id_aviso%TYPE
+                      ,p_titulo      IN t_avisos.titulo%TYPE
+                      ,p_mensaje     IN t_avisos.mensaje%TYPE
+                      ,p_fecha_aviso IN t_avisos.fecha_aviso%TYPE
+                      ,p_id_usuario  IN t_avisos.id_usuario%TYPE);
+
+  PROCEDURE pr_delete(p_id           IN t_avisos.id_aviso%TYPE
+                     ,p_activo_nuevo IN VARCHAR2);
+
+END pkg_avisos;
+/
+
+prompt
 prompt Creating package PKG_DISPOSITIVOS
 prompt =================================
 prompt
@@ -937,7 +990,7 @@ CREATE OR REPLACE PACKAGE HOMESAFEHOME.pkg_eventos IS
                      ,p_totalregistroslistado OUT NUMBER
                      ,p_cursor                OUT SYS_REFCURSOR);
 
- PROCEDURE pr_postput(p_id             IN OUT t_eventos.id_evento%TYPE
+  PROCEDURE pr_postput(p_id             IN OUT t_eventos.id_evento%TYPE
                       ,p_valor          IN t_eventos.valor%TYPE
                       ,p_fecha_evento   IN t_eventos.fecha_evento%TYPE
                       ,p_id_dispositivo IN t_eventos.id_dispositivo%TYPE
@@ -978,6 +1031,38 @@ CREATE OR REPLACE PACKAGE HOMESAFEHOME.pkg_perfiles IS
                      ,p_activo_nuevo IN VARCHAR2);
 
 END pkg_perfiles;
+/
+
+prompt
+prompt Creating package PKG_RECLAMOS
+prompt =============================
+prompt
+CREATE OR REPLACE PACKAGE HOMESAFEHOME.pkg_reclamos IS
+
+  -- Author  : DIEGO
+  -- Created : 6/10/2018 19:26:56
+  -- Purpose : Gestion de reclamos
+  PROCEDURE pr_getbyid(p_id     IN t_reclamos.id_reclamo%TYPE
+                      ,p_cursor OUT SYS_REFCURSOR);
+
+  PROCEDURE pr_getall(p_titulo                IN t_reclamos.titulo%TYPE
+                     ,p_mensaje               IN t_reclamos.mensaje%TYPE
+                     ,p_activo                IN OUT VARCHAR2
+                     ,p_numeropaginalistado   IN NUMBER
+                     ,p_totalregistroslistado OUT NUMBER
+                     ,p_cursor                OUT SYS_REFCURSOR);
+
+  PROCEDURE pr_postput(p_id            IN OUT t_reclamos.id_reclamo%TYPE
+                      ,p_titulo        IN t_reclamos.titulo%TYPE
+                      ,p_mensaje       IN t_reclamos.mensaje%TYPE
+                      ,p_respuesta     IN t_reclamos.respuesta%TYPE
+                      ,p_fecha_reclamo IN t_reclamos.fecha_reclamo%TYPE
+                      ,p_id_usuario    IN t_reclamos.id_usuario%TYPE);
+
+  PROCEDURE pr_delete(p_id           IN t_reclamos.id_reclamo%TYPE
+                     ,p_activo_nuevo IN VARCHAR2);
+
+END pkg_reclamos;
 /
 
 prompt
@@ -1147,6 +1232,150 @@ END;
 /
 
 prompt
+prompt Creating package body PKG_AVISOS
+prompt ================================
+prompt
+CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_avisos IS
+
+  PROCEDURE pr_getbyid(p_id     IN t_avisos.id_aviso%TYPE
+                      ,p_cursor OUT SYS_REFCURSOR) AS
+  BEGIN
+    OPEN p_cursor FOR
+      SELECT a.id_aviso id
+            ,a.titulo titulo
+            ,a.mensaje iddispositivo
+            ,a.fecha_aviso fechaaviso
+            ,a.fecha_baja fechabaja
+            ,CASE
+               WHEN a.fecha_baja IS NULL THEN
+                'SI'
+               ELSE
+                'NO'
+             END activo
+        FROM t_avisos a
+       WHERE a.id_aviso = p_id;
+  EXCEPTION
+    WHEN OTHERS THEN
+      RAISE;
+  END pr_getbyid;
+
+  --------------------------------------------------------------------------------------------------------------------------------------------
+  PROCEDURE pr_getall(p_titulo                IN t_avisos.titulo%TYPE
+                     ,p_mensaje               IN t_avisos.mensaje%TYPE
+                     ,p_activo                IN OUT VARCHAR2
+                     ,p_numeropaginalistado   IN NUMBER
+                     ,p_totalregistroslistado OUT NUMBER
+                     ,p_cursor                OUT SYS_REFCURSOR) AS
+    v_registro_desde NUMBER(10) := (p_numeropaginalistado * 10) - 9;
+    v_registro_hasta NUMBER(10) := v_registro_desde + 9;
+    v_sql_count      VARCHAR2(4000);
+    v_sql_datos      VARCHAR2(4000);
+    v_with           VARCHAR2(2000) := 'WITH param as (SELECT :p1 p_titulo, :p2 p_mensaje, :p3 p_activo FROM dual) ';
+    v_where          VARCHAR2(2000);
+  BEGIN
+    -- contar resultados para el paginado
+    v_sql_count := v_with || 'SELECT COUNT(*) FROM t_avisos t';
+    IF p_titulo IS NOT NULL
+    THEN
+      v_where := v_where ||
+                 ' AND t.titulo LIKE ''%'' || p_titulo || ''%'' ';
+    END IF;
+    IF p_mensaje IS NOT NULL
+    THEN
+      v_where := v_where ||
+                 ' AND t.mensaje LIKE ''%'' || p_mensaje || ''%'' ';
+    END IF;
+    IF p_activo = 'SI'
+    THEN
+      v_where := v_where || ' AND t.fecha_baja IS NULL ';
+    END IF;
+    IF p_activo = 'NO'
+    THEN
+      v_where := v_where || ' AND t.fecha_baja IS NOT NULL ';
+    END IF;
+    IF (v_where IS NOT NULL)
+    THEN
+      v_where     := substr(v_where, 5);
+      v_where     := ', param where ' || v_where;
+      v_sql_count := v_sql_count || v_where;
+    END IF;
+    dbms_output.put_line(v_sql_count);
+    EXECUTE IMMEDIATE v_sql_count
+      INTO p_totalregistroslistado
+      USING p_titulo, p_mensaje, p_activo;
+    v_sql_datos := v_with || 'SELECT c.id_aviso id
+            ,c.titulo titulo
+            ,c.mensaje mensaje
+            ,c.fecha_aviso fechaaviso
+            ,c.fecha_baja fechabaja
+          ,CASE
+           WHEN c.fecha_baja IS NULL THEN
+            ''SI''
+           ELSE
+            ''NO''
+         END activo
+         FROM (SELECT a.*,rownum rnum FROM ' ||
+                   '(SELECT t.* FROM t_avisos t' || v_where || ' )a ' ||
+                   'WHERE rownum <= ' || v_registro_hasta ||
+                   ') c WHERE rnum >= ' || v_registro_desde ||
+                   ' ORDER BY c.fecha_aviso';
+    OPEN p_cursor FOR v_sql_datos
+      USING p_titulo, p_mensaje, p_activo;
+  EXCEPTION
+    WHEN OTHERS THEN
+      RAISE;
+  END pr_getall;
+
+  --------------------------------------------------------------------------------------------------------------------------------------------
+  PROCEDURE pr_postput(p_id          IN OUT t_avisos.id_aviso%TYPE
+                      ,p_titulo      IN t_avisos.titulo%TYPE
+                      ,p_mensaje     IN t_avisos.mensaje%TYPE
+                      ,p_fecha_aviso IN t_avisos.fecha_aviso%TYPE
+                      ,p_id_usuario  IN t_avisos.id_usuario%TYPE) AS
+  BEGIN
+    IF p_id = 0
+    THEN
+      -- alta
+      p_id := seq_aviso.nextval;
+      INSERT INTO t_avisos
+        (id_aviso, titulo, mensaje, fecha_aviso, id_usuario)
+      VALUES
+        (p_id, p_titulo, p_mensaje, p_fecha_aviso, p_id_usuario);
+    ELSE
+      -- modificacion
+      UPDATE t_avisos a
+         SET a.titulo      = p_titulo
+            ,a.mensaje     = p_mensaje
+            ,a.fecha_aviso = p_fecha_aviso
+            ,a.id_usuario  = p_id_usuario
+       WHERE a.id_aviso = p_id;
+    END IF;
+  EXCEPTION
+    WHEN OTHERS THEN
+      RAISE;
+  END pr_postput;
+
+  --------------------------------------------------------------------------------------------------------------------------------------------
+  PROCEDURE pr_delete(p_id           IN t_avisos.id_aviso%TYPE
+                     ,p_activo_nuevo IN VARCHAR2) AS
+  BEGIN
+    UPDATE t_avisos a
+       SET a.fecha_baja = CASE
+                            WHEN p_activo_nuevo = 'SI' THEN
+                             NULL
+                            ELSE
+                             SYSDATE
+                          END
+     WHERE a.id_aviso = p_id;
+  EXCEPTION
+    WHEN OTHERS THEN
+      RAISE;
+  END pr_delete;
+
+END pkg_avisos;
+/
+
+prompt
 prompt Creating package body PKG_DISPOSITIVOS
 prompt ======================================
 prompt
@@ -1303,6 +1532,8 @@ CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_eventos IS
             ,e.id_dispositivo iddispositivo
             ,e.fecha_evento fechaevento
             ,e.fecha_baja fechabaja
+            ,s.n_senial nombresenial
+            ,d.n_dispositivo nombredispositivo
             ,CASE
                WHEN e.fecha_baja IS NULL THEN
                 'SI'
@@ -1310,6 +1541,10 @@ CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_eventos IS
                 'NO'
              END activo
         FROM t_eventos e
+        JOIN t_seniales s
+          ON e.id_senial = s.id_senial
+        JOIN t_dispositivos d
+          ON d.id_dispositivo = e.id_dispositivo
        WHERE e.id_evento = p_id;
   EXCEPTION
     WHEN OTHERS THEN
@@ -1363,17 +1598,20 @@ CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_eventos IS
         c.id_dispositivo idDispositivo,
         c.id_senial idSenial,
         c.fecha_baja fechaBaja,
+        c.n_senial nombresenial,
         CASE
            WHEN c.fecha_baja IS NULL THEN
-            '' SI ''
+            ''SI''
            ELSE
-            '' NO ''
+            ''NO''
          END activo
         FROM (SELECT a.*,rownum rnum FROM ' ||
-                   '(SELECT t.* FROM t_eventos t' || v_where || ' )a ' ||
-                   'WHERE rownum <= ' || v_registro_hasta ||
+                   '(SELECT t.*,s.n_senial FROM t_eventos t JOIN t_seniales s
+          ON t.id_senial = s.id_senial ' || v_where ||
+                   ' )a ' || 'WHERE rownum <= ' || v_registro_hasta ||
                    ') c WHERE rnum >= ' || v_registro_desde ||
                    ' ORDER BY c.id_evento desc';
+                   dbms_output.put_line(v_sql_datos);
     OPEN p_cursor FOR v_sql_datos
       USING p_id_dispositivo, p_id_senial, p_activo;
   EXCEPTION
@@ -1527,7 +1765,6 @@ FROM (SELECT a.*,rownum rnum FROM ' ||
                    'WHERE rownum <= ' || v_registro_hasta ||
                    ') c WHERE rnum >= ' || v_registro_desde ||
                    ' ORDER BY c.n_perfil';
-    dbms_output.put_line(v_sql_datos);
     OPEN p_cursor FOR v_sql_datos
       USING p_nombre, p_activo;
   EXCEPTION
@@ -1594,6 +1831,160 @@ FROM (SELECT a.*,rownum rnum FROM ' ||
   END pr_delete;
 
 END pkg_perfiles;
+/
+
+prompt
+prompt Creating package body PKG_RECLAMOS
+prompt ==================================
+prompt
+CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_reclamos IS
+
+  PROCEDURE pr_getbyid(p_id     IN t_reclamos.id_reclamo%TYPE
+                      ,p_cursor OUT SYS_REFCURSOR) AS
+  BEGIN
+    OPEN p_cursor FOR
+      SELECT r.id_reclamo id
+            ,r.titulo titulo
+            ,r.mensaje iddispositivo
+            ,r.fecha_reclamo fechareclamo
+            ,r.fecha_baja fechabaja
+            ,r.respuesta respuesta
+            ,CASE
+               WHEN r.fecha_baja IS NULL THEN
+                'SI'
+               ELSE
+                'NO'
+             END activo
+        FROM t_reclamos r
+       WHERE r.id_reclamo = p_id;
+  EXCEPTION
+    WHEN OTHERS THEN
+      RAISE;
+  END pr_getbyid;
+
+  --------------------------------------------------------------------------------------------------------------------------------------------
+  PROCEDURE pr_getall(p_titulo                IN t_reclamos.titulo%TYPE
+                     ,p_mensaje               IN t_reclamos.mensaje%TYPE
+                     ,p_activo                IN OUT VARCHAR2
+                     ,p_numeropaginalistado   IN NUMBER
+                     ,p_totalregistroslistado OUT NUMBER
+                     ,p_cursor                OUT SYS_REFCURSOR) AS
+    v_registro_desde NUMBER(10) := (p_numeropaginalistado * 10) - 9;
+    v_registro_hasta NUMBER(10) := v_registro_desde + 9;
+    v_sql_count      VARCHAR2(4000);
+    v_sql_datos      VARCHAR2(4000);
+    v_with           VARCHAR2(2000) := 'WITH param as (SELECT :p1 p_titulo, :p2 p_mensaje, :p3 p_activo FROM dual) ';
+    v_where          VARCHAR2(2000);
+  BEGIN
+    -- contar resultados para el paginado
+    v_sql_count := v_with || 'SELECT COUNT(*) FROM t_reclamos t';
+    IF p_titulo IS NOT NULL
+    THEN
+      v_where := v_where ||
+                 ' AND t.titulo LIKE ''%'' || p_titulo || ''%'' ';
+    END IF;
+    IF p_mensaje IS NOT NULL
+    THEN
+      v_where := v_where ||
+                 ' AND t.mensaje LIKE ''%'' || p_mensaje || ''%'' ';
+    END IF;
+    IF p_activo = 'SI'
+    THEN
+      v_where := v_where || ' AND t.fecha_baja IS NULL ';
+    END IF;
+    IF p_activo = 'NO'
+    THEN
+      v_where := v_where || ' AND t.fecha_baja IS NOT NULL ';
+    END IF;
+    IF (v_where IS NOT NULL)
+    THEN
+      v_where     := substr(v_where, 5);
+      v_where     := ', param where ' || v_where;
+      v_sql_count := v_sql_count || v_where;
+    END IF;
+    dbms_output.put_line(v_sql_count);
+    EXECUTE IMMEDIATE v_sql_count
+      INTO p_totalregistroslistado
+      USING p_titulo, p_mensaje, p_activo;
+    v_sql_datos := v_with || 'SELECT c.id_reclamo id
+            ,c.titulo titulo
+            ,c.mensaje mensaje
+            ,c.fecha_reclamo fechareclamo
+            ,c.fecha_baja fechabaja
+            ,c.respuesta respuesta
+          ,CASE
+           WHEN c.fecha_baja IS NULL THEN
+            ''SI''
+           ELSE
+            ''NO''
+         END activo
+         FROM (SELECT a.*,rownum rnum FROM ' ||
+                   '(SELECT t.* FROM t_reclamos t' || v_where || ' )a ' ||
+                   'WHERE rownum <= ' || v_registro_hasta ||
+                   ') c WHERE rnum >= ' || v_registro_desde ||
+                   ' ORDER BY c.fecha_reclamo';
+    OPEN p_cursor FOR v_sql_datos
+      USING p_titulo, p_mensaje, p_activo;
+  EXCEPTION
+    WHEN OTHERS THEN
+      RAISE;
+  END pr_getall;
+
+  --------------------------------------------------------------------------------------------------------------------------------------------
+  PROCEDURE pr_postput(p_id            IN OUT t_reclamos.id_reclamo%TYPE
+                      ,p_titulo        IN t_reclamos.titulo%TYPE
+                      ,p_mensaje       IN t_reclamos.mensaje%TYPE
+                      ,p_respuesta     IN t_reclamos.respuesta%TYPE
+                      ,p_fecha_reclamo IN t_reclamos.fecha_reclamo%TYPE
+                      ,p_id_usuario    IN t_reclamos.id_usuario%TYPE) AS
+  BEGIN
+    IF p_id = 0
+    THEN
+      -- alta
+      p_id := seq_reclamo.nextval;
+      INSERT INTO t_reclamos
+        (id_reclamo, titulo, mensaje, respuesta, fecha_reclamo, id_usuario)
+      VALUES
+        (p_id
+        ,p_titulo
+        ,p_mensaje
+        ,p_respuesta
+        ,p_fecha_reclamo
+        ,p_id_usuario);
+    ELSE
+      -- modificacion
+      UPDATE t_reclamos r
+         SET r.titulo        = p_titulo
+            ,r.mensaje       = p_mensaje
+            ,r.respuesta     = p_respuesta
+            ,r.fecha_reclamo = p_fecha_reclamo
+            ,r.id_usuario    = p_id_usuario
+       WHERE r.id_reclamo = p_id;
+    END IF;
+  EXCEPTION
+    WHEN OTHERS THEN
+      RAISE;
+  END pr_postput;
+
+  --------------------------------------------------------------------------------------------------------------------------------------------
+  PROCEDURE pr_delete(p_id           IN t_reclamos.id_reclamo%TYPE
+                     ,p_activo_nuevo IN VARCHAR2) AS
+  BEGIN
+    UPDATE t_reclamos r
+       SET r.fecha_baja = CASE
+                            WHEN p_activo_nuevo = 'SI' THEN
+                             NULL
+                            ELSE
+                             SYSDATE
+                          END
+     WHERE r.id_reclamo = p_id;
+  EXCEPTION
+    WHEN OTHERS THEN
+      RAISE;
+  END pr_delete;
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+END pkg_reclamos;
 /
 
 prompt
@@ -1969,18 +2360,18 @@ CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_usuarios IS
     v_with           VARCHAR2(2000) := 'WITH param as (SELECT :p1 p_nombre, :p2 p_activo FROM dual) ';
     v_where          VARCHAR2(2000);
   BEGIN
-    v_sql_count := v_with || 'SELECT COUNT(*) FROM t_usuarios u';
+    v_sql_count := v_with || 'SELECT COUNT(*) FROM t_usuarios t';
     IF p_email IS NOT NULL
     THEN
-      v_where := v_where || ' AND u.email LIKE ''%'' || p_nombre || ''%'' ';
+      v_where := v_where || ' AND t.email LIKE ''%'' || p_nombre || ''%'' ';
     END IF;
     IF p_activo = 'SI'
     THEN
-      v_where := v_where || ' AND p.fec_baja IS NULL ';
+      v_where := v_where || ' AND t.fecha_baja IS NULL ';
     END IF;
     IF p_activo = 'NO'
     THEN
-      v_where := v_where || ' AND p.fec_baja IS NOT NULL ';
+      v_where := v_where || ' AND t.fecha_baja IS NOT NULL ';
     END IF;
     IF (v_where IS NOT NULL)
     THEN
@@ -1995,15 +2386,17 @@ CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_usuarios IS
           ,c.fecha_inicio fechainicio
           ,c.fecha_fin fechabaja
           ,c.email
+          ,c.nombre
+          ,c.apellido
           ,c.ultimo_login ultimologin
           ,CASE
-           WHEN c.fec_baja IS NULL THEN
-            '' SI ''
+           WHEN c.fecha_baja IS NULL THEN
+            ''SI''
            ELSE
-            '' NO ''
+            ''NO''
          END activo
          FROM (SELECT a.*,rownum rnum FROM ' ||
-                   '(SELECT t.* FROM t_usuarios' || v_where || ' )a ' ||
+                   '(SELECT t.* FROM t_usuarios t' || v_where || ' )a ' ||
                    'WHERE rownum <= ' || v_registro_hasta ||
                    ') c WHERE rnum >= ' || v_registro_desde ||
                    ' ORDER BY c.email';
@@ -2027,7 +2420,7 @@ CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_usuarios IS
       INSERT INTO t_usuarios
         (id_usuario, fecha_inicio, email, password, nombre, apellido)
       VALUES
-        (p_id, SYSDATE, p_email, p_password, p_nombre, p_apellido);
+        (p_id, SYSDATE, lower(p_email), lower(p_password), p_nombre, p_apellido);
         INSERT INTO t_usuarios_perfil
           (id_usuario_perfil, id_usuario, id_perfil)
         VALUES
