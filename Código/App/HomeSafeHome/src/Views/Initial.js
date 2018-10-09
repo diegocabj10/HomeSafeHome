@@ -5,19 +5,20 @@ import {
   View,
   Image,
   TouchableOpacity,
-  StatusBar
+  StatusBar,
+  AsyncStorage
 } from 'react-native';
 import SideMenu from 'react-native-side-menu';
 import ViewOne from './ViewOne';
 import Menu from './Menu';
 import RenderIf from './RenderIf';
-
+var myStyles = require('./Styles');
 const image = require('../assets/menu.png');
 
 const styles = StyleSheet.create({
   button: {
     position: 'absolute',
-    top: 20,
+    
     padding: 10,
   },
   caption: {
@@ -52,8 +53,40 @@ export default class Initial extends Component {
     this.state = {
       isOpen: false,
       selectedItem: 'Initial',
+      menu: ''
     };
   }
+
+  componentWillMount(){
+    this._retrieveData();
+}
+
+  _retrieveData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('menu');
+      if (value !== null) {
+        // We have data!!
+        this.setState({menu : JSON.parse(value)}); 
+      }
+     } catch (error) {
+       // Error retrieving data
+     }
+  }
+
+listarItems(){
+  if (!this.state.menu) return ( "Cargando" );
+  return (
+    this.state.menu.map(item =>
+      <Text key={item.Nombre}> {item.Nombre.toLowerCase()} </Text> 
+    )
+  )
+}  
+
+  handleOnNavigateBack = (foo) => {
+    this.setState({isOpen:false});
+  }
+    
+  
 
   toggle() {
     this.setState({
@@ -72,7 +105,7 @@ export default class Initial extends Component {
     });
 
   render() {
-    const menu = <Menu onItemSelected={this.onMenuItemSelected} />;
+    const menu = <Menu onItemSelected={this.onMenuItemSelected} items={this.state.menu} />;
    
 
     return (
@@ -93,13 +126,8 @@ export default class Initial extends Component {
           barStyle="light-content"
          />
 
-          <Text style={styles.welcome}>
-               {this.state.selectedItem}
-          </Text>
-          
-          <Text style={styles.instructions}>
-            La opción seleccionada fue: {this.state.selectedItem}
-          </Text>
+         
+         
         </View>
 
           )}
@@ -111,10 +139,14 @@ export default class Initial extends Component {
           onPress={this.toggle}
           style={styles.button}
         >
+        <View style={myStyles.titleContainerHSH}>
+        
           <Image
             source={image}
-            style={{ width: 32, height: 32 }}
+            style={{ width: 20, height: 20 }}
           />
+          <Text style={myStyles.titleHSH}> Home Safe Home </Text>
+          </View>
         </TouchableOpacity>
       </SideMenu>
     );

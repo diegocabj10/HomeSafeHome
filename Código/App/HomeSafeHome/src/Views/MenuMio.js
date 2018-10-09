@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import { Actions } from 'react-native-router-flux';
 import PropTypes from 'prop-types';
 import ItemMenu from './ItemMenu';
@@ -9,8 +9,7 @@ import {
   View,
   Image,
   Text,
-  AsyncStorage,
-  TouchableOpacity,
+  AsyncStorage
   
 } from 'react-native';
 
@@ -65,8 +64,10 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function Menu({ onItemSelected, items }) {
+ class MenuMio extends Component {
+
  
+  render(){
   return (
     <ScrollView scrollsToTop={false} style={styles.menu}>
       <View style={styles.avatarContainer}>
@@ -78,9 +79,14 @@ export default function Menu({ onItemSelected, items }) {
       </View>
 
       <View style={styles.itemsContainer}>
-         
+        
+      <ItemMenu name="inicio" />
+      <ItemMenu name="eventos" />
+      <ItemMenu name="notificaciones" />
+      <ItemMenu name="reclamos" />
+      <ItemMenu name="contactos" />
+      <ItemMenu name="configuracion" />
       
-      {renderItems(items)}
       </View>
      
 
@@ -88,16 +94,7 @@ export default function Menu({ onItemSelected, items }) {
   );
 }
 
-export function renderItems(items){
-  if (!items) return null;
-  return (
-    items.map(item =>
-      <ItemMenu key={item.Nombre} name={item.Nombre.toLowerCase()} />      
-    )
-  );
-}
-
-export function _retrieveData(){
+_retrieveData(){
   try {
     AsyncStorage.getItem('email')
       .then(value => {
@@ -111,6 +108,6 @@ export function _retrieveData(){
    }
 }
 
-Menu.propTypes = {
-  onItemSelected: PropTypes.func.isRequired,
-};
+}
+
+export default MenuMio;
