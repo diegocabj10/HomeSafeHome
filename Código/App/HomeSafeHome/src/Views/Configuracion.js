@@ -80,7 +80,7 @@ class Configuracion extends Component{
           onChange={isOpen => this.updateMenuState(isOpen)}
           >
                         <View style={myStyles.container}>
-                <Text style={styles.welcome}>{helloMessage}</Text>
+                
                 <Button
         buttonStyle={{ marginTop: 20 }}
         backgroundColor="#03A9F4"

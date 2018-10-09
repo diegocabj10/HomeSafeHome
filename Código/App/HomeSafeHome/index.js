@@ -5,9 +5,10 @@ import {AppRegistry} from 'react-native';
 import { Router, Scene, Stack } from 'react-native-router-flux';
 import Login from './src/Views/Login';
 import Eventos from './src/Views/Eventos';
+import Elemento from './src/Views/Elemento';
 import Register from './src/Views/Register';
 import Configuracion from './src/Views/Configuracion';
-import Notificaciones from './src/Views/Notificaciones';
+import Avisos from './src/Views/Avisos';
 import Contactos from './src/Views/Contactos';
 import Reclamos from './src/Views/Reclamos';
 import Initial from './src/Views/Initial';
@@ -69,7 +70,8 @@ constructor(props, context) {
           <Scene key="eventos" component={Eventos} title="Eventos"  back />  
           <Scene key="contactos" component={Contactos} title="Contactos"  back />
           <Scene key="reclamos" component={Reclamos} title="Reclamos"  back />
-          <Scene key="notificaciones" component={Notificaciones} title="Notificaciones"  back />
+          <Scene key="avisos" component={Avisos} title="Avisos"  back />
+          <Scene key="elemento" component={Elemento} title="Elemento" />
           <Scene key="inicio" component={Initial} title="Inicio" initial={this.state.logged} hideNavBar={true} type='reset'/>  
         </Stack>
         

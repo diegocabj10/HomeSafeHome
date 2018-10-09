@@ -21,6 +21,10 @@ module.exports = StyleSheet.create({
             tintColor: '#EBEBEB'
             },
 
+    fondo: {
+      backgroundColor: '#2E4452',
+    }  ,  
+
     container: {
         flex: 1,
         backgroundColor: '#2E4452',
@@ -40,6 +44,14 @@ module.exports = StyleSheet.create({
       },   
 
       loginFormInputs: {
+        marginTop: 20 ,
+        color:'#EBEBEB',
+        textAlign: 'center',
+        backgroundColor:'#3E5B6E',
+        width: window.width*0.7, 
+        borderRadius: 30 
+      },   
+      registerFormInputs: {
         marginTop: 20 ,
         color:'#EBEBEB',
         textAlign: 'center',
@@ -115,6 +127,12 @@ module.exports = StyleSheet.create({
         fontSize: 12,
         paddingTop:20,
         color: '#DC1625',
+        textAlign: 'center'
+      },
+      message:{
+        fontSize: 12,
+        paddingTop:20,
+        color: '#009900',
         textAlign: 'center'
       },
       

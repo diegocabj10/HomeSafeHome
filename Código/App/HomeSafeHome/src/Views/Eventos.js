@@ -12,6 +12,7 @@ import {
   import { AsyncStorage } from "react-native";
   import SideMenu from 'react-native-side-menu';
   import Menu from './Menu';
+  import Lista from './Lista';
 
 
 const image = require('../assets/menu.png');
@@ -76,53 +77,26 @@ class Eventos extends Component{
       selectedItem: item,
     }); 
 
-    componentWillMount(){
-        this._retrieveData();
-    }
+    
     
     salir() {
         onSignOut();
         Actions.login();
     }
 
-    _retrieveData = async () => {
-        try {
-          const value = await AsyncStorage.getItem('menu');
-          if (value !== null) {
-            // We have data!!
-            this.setState({menu : JSON.parse(value)}); 
-          }
-         } catch (error) {
-           // Error retrieving data
-         }
-      }
-
-    listarItems(){
-      if (!this.state.menu) return ( "Cargando" );
-      return (
-        this.state.menu.map(item =>
-          <Text key={item.Nombre}> {item.Nombre.toLowerCase()} </Text> 
-        )
-      )
-    }  
+    
 
     render(){
         const helloMessage = 'Hola, esta es la vista Eventos';
         const menu = <Menu onItemSelected={this.onMenuItemSelected} />;
         return (
-          <SideMenu
-          menu={menu}
-          isOpen={this.state.isOpen}
-          onChange={isOpen => this.updateMenuState(isOpen)}
-          >
-                        <View style={styles.container}>
-                            <Text style={styles.welcome}>{helloMessage}</Text>
-                            <Text> Los items menu: {this.listarItems()} </Text>
-                          
+          
+                        <View >
+                          <Lista entidad= 'Eventos' clave= 'lista' titulo= 'Lista de Eventos' />                                                    
                         </View>
 
              
-        </SideMenu>
+        
           
         );
     }

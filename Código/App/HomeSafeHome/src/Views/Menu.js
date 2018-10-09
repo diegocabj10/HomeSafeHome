@@ -65,9 +65,8 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function Menu({ onItemSelected }) {
+export default function Menu({ onItemSelected, items }) {
  
-  
   return (
     <ScrollView scrollsToTop={false} style={styles.menu}>
       <View style={styles.avatarContainer}>
@@ -80,17 +79,21 @@ export default function Menu({ onItemSelected }) {
 
       <View style={styles.itemsContainer}>
          
-      <ItemMenu name="inicio" />
-      <ItemMenu name="eventos" />
-      <ItemMenu name="notificaciones" />
-      <ItemMenu name="reclamos" />
-      <ItemMenu name="contactos" />
-      <ItemMenu name="configuracion" />
       
+      {renderItems(items)}
       </View>
      
 
     </ScrollView>
+  );
+}
+
+export function renderItems(items){
+  if (!items) return null;
+  return (
+    items.map(item =>
+      <ItemMenu key={item.Nombre} name={item.Nombre.toLowerCase()} />      
+    )
   );
 }
 

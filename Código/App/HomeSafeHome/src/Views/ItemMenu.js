@@ -5,7 +5,7 @@ import { Actions } from 'react-native-router-flux';
 const iconos = {
   'inicio': require('../assets/inicio.png'),
   'eventos': require('../assets/eventos.png'),
-  'notificaciones': require('../assets/notificaciones.png'),
+  'avisos': require('../assets/avisos.png'),
   'reclamos': require('../assets/reclamos.png'),
   'contactos': require('../assets/contactos.png'),
   'configuracion': require('../assets/configuracion.png'),

@@ -12,6 +12,7 @@ import {
   import { AsyncStorage } from "react-native";
   import SideMenu from 'react-native-side-menu';
   import Menu from './Menu';
+  import Lista from './Lista';
 
   const styles = StyleSheet.create({
     button: {
@@ -43,7 +44,7 @@ import {
   });
 
 
-class Nofiticaciones extends Component{
+class Avisos extends Component{
     
   constructor(props) {
     super(props);
@@ -76,24 +77,14 @@ class Nofiticaciones extends Component{
   
 
     render(){
-        const helloMessage = 'Hola, esta es la vista Nofiticaciones';
+        const helloMessage = 'Hola, esta es la vista Avisos';
         const menu = <Menu onItemSelected={this.onMenuItemSelected} />;
         return (
-          <SideMenu
-          menu={menu}
-          isOpen={this.state.isOpen}
-          onChange={isOpen => this.updateMenuState(isOpen)}
-          >
-                        <View style={styles.container}>
-                            <Text style={styles.welcome}>{helloMessage}</Text>
-                          
-                          
-                        </View>
-
-             
-        </SideMenu>
+          <View >
+          <Lista entidad= 'Avisos' clave= 'lista' titulo= 'Lista de Avisos' />                                                    
+        </View>
           
         );
     }
 }
-export default Nofiticaciones;
+export default Avisos;

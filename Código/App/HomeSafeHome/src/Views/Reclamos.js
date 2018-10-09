@@ -12,6 +12,7 @@ import {
   import { AsyncStorage } from "react-native";
   import SideMenu from 'react-native-side-menu';
   import Menu from './Menu';
+  import Lista from './Lista';
 
   const styles = StyleSheet.create({
     button: {
@@ -79,19 +80,9 @@ class Reclamos extends Component{
         const helloMessage = 'Hola, esta es la vista Reclamos';
         const menu = <Menu onItemSelected={this.onMenuItemSelected} />;
         return (
-          <SideMenu
-          menu={menu}
-          isOpen={this.state.isOpen}
-          onChange={isOpen => this.updateMenuState(isOpen)}
-          >
-                        <View style={styles.container}>
-                            <Text style={styles.welcome}>{helloMessage}</Text>
-                          
-                          
-                        </View>
-
-             
-        </SideMenu>
+          <View >
+          <Lista entidad= 'Reclamos' clave= 'lista' titulo= 'Lista de Reclamos' />                                                    
+        </View>
           
         );
     }
