@@ -84,7 +84,6 @@
     <Compile Include="DtoIdNombreIdTipo.cs" />
     <Compile Include="DtoIdNumericoNombre.cs" />
     <Compile Include="DtoItemsSeguridad.cs" />
-    <Compile Include="DtoItemsUsuario.cs" />
     <Compile Include="DtoMenuHijo.cs" />
     <Compile Include="DtoMenuPadre.cs" />
     <Compile Include="DtoEvento.cs" />

@@ -30,8 +30,8 @@ namespace BL
             slidingExpiration = System.Web.Caching.Cache.NoSlidingExpiration;
             value = null; // doc;
 
-            if (HttpRuntime.Cache[key] != null && HttpRuntime.Cache[key] is DtoItemsUsuario)
-                CerrarSesionApp((HttpRuntime.Cache[key] as DtoItemsUsuario).DbSesionId);
+            if (HttpRuntime.Cache[key] != null && HttpRuntime.Cache[key] is DtoUsuario)
+                CerrarSesionApp((HttpRuntime.Cache[key] as DtoUsuario).DbSessionId);
 
         }
 
@@ -115,7 +115,7 @@ namespace BL
 
             var _tk = Guid.NewGuid().ToString().ToUpper();
             var ip = HttpContext.Current.Request.UserHostAddress;
-            var parametros = new object[] { email, password,_tk, ip, null, null };
+            var parametros = new object[] { email, password, _tk, ip, null, null, null };
 
             List<DtoId> PerfilesDelUsuario = null;
             // normalmente: No existe el usuario en el sistema."))
@@ -123,12 +123,13 @@ namespace BL
             
             HttpContext.Current.Items["_tk"] = _tk;
          
-            var usuario = new DtoUsuario();
+            var usuario = new DtoUsuario();           
             usuario.Id = parametros[4].ToString();
+            usuario.PersonaNombre = parametros[5].ToString();
             usuario.Email = email;
             usuario.DbSessionId = _tk;
             if (PerfilesDelUsuario.Count > 0)
-                usuario.IdPerfiles = PerfilesDelUsuario.Select(x => int.Parse(x.Id)).ToList<int>();  //new List<int>() { 1 }; //rol administrador
+                usuario.IdPerfiles = PerfilesDelUsuario.Select(x => int.Parse(x.Id)).ToList<int>();  
 
             HttpContext.Current.Response.Headers.Add("_tk", _tk);
             return usuario;
