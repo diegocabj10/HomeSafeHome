@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FlatList, Text, View, Picker, Button, TextInput, TouchableOpacity } from 'react-native';
+import { FlatList, Text, View, Picker, Button, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import Fila from './Fila';
 import { List } from "react-native-elements";
@@ -8,6 +8,7 @@ import { Actions } from 'react-native-router-flux';
 class Lista extends Component {
   constructor(props){
     super(props);
+    this.makeRemoteRequest = this.makeRemoteRequest.bind(this);
   }
   
   state = {
@@ -22,29 +23,10 @@ class Lista extends Component {
   
 
   componentWillMount() {
-    Actions.refresh({key: this.props.clave, title: this.props.titulo });
     this.makeRemoteRequest()
   }
   
-  makeRemoteRequest = () => {
-   /*axios.get(`https://api.flickr.com/services/rest/?method=flickr.photosets.getList&api_key=6e8a597cb502b7b95dbd46a46e25db8d&user_id=${this.state.user_id}&format=json&nojsoncallback=1`)
-      .then(response => {
-        if (response.data.photosets.photoset) {
-          this.setState({
-            photoset: response.data.photosets.photoset,
-            hasAlbums: true,
-            refreshing: false
-          })
-        } else {
-          this.setState({
-            photoset: null,
-            hasAlbums: false,
-            refreshing: false
-          })
-        }
-      });
-  }*/
-  
+  makeRemoteRequest = () => {  
   axios.get(`http://proyectofinal2018.ddns.net:8080/api/${this.props.entidad}?numeroPagina=${this.state.pagina}`).then(response => {
         if (response.data.Lista && response.data.TotalRegistrosListado) {
           this.setState({
@@ -75,7 +57,7 @@ class Lista extends Component {
   }
   
   consultarPagina = (x) => {
-    if(x>0 /*&& x<=this.state.ultima /*&& x != this.state.pagina*/){
+    if(x>0 && x<=this.state.ultima && x != this.state.pagina){
       this.setState ({pagina: x});
       this.handleRefreshing();
     }
@@ -92,19 +74,17 @@ class Lista extends Component {
       <View>
         <Text>
           Total de {this.props.entidad}: {this.state.registros}
-            - {this.props.clave}  {this.props.text}
+            - {this.props.titulo}
         </Text>
-        <TouchableOpacity onPress={() => this.consultarPagina(1)} 
+        <Button onPress={() => this.consultarPagina(1)} 
           style={[styles.buttonStyle, styles.thumbnailStyle]}
-        >
-          <Text>1º</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
+          title="|<-"
+        />
+        <Button
           onPress={() => this.consultarPagina(this.state.pagina - 1)}
           style={[styles.buttonStyle, styles.thumbnailStyle]}
-        >
-          <Text>-1</Text>
-        </TouchableOpacity>
+          title="<-"
+        />
         <TextInput placeholder={'' + this.state.pagina} onChangeText={this.comprobarTexto.bind(this)}/>
         <Text>
           /{this.state.ultima}
@@ -117,24 +97,64 @@ class Lista extends Component {
           onPress={() => this.consultarPagina(this.state.ultima)}
           title="->|"
         />
+        {this.verBotones()}
       </View>
+      
     );
   };
+
+  verBotones = () => {
+    if(this.props.entidad != 'Eventos'){
+      return <Button onPress={() => Actions.nuevo({entidad: this.props.entidad})}
+        title="Nuevo" />
+    }
+    return null;
+  }
 
   cargarDatos = (item) => {
-    return (
-      <View>
-        <Text>
-          {item.Id} - {item.FechaEvento}
-        </Text>
-        <Text>
-          Dispositivo: {item.IdDispositivo} - Señal: {item.IdSenial}
-        </Text>
-      </View>
-    );
+    if(this.props.entidad == 'Eventos'){
+      return (
+        <View>
+          <Text>
+            {item.Id} - {item.FechaEvento}
+          </Text>
+          <Text>
+            Dispositivo: {item.IdDispositivo} - Señal: {item.NombreSenial}
+          </Text>
+        </View>
+      );
+    }
+    if(this.props.entidad == 'Reclamos' || this.props.entidad == 'Avisos'){
+      var fecha = item.FechaReclamo
+      if(this.props.entidad == 'Avisos'){
+        fecha = item.FechaAviso
+      }
+      return (
+        <View>
+          <Text>
+            {item.Id} - {fecha}
+          </Text>
+          <Text>
+            {item.Titulo}
+          </Text>
+        </View>
+      );
+    }
+    if(this.props.entidad == 'Usuarios'){
+      return (
+        <View>
+          <Text>
+            {item.Id} - {item.FechaInicio}
+          </Text>
+          <Text>
+            {item.Email}
+          </Text>
+        </View>
+      );
+    }
   };
 
-  render() {  
+  render() {    
     if (this.state.vacio) {
       return (
         <View>
@@ -145,29 +165,33 @@ class Lista extends Component {
       );
     }
 
-    if (!this.state.listaElementos) {
+    if (!this.state.listaElementos && !this.state.vacio) {
       return (
         <View>
           <Text>
             Cargando {this.props.entidad}...
 					</Text>
+          <ActivityIndicator size="large" color="#00ccff" />
         </View>
       );
     }
 
+
     return (
-      <List>
-        <FlatList
-          data={this.state.listaElementos}
-          renderItem={({ item }) => (
-            <Fila key={item.Id} contenido={ this.cargarDatos(item)  /*item.FechaEvento*/ } filaId={item.Id} entidad={this.props.entidad} />
-          )}
-          keyExtractor={item => item.id}
-          onRefresh={this.handleRefreshing}
-          refreshing={this.state.refreshing}
-          ListHeaderComponent={this.renderPaginador}
-        />
-      </List>
+      <View>
+        <List>
+          <FlatList
+            data={this.state.listaElementos}
+            renderItem={({ item }) => (
+              <Fila key={item.Id} contenido={ this.cargarDatos(item) } filaId={item.Id} entidad={this.props.entidad} />
+            )}
+            keyExtractor={item => item.id}
+            onRefresh={this.handleRefreshing}
+            refreshing={this.state.refreshing}
+            ListHeaderComponent={this.renderPaginador}
+          />
+        </List>
+      </View>
     );
   }
 }

@@ -11,11 +11,17 @@ class Inicio extends Component {
               onPress={() => Actions.lista({entidad: 'Eventos', clave: 'lista', titulo: 'Lista de Eventos'})} 
               title='Eventos' />
               <Button 
-              onPress={() => Actions.lista({entidad: 'Notificaciones', clave: 'lista', titulo: 'Lista de Notificaciones'})}  
-               title='Notificaciones' />
+              onPress={() => Actions.lista({entidad: 'Avisos', clave: 'lista', titulo: 'Lista de Avisos'})}  
+               title='Avisos' />
               <Button 
               onPress={() => Actions.lista({entidad: 'Reclamos', clave: 'lista', titulo: 'Lista de Reclamos'})}
                title='Reclamos' />
+              <Button 
+              onPress={() => Actions.lista({entidad: 'Usuarios', clave: 'lista', titulo: 'Lista de Usuarios'})}
+               title='Usuarios' />
+               <Button 
+              onPress={() => Actions.lista({entidad: 'Contactos', clave: 'lista', titulo: 'Lista de Contactos'})}
+               title='Contactos' />
             </View>
         );
     }
