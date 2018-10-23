@@ -53,12 +53,14 @@ export default class Initial extends Component {
     this.state = {
       isOpen: false,
       selectedItem: 'Initial',
-      menu: ''
+      menu: '',
+      nombre:''
     };
   }
 
   componentWillMount(){
     this._retrieveData();
+    this._retrieveDataNombreUsuario();
 }
 
   _retrieveData = async () => {
@@ -67,6 +69,19 @@ export default class Initial extends Component {
       if (value !== null) {
         // We have data!!
         this.setState({menu : JSON.parse(value)}); 
+      }
+     } catch (error) {
+       // Error retrieving data
+     }
+  }
+
+  _retrieveDataNombreUsuario = async () => {
+    try {
+      const value = await AsyncStorage.getItem('nombre');
+      if (value !== null) {
+        // We have data!!
+        global.nombreUsuario= value;
+        this.setState({nombre : value}); 
       }
      } catch (error) {
        // Error retrieving data
@@ -82,7 +97,7 @@ listarItems(){
   )
 }  
 
-  handleOnNavigateBack = (foo) => {
+  handleOnNavigateBack(){
     this.setState({isOpen:false});
   }
     
@@ -105,11 +120,11 @@ listarItems(){
     });
 
   render() {
-    const menu = <Menu onItemSelected={this.onMenuItemSelected} items={this.state.menu} />;
-   
+    const menu = <Menu onItemSelected={this.onMenuItemSelected} items={this.state.menu} nombre={this.state.nombre}/>;
+    
 
     return (
-      
+     
       <SideMenu
         menu={menu}
         isOpen={this.state.isOpen}

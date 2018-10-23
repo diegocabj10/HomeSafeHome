@@ -5,7 +5,6 @@ import { Actions } from 'react-native-router-flux';
 const Fila = ({ contenido, filaId, entidad }) => {
   const {
     headerContentStyle,
-    
     headerTextStyle,
     imageStyle
   } = styles;
@@ -13,7 +12,7 @@ const Fila = ({ contenido, filaId, entidad }) => {
   return (
     <View key={filaId} style={[styles.buttonStyle, styles.textStyle]}>
       <TouchableOpacity
-       onPress={() => Actions.elemento({id:filaId, tipo: entidad})} >
+       onPress={() => Actions.elemento({id: filaId, tipo: entidad})} >
         {contenido}
       </TouchableOpacity>
     </View>
@@ -57,7 +56,7 @@ const styles = {
     backgroundColor: '#fff',
     borderRadius: 5,
     borderWidth: 1,
-    borderColor: '#007aff',
+    borderColor: '#2E4452',
     marginLeft: 5,
     marginRight: 5
   }

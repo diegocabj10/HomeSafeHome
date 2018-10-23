@@ -10,6 +10,7 @@ export const FLAGLOGUEADO = "logueado";
 export const EMAIL = "email";
 export const PASSWORD = "password";
 export const MENU = "menu";
+export const NOMBRE = "nombre";
 export var logueado=false;
 export var datos='';
 const image = require('../assets/logoHomeSafeHome.png');
@@ -24,6 +25,7 @@ class Login extends Component{
         error: '',
         logueado: 'false'
         }
+        
     }   
 
     _onSignIn(emailPar , passwordPar) { 
@@ -51,6 +53,8 @@ class Login extends Component{
           AsyncStorage.setItem(EMAIL, emailPar);
           AsyncStorage.setItem(PASSWORD, passwordPar);
           AsyncStorage.setItem(MENU, itemsMenu);
+          AsyncStorage.setItem(NOMBRE, response.data.Usuario.PersonaNombre);
+          global.nombreUsuario= response.data.Usuario.PersonaNombre;
           logueado=true;         
           this.setState( {error : itemsMenu});      
           Actions.inicio();         

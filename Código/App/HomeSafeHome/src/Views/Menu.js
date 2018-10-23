@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function Menu({ onItemSelected, items }) {
+export default function Menu({ onItemSelected, items, nombre }) {
  
   return (
     <ScrollView scrollsToTop={false} style={styles.menu}>
@@ -73,8 +73,8 @@ export default function Menu({ onItemSelected, items }) {
         <Image
           style={styles.avatar}
           source={require('../assets/avatar.png')}
-        />
-        <Text style={styles.name}>Franco Luna</Text>
+        />    
+        <Text style={styles.name}>{nombre}</Text>
       </View>
 
       <View style={styles.itemsContainer}>

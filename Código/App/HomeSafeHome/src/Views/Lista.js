@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { FlatList, Text, View, Picker, Button, TextInput, TouchableOpacity } from 'react-native';
+import { FlatList, Text, View, Picker, Button, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import Fila from './Fila';
-import { List } from "react-native-elements";
+import { List, Icon } from "react-native-elements";
 import { Actions } from 'react-native-router-flux';
 
 class Lista extends Component {
@@ -14,7 +14,7 @@ class Lista extends Component {
   state = {
     listaElementos: null,
     entidad: '',
-    vacio: true,
+    vacio: false,
     refreshing: false,
     registros: 1,
     pagina: 1,
@@ -72,45 +72,92 @@ class Lista extends Component {
   renderPaginador = () => {
     return (
       <View>
-        <Text>
+        
+        <View style={{
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+      }}>
+        <Icon
+        reverse
+        name='first-page'
+        color='#2E4452'
+        size={18}
+        onPress={() => this.consultarPagina(1)} 
+        />
+
+        <Icon
+        reverse
+        name='navigate-before'
+        color='#2E4452'
+        size={18}
+        onPress={() => this.consultarPagina(this.state.pagina - 1)}
+         />
+
+
+        <Icon
+        reverse
+        name='navigate-next'
+        color='#2E4452'
+        size={18} 
+        onPress={() => this.consultarPagina(this.state.pagina + 1)}
+        />
+
+        <Icon
+        reverse
+        name='last-page'
+        color='#2E4452'
+        size={18}
+        onPress={() => this.consultarPagina(this.state.ultima)}
+        />
+        {this.verBotones()}
+         </View>
+
+          <View style={{
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+      }}>
+
+         <Text>
           Total de {this.props.entidad}: {this.state.registros}
-            - {this.props.clave}  {this.props.text}
+          </Text>
+          <Text>
+          Total de páginas: {this.state.ultima}           
         </Text>
-        <TouchableOpacity onPress={() => this.consultarPagina(1)} 
-          style={[styles.buttonStyle, styles.thumbnailStyle]}
-        >
-          <Text>1º</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => this.consultarPagina(this.state.pagina - 1)}
-          style={[styles.buttonStyle, styles.thumbnailStyle]}
-        >
-          <Text>-1</Text>
-        </TouchableOpacity>
-        <TextInput placeholder={'' + this.state.pagina} onChangeText={this.comprobarTexto.bind(this)}/>
         <Text>
-          /{this.state.ultima}
+        Página actual:{this.state.pagina}
         </Text>
-        <Button 
-          onPress={() => this.consultarPagina(this.state.pagina + 1)}
-          title="->"
-        />
-        <Button 
-          onPress={() => this.consultarPagina(this.state.ultima)}
-          title="->|"
-        />
+      
+        </View>
       </View>
+      
     );
   };
+
+  verBotones = () => {
+    if(this.props.entidad != 'Eventos'){
+
+      return (
+      <Icon
+      reverse
+      name='add'
+      color='#2E4452'
+      size={18}
+      onPress={() => Actions.nuevo({entidad: this.props.entidad})}
+      />   );  
+    }
+    return null;
+  }
 
   cargarDatos = (item) => {
     if(this.props.entidad == 'Eventos'){
       return (
-        <View>
+        <View  key={item.Id}>
           <Text key={item.Id}>
             {item.Id} - {item.FechaEvento}
           </Text>
-          <Text key={item.IdDispositivo}>
+          <Text  key={item.IdDispositivo}>
             Dispositivo: {item.IdDispositivo} - Señal: {item.NombreSenial}
           </Text>
         </View>
@@ -122,11 +169,11 @@ class Lista extends Component {
         fecha = item.FechaAviso
       }
       return (
-        <View>
-          <Text>
+        <View key={item.Id}>
+          <Text key={item.Id}>
             {item.Id} - {fecha}
           </Text>
-          <Text>
+          <Text key={item.Id}>
             {item.Titulo}
           </Text>
         </View>
@@ -134,11 +181,11 @@ class Lista extends Component {
     }
     if(this.props.entidad == 'Usuarios'){
       return (
-        <View>
-          <Text>
+        <View key={item.Id}>
+          <Text key={item.Id}>
             {item.Id} - {item.FechaInicio}
           </Text>
-          <Text>
+          <Text key={item.Id}>
             {item.Email}
           </Text>
         </View>
@@ -146,7 +193,7 @@ class Lista extends Component {
     }
   };
 
-  render() {  
+  render() {    
     if (this.state.vacio) {
       return (
         <View>
@@ -157,28 +204,32 @@ class Lista extends Component {
       );
     }
 
-    if (!this.state.listaElementos) {
+    if (!this.state.listaElementos && !this.state.vacio) {
       return (
         <View>
           <Text>
             Cargando {this.props.entidad}...
 					</Text>
+          <ActivityIndicator size="large" color="#2E4452" />
         </View>
       );
     }
 
+
     return (
       <View>
-        <FlatList
-          data={this.state.listaElementos}
-          renderItem={({ item }) => (
-            <Fila key={item.Id} contenido={ this.cargarDatos(item) } filaId={item.Id} entidad={this.props.entidad} />
-          )}
-          keyExtractor={item => item.id}
-          onRefresh={this.handleRefreshing}
-          refreshing={this.state.refreshing}
-          ListHeaderComponent={this.renderPaginador}
-        />
+      
+          <FlatList
+            data={this.state.listaElementos}
+            renderItem={({ item }) => (
+              <Fila key={item.Id} contenido={ this.cargarDatos(item) } filaId={item.Id} entidad={this.props.entidad} />
+            )}
+            keyExtractor={item => item.id}
+            onRefresh={this.handleRefreshing}
+            refreshing={this.state.refreshing}
+            ListHeaderComponent={this.renderPaginador}
+          />
+      
       </View>
     );
   }

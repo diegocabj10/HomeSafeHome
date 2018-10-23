@@ -12,6 +12,7 @@ import Avisos from './src/Views/Avisos';
 import Contactos from './src/Views/Contactos';
 import Reclamos from './src/Views/Reclamos';
 import Initial from './src/Views/Initial';
+import Nuevo from './src/Views/Nuevo';
 import Splash from './src/Views/Splash';
 import {name as appName} from './app.json';
 import { AsyncStorage } from "react-native";
@@ -50,7 +51,22 @@ constructor(props, context) {
     );
   };
 
+  _retrieveDataNombreUsuario = async () => {
+    try {
+      const value = await AsyncStorage.getItem('nombre');
+      if (value !== null) {
+        // We have data!!
+        global.nombreUsuario=value;
+        this.setState({nombre : value}); 
+      }
+     } catch (error) {
+       // Error retrieving data
+     }
+  }
+
   render (){
+ 
+
     return (
 
         <Router 
@@ -71,6 +87,7 @@ constructor(props, context) {
           <Scene key="contactos" component={Contactos} title="Contactos"  back />
           <Scene key="reclamos" component={Reclamos} title="Reclamos"  back />
           <Scene key="avisos" component={Avisos} title="Avisos"  back />
+          <Scene key="nuevo" component={Nuevo} title="Nuevo"  back />
           <Scene key="elemento" component={Elemento} title="Elemento" />
           <Scene key="inicio" component={Initial} title="Inicio" initial={this.state.logged} hideNavBar={true} type='reset'/>  
         </Stack>

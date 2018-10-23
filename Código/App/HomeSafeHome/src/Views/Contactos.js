@@ -76,22 +76,17 @@ class Contactos extends Component{
   
 
     render(){
-        const helloMessage = 'Hola, esta es la vista Contactos';
-        const menu = <Menu onItemSelected={this.onMenuItemSelected} />;
+        const helloMessage = 'Contactos';
+      
         return (
-          <SideMenu
-          menu={menu}
-          isOpen={this.state.isOpen}
-          onChange={isOpen => this.updateMenuState(isOpen)}
-          >
+     
                         <View style={styles.container}>
                             <Text style={styles.welcome}>{helloMessage}</Text>
                           
                           
                         </View>
 
-             
-        </SideMenu>
+
           
         );
     }

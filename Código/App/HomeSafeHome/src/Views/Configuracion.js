@@ -72,13 +72,9 @@ class Configuracion extends Component{
 
     render(){
         const helloMessage = 'Hola, esta es la vista Configuracion';
-        const menu = <Menu onItemSelected={this.onMenuItemSelected} />;
+      
         return (
-          <SideMenu
-          menu={menu}
-          isOpen={this.state.isOpen}
-          onChange={isOpen => this.updateMenuState(isOpen)}
-          >
+         
                         <View style={myStyles.container}>
                 
                 <Button
@@ -91,8 +87,7 @@ class Configuracion extends Component{
       />
             </View>
 
-             
-        </SideMenu>
+    
           
         );
         
