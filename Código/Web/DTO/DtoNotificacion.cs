@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 
 namespace DTO
 {
-    public class DtoAviso : DtoAbmBase
+    public class DtoNotificacion : DtoAbmBase
     {
+        public DateTime FechaNotificacion { get; set; }
         public int IdUsuario { get; set; }
+        public int IdEvento { get; set; }
         public string Titulo { get; set; }
         public string Mensaje { get; set; }
-        public DateTime FechaAviso { get; set; }
+        public string NombreDispositivo { get; set; }
     }
 }

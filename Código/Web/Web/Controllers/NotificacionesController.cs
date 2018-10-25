@@ -1,32 +1,26 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using BL;
 using DTO;
+using BL;
+using System.Collections;
+using System.Dynamic;
+
 namespace Web.Controllers
 {
-    public class ReclamosController : BaseController<DtoReclamo, rnAbmBase<DtoReclamo>>
+    public class NotificacionesController : BaseController<DtoNotificacion, rnAbmBase<DtoNotificacion>>
     {
-        public ReclamosController()
+        public NotificacionesController()
         {
-            base.Setup(Entidad: "Reclamos", SetIdNumerico: "", SetIdNombreIdTipo: "");
+            base.Setup(Entidad: "Notificaciones", SetIdNumerico: "", SetIdNombreIdTipo: "");
         }
-
-        public override IHttpActionResult Post(DtoReclamo DtoSel)
+        public IHttpActionResult GetNotificaciones([FromUri] int numeroPagina, int idUsuario,string Titulo = "", string Mensaje = "")
         {
-            DtoSel.FechaReclamo = TimeZoneInfo.ConvertTime(DateTime.Now, TimeZoneInfo.FindSystemTimeZoneById("Argentina Standard Time"));
-            return base.Post(DtoSel);
-        }
-
-        public IHttpActionResult GetReclamos([FromUri] int numeroPagina, int idUsuario, string Titulo = "", string Mensaje = "")
-        {
-
-            DtoReclamo DtoFiltro = new DtoReclamo();
+          
+            DtoNotificacion DtoFiltro = new DtoNotificacion();
             DtoFiltro.IdUsuario = idUsuario;
             DtoFiltro.NumeroPaginaListado = numeroPagina;
 
@@ -39,12 +33,11 @@ namespace Web.Controllers
                 var message = string.Format("No existen registros con los filtros aplicados.");
                 return Content(HttpStatusCode.NotFound, message);
             }
-
+         
             IDictionary<string, object> resultado = new ExpandoObject();
             resultado["Lista"] = Lista;
             resultado["TotalRegistrosListado"] = TotalRegistrosListado;
             return Ok(resultado);
         }
-
     }
 }

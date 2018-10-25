@@ -13,19 +13,21 @@
     <div>
         <table class="table table-striped table-bordered">
             <tr>
-                <th class="text-center">Id Evento</th>
-                <th class="text-center">Id Arduino</th>
+                <th class="text-center">Id Notificacion</th>
+                <th class="text-center">Dispositivo</th>
+                <th class="text-center">Titulo</th>
                 <th class="text-center">Señal</th>
-                <th class="text-center">Valor</th>
-                <th class="text-center">Fecha Notifiacion</th>
+                <th class="text-center">Fecha Notifiación</th>
             </tr>
 
             <tr ng-repeat="dto in Lista">
                 <td class="text-center">{{dto.Id}}</td>
-                <td class="text-center">{{dto.IdDispositivo}}</td>
-                <td class="text-center">{{dto.IdSenial}}</td>
-                <td class="text-center">{{dto.Valor}}</td>
-                <td class="text-center">{{dto.FechaEvento}}</td>
+                <td class="text-center">{{dto.NombreDispositivo}}</td>
+                <td class="text-center">{{dto.Titulo}}</td>
+                <td class="text-center">{{dto.Mensaje}}</td>
+                <td class="text-center">{{dto.FechaNotificacion}}</td>
+
+              
             </tr>
         </table>
     </div>
@@ -49,7 +51,7 @@
             $scope.Buscar = function () {
                 //$interval(function () {
                
-                $http.get('api/eventos', { params: { numeroPagina: $scope.paginaActual } })
+                $http.get('api/notificaciones', { params: { numeroPagina: $scope.paginaActual, idUsuario: 1 } })
                         .then(
                             function (successResponse) {
                                 $scope.Lista = successResponse.data.Lista;

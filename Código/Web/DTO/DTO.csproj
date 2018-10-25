@@ -87,6 +87,7 @@
     <Compile Include="DtoMenuHijo.cs" />
     <Compile Include="DtoMenuPadre.cs" />
     <Compile Include="DtoEvento.cs" />
+    <Compile Include="DtoNotificacion.cs" />
     <Compile Include="DtoPerfil.cs" />
     <Compile Include="DtoPerfilesProcesos.cs" />
     <Compile Include="DtoProcesos.cs" />
