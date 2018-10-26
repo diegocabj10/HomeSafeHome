@@ -37,32 +37,31 @@ namespace Web.Controllers
             return CreatedAtRoute("", new { id = DtoSel.Id }, DtoSel);
         }
 
-        public IHttpActionResult Notificaciones([FromUri] int numeroPagina, int? Dispositivo, int? Senial, string Activo = "")
+
+
+        public IHttpActionResult GetNotificaciones([FromUri] int numeroPagina, int idUsuario, string Titulo = "", string Mensaje = "")
         {
-            DtoEvento DtoFiltro = new DtoEvento();
-            DtoFiltro.IdSenial = Senial;
-            DtoFiltro.IdDispositivo = Dispositivo;
-            DtoFiltro.Activo = Activo;
+
+            DtoNotificacion DtoFiltro = new DtoNotificacion();
+            DtoFiltro.IdUsuario = idUsuario;
             DtoFiltro.NumeroPaginaListado = numeroPagina;
-
-            IList Lista = rnAbm.GetAll(DtoFiltro);
-
-            var TotalRegistrosListado = (DtoFiltro as DtoAbmBase).TotalRegistrosListado;
+            
+            IList Lista = Repositorio.CargarDTOs<DtoNotificacion, DtoNotificacion>("PKG_NOTIFICACIONES.PR_GETALL", null, DtoFiltro);
+           
+            var TotalRegistrosListado = DtoFiltro.TotalRegistrosListado;
 
             if (TotalRegistrosListado == 0)
             {
                 var message = string.Format("No existen registros con los filtros aplicados.");
                 return Content(HttpStatusCode.NotFound, message);
             }
-            //foreach (DtoAbmBase item in Lista)
-            //{
-            //    item.Id = FuncionesSeguridad.EncriptarWeb(item.Id); // encriptar id;                  
-            //}
+
             IDictionary<string, object> resultado = new ExpandoObject();
             resultado["Lista"] = Lista;
             resultado["TotalRegistrosListado"] = TotalRegistrosListado;
             return Ok(resultado);
         }
+
 
     }
 }
