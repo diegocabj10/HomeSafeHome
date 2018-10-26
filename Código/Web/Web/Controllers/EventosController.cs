@@ -37,7 +37,20 @@ namespace Web.Controllers
             return CreatedAtRoute("", new { id = DtoSel.Id }, DtoSel);
         }
 
+        public override IHttpActionResult GetById(int Id)
+        {
+            DtoNotificacion Dto = Repositorio.CargarDTOs<DtoNotificacion>("PKG_NOTIFICACIONES.PR_GETBYID", new object[] { Id }).FirstOrDefault();
+            if (Dto == null)
+            {
+                var message = string.Format("El registro con el identificador = {0} no fue encontrado", Id);
+                return Content(HttpStatusCode.NotFound, message);
+            }
+            else
+            {
+                return Ok(Dto);
+            }
 
+        }
 
         public IHttpActionResult GetNotificaciones([FromUri] int numeroPagina, int idUsuario, string Titulo = "", string Mensaje = "")
         {
