@@ -1,17 +1,20 @@
 import React, { Component }  from 'react';
-import { Card, Button, FormLabel, FormInput } from "react-native-elements";
+
 import {
     StyleSheet,
-    Text,
+    
     View,
     Image,
     TouchableOpacity,
+    Switch
   } from 'react-native';
+  import { Card,Divider,Text, Button } from 'react-native-elements';
   import { Actions } from 'react-native-router-flux';
   import { onSignOut, menuList } from "../Functions/auth";
   import { AsyncStorage } from "react-native";
   import SideMenu from 'react-native-side-menu';
   import Menu from './Menu';
+  var myStyles = require('./Styles');
 
   const styles = StyleSheet.create({
     button: {
@@ -48,30 +51,23 @@ class Contactos extends Component{
   constructor(props) {
     super(props);
 
-    this.toggle = this.toggle.bind(this);
+
 
     this.state = {
       isOpen: false,
       selectedItem: 'Initial',
-      menu: ''
+      menu: '',
+      estado:'Desactivado'
     };
   }
 
-  toggle() {
-    this.setState({
-      isOpen: !this.state.isOpen,
-    });
+  toggleActivate() {
+    this.setState({resumen:'CLICKEO'});
+    if( this.state.estado === "Activado"){
+    this.setState({ estado: "Desactivado"});}
+    else{
+    this.setState({ estado: "Activado"});}
   }
-
-  updateMenuState(isOpen) {
-    this.setState({ isOpen });
-  }
-
-  onMenuItemSelected = item =>
-    this.setState({
-      isOpen: false,
-      selectedItem: item,
-    }); 
 
   
 
@@ -81,7 +77,7 @@ class Contactos extends Component{
         return (
      
                         <View style={styles.container}>
-                            <Text style={styles.welcome}>{helloMessage}</Text>
+                        
                           
                           
                         </View>

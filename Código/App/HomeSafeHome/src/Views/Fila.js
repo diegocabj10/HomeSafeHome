@@ -11,8 +11,8 @@ const Fila = ({ contenido, filaId, entidad }) => {
 
   return (
     <View key={filaId} style={[styles.buttonStyle, styles.textStyle]}>
-      <TouchableOpacity
-       onPress={() => Actions.elemento({id: filaId, tipo: entidad})} >
+      <TouchableOpacity key={filaId}
+       onPress={() => Actions.elemento({id: filaId, tipo: entidad, title:'Detalle del '+entidad.toString().slice(0,-1).toLowerCase()})} >
         {contenido}
       </TouchableOpacity>
     </View>
@@ -47,8 +47,8 @@ const styles = {
     color: '#007aff',
     fontSize: 16,
     fontWeight: '600',
-    paddingTop: 10,
-    paddingBottom: 10
+    padding: 10,
+    
   },
   buttonStyle: {
     flex: 1,
@@ -57,8 +57,9 @@ const styles = {
     borderRadius: 5,
     borderWidth: 1,
     borderColor: '#2E4452',
-    marginLeft: 5,
-    marginRight: 5
+    marginLeft: 10,
+    marginRight: 10,
+    marginBottom: 10
   }
 };
 

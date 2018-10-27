@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { FlatList, Text, View, Picker, Button, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import Fila from './Fila';
-import { List, Icon } from "react-native-elements";
+import { List, Icon, ListItem } from "react-native-elements";
 import { Actions } from 'react-native-router-flux';
 
 class Lista extends Component {
@@ -12,6 +12,7 @@ class Lista extends Component {
   }
   
   state = {
+    idUsuario:global.idUsuario,
     listaElementos: null,
     entidad: '',
     vacio: false,
@@ -25,9 +26,13 @@ class Lista extends Component {
   componentWillMount() {
     this.makeRemoteRequest()
   }
+
+  componentWillFocus() {
+    this.makeRemoteRequest()
+  }
   
   makeRemoteRequest = () => {  
-  axios.get(`http://proyectofinal2018.ddns.net:8080/api/${this.props.entidad}?numeroPagina=${this.state.pagina}`).then(response => {
+  axios.get(`http://proyectofinal2018.ddns.net:8080/api/${this.props.entidad}?numeroPagina=${this.state.pagina}&IdUsuario=${this.state.idUsuario}`).then(response => {
         if (response.data.Lista && response.data.TotalRegistrosListado) {
           this.setState({
             listaElementos: response.data.Lista,
@@ -117,18 +122,19 @@ class Lista extends Component {
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
+        padding: 10
       }}>
-
-         <Text>
-          Total de {this.props.entidad}: {this.state.registros}
-          </Text>
-          <Text>
-          Total de páginas: {this.state.ultima}           
-        </Text>
-        <Text>
-        Página actual:{this.state.pagina}
-        </Text>
-      
+                
+                  <Text>
+                    Total de {this.props.entidad}: {this.state.registros}
+                    </Text>
+                    <Text>
+                    Total de pág.: {this.state.ultima}           
+                  </Text>
+                  <Text>
+                  Página actual:{this.state.pagina}
+                  </Text>
+                
         </View>
       </View>
       
@@ -144,23 +150,43 @@ class Lista extends Component {
       name='add'
       color='#2E4452'
       size={18}
-      onPress={() => Actions.nuevo({entidad: this.props.entidad})}
+      onPress={() => Actions.nuevo({entidad: this.props.entidad, title:'Nuevo '+this.props.entidad.toString().slice(0,-1).toLowerCase()})}
       />   );  
     }
     return null;
   }
 
+
+
   cargarDatos = (item) => {
     if(this.props.entidad == 'Eventos'){
       return (
         <View  key={item.Id}>
-          <Text key={item.Id}>
-            {item.Id} - {item.FechaEvento}
-          </Text>
-          <Text  key={item.IdDispositivo}>
-            Dispositivo: {item.IdDispositivo} - Señal: {item.NombreSenial}
-          </Text>
-        </View>
+          <View style={{flex: 1, flexDirection: 'row'}}>
+            <View style={{flex: 1}}>         
+                <Text key={item.Id}>
+                  ID Evento: {item.Id} 
+                </Text>
+            </View>         
+            <View style={{flex: 1}}>       
+                <Text style={styles.textDerecha}>
+                    {item.FechaNotificacion.toString().replace('T',' ')}
+                </Text>
+            </View> 
+          </View> 
+          <View  key={item.Id} style={{flex: 1,flexDirection: 'row'}}>
+            <View style={{flex: 1}}>
+                <Text  key={item.IdDispositivo}>
+                  Título: {item.Titulo}
+                </Text>
+            </View>
+            <View style={{flex: 1}}>
+                <Text  style={styles.textDerecha} key={item.IdDispositivo}>
+                  Dispositivo: {item.NombreDispositivo} 
+                </Text>
+            </View>
+          </View>
+        </View> 
       );
     }
     if(this.props.entidad == 'Reclamos' || this.props.entidad == 'Avisos'){
@@ -169,14 +195,28 @@ class Lista extends Component {
         fecha = item.FechaAviso
       }
       return (
-        <View key={item.Id}>
-          <Text key={item.Id}>
-            {item.Id} - {fecha}
-          </Text>
-          <Text key={item.Id}>
-            {item.Titulo}
-          </Text>
-        </View>
+        <View  key={item.Id}>
+          <View style={{flex: 1, flexDirection: 'row'}}>
+            <View style={{flex: 1}}>         
+                <Text key={item.Id}>
+                  ID: {item.Id} 
+                </Text>
+            </View>         
+            <View style={{flex: 1}}>       
+                <Text style={styles.textDerecha}>
+                    {fecha.toString().replace('T',' ')}
+                </Text>
+            </View> 
+          </View> 
+          <View  key={item.Id} style={{flex: 1,flexDirection: 'row'}}>
+            <View style={{flex: 1}}>
+                <Text  key={item.Id} style={styles.textCentro}>
+                  Título: {item.Titulo}
+                </Text>
+            </View>
+           
+          </View>
+        </View> 
       );
     }
     if(this.props.entidad == 'Usuarios'){
@@ -185,7 +225,7 @@ class Lista extends Component {
           <Text key={item.Id}>
             {item.Id} - {item.FechaInicio}
           </Text>
-          <Text key={item.Id}>
+          <Text key={item.Id} >
             {item.Email}
           </Text>
         </View>
@@ -220,11 +260,13 @@ class Lista extends Component {
       <View>
       
           <FlatList
+            keyExtractor={item => item.Id}
             data={this.state.listaElementos}
-            renderItem={({ item }) => (
+            renderItem={({ item}) => (
+            
               <Fila key={item.Id} contenido={ this.cargarDatos(item) } filaId={item.Id} entidad={this.props.entidad} />
             )}
-            keyExtractor={item => item.id}
+            
             onRefresh={this.handleRefreshing}
             refreshing={this.state.refreshing}
             ListHeaderComponent={this.renderPaginador}
@@ -236,6 +278,8 @@ class Lista extends Component {
 }
 
 const styles = {
+
+
   headerContentStyle: {
     flexDirection: 'column',
     justifyContent: 'space-around'
@@ -259,6 +303,14 @@ const styles = {
     flex: 1,
     width: null
   },
+
+  textDerecha:{
+    textAlign:'right'
+  },
+  textCentro:{
+    textAlign:'center'
+  }
+  ,
   textStyle: {
     //alignSelf: 'center',
     color: '#007aff',

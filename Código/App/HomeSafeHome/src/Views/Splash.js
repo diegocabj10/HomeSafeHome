@@ -1,6 +1,8 @@
 import React,{ Component }  from "react";
 import { View } from "react-native";
 import { Actions } from 'react-native-router-flux';
+import {isSignedIn} from '../Functions/PersistenciaLocal';
+
 import { AsyncStorage, Image, StatusBar } from "react-native";
 const image = require('../assets/logoHomeSafeHome.png');
 var myStyles = require('./Styles');
@@ -29,16 +31,21 @@ constructor(){
 
   }
 
-  componentDidMount(){
-
-    var that = this;
-
-    setTimeout(function(){
  
-      that.Hide_Splash_Screen();
- 
-    }, 5000);
-}
+
+
+  componentWillMount(){
+      isSignedIn().then(bool =>{
+        setTimeout( () => {
+        if (bool)
+        Actions['inicio'].call();
+        else
+        Actions['login'].call();
+        }    
+        , 3000);
+    }
+    );
+  };
 
 
     render (){

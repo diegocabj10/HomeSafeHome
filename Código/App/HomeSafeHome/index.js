@@ -32,7 +32,7 @@ constructor(props, context) {
       loading: true,
     };
   };
-
+/*
   componentWillMount(){
     self = this;   
     AsyncStorage.getItem(FLAGLOGUEADO)
@@ -63,7 +63,7 @@ constructor(props, context) {
        // Error retrieving data
      }
   }
-
+*/
   render (){
  
 
@@ -78,9 +78,9 @@ constructor(props, context) {
         headerBackTitle={'Tilbage'}
         >
         <Stack key="root">
-          <Scene key="login" component={Login} title="Ingreso" hideNavBar={true} initial={!this.state.logged} type='reset' /> 
-         {// <Scene key="splash" component={Splash} hideNavBar={true} initial={this.state.loading} type='reset' /> 
-         }
+          <Scene key="login" component={Login} title="Ingreso" hideNavBar={true}  type='reset' /> 
+          <Scene key="splash" component={Splash} hideNavBar={true} initial={true} type='reset' /> 
+         
           <Scene key="register" component={Register} title="Registro" back  /> 
           <Scene key="configuracion" component={Configuracion} title="Configuracion"  back />
           <Scene key="eventos" component={Eventos} title="Eventos"  back />  
@@ -88,8 +88,8 @@ constructor(props, context) {
           <Scene key="reclamos" component={Reclamos} title="Reclamos"  back />
           <Scene key="avisos" component={Avisos} title="Avisos"  back />
           <Scene key="nuevo" component={Nuevo} title="Nuevo"  back />
-          <Scene key="elemento" component={Elemento} title="Elemento" />
-          <Scene key="inicio" component={Initial} title="Inicio" initial={this.state.logged} hideNavBar={true} type='reset'/>  
+          <Scene key="elemento" component={Elemento} title={this.state.title} />
+          <Scene key="inicio" component={Initial} title="Inicio"  hideNavBar={true} type='reset'/>  
         </Stack>
         
       </Router>

@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import {
   StyleSheet,
-  Text,
+  
   View,
   Image,
   TouchableOpacity,
   StatusBar,
-  AsyncStorage
+  AsyncStorage,
+  Switch
 } from 'react-native';
+import { Card,Divider,Text, Button } from 'react-native-elements';
 import SideMenu from 'react-native-side-menu';
 import ViewOne from './ViewOne';
 import Menu from './Menu';
@@ -54,7 +56,9 @@ export default class Initial extends Component {
       isOpen: false,
       selectedItem: 'Initial',
       menu: '',
-      nombre:''
+      nombre:'',
+      estado:'Desactivado',
+      resumen:null
     };
   }
 
@@ -97,11 +101,15 @@ listarItems(){
   )
 }  
 
-  handleOnNavigateBack(){
-    this.setState({isOpen:false});
-  }
-    
   
+    
+  toggleActivate() {
+    this.setState({resumen:'CLICKEO'});
+    if( this.state.estado === "Activado")
+    this.setState({ estado: "Desactivado"});
+    else
+    this.setState({ estado: "Activado"});
+  }
 
   toggle() {
     this.setState({
@@ -120,10 +128,11 @@ listarItems(){
     });
 
   render() {
-    const menu = <Menu onItemSelected={this.onMenuItemSelected} items={this.state.menu} nombre={this.state.nombre}/>;
+    const menu = <Menu onItemSelected={this.onMenuItemSelected} items={global.menu} nombre={this.state.nombre}/>;
     
 
     return (
+     
      
       <SideMenu
         menu={menu}
@@ -131,21 +140,41 @@ listarItems(){
         onChange={isOpen => this.updateMenuState(isOpen)}
       >
                     
-      {RenderIf(this.state.selectedItem == "Vista1", <ViewOne /> )}
-     
-      {RenderIf(!(this.state.selectedItem == "Vista1"), 
-                    
+
         <View style={styles.container}>
           <StatusBar
           backgroundColor="#2E4452"
           barStyle="light-content"
          />
 
+          <Card title='Intrusiones' containerStyle={myStyles.cardsInicio} >  
+            <View  style={{ flexDirection: 'row', justifyContent: 'space-between'}}>
+            <View ><Text style={{fontWeight:'bold'}}>Estado:</Text>
+            </View>
+            <View ><Text style={{fontWeight:'bold'}}>{this.state.estado}</Text>
+            </View>            
+            <View >
+            <Switch
+           value={this.state.estado === "Activado" ? true : false }
+           onValueChange = {(bool) => bool ? this.setState({estado: "Activado"}) :  this.setState({estado: "Desactivado"})}/>
+            </View>
+            </View>
+          </Card>
+
+          <Card title='Resúmen de eventos' containerStyle={myStyles.cardsInicio} >  
+          <Text style={{fontWeight:'bold'}}>No posees resúmen de envetos</Text>
+          <Text style={{fontWeight:'bold'}}>{this.state.resumen}</Text>
+          </Card>
+
+          <Card title='Resúmen de avisos/reclamos' containerStyle={myStyles.cardsInicio} >  
+          <Text style={{fontWeight:'bold'}}>No posees nuevos avisos/reclamos</Text>
+          </Card>
+
          
          
         </View>
 
-          )}
+        
 
           
 
@@ -164,6 +193,7 @@ listarItems(){
           </View>
         </TouchableOpacity>
       </SideMenu>
+      
     );
   }
 }

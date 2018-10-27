@@ -1,7 +1,7 @@
 import React, { Component }  from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
   import { Card, Button, FormLabel, FormInput } from "react-native-elements";
-  import { onSignOut } from "../Functions/auth";
+  import { onSignOut } from "../Functions/PersistenciaLocal";
   import { Actions } from 'react-native-router-flux';
   import SideMenu from 'react-native-side-menu';
   import Menu from './Menu';

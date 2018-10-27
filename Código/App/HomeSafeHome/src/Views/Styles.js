@@ -38,6 +38,12 @@ module.exports = StyleSheet.create({
         backgroundColor: '#2E4452',
       },   
 
+      cardsInicio:{
+        width: window.width*0.8,
+        height: window.height*0.2,
+        padding:20
+      },
+      
       loginFormContainer: {
         //width: window.width*0.8,        
         backgroundColor: '#2E4452',
@@ -71,7 +77,22 @@ module.exports = StyleSheet.create({
         width: window.width*0.7, 
         borderRadius: 30 
       },
-
+      buttonAdd: {
+        backgroundColor: '#2E4452',
+        marginTop: 20,
+        width: window.width*0.7,  
+        borderRadius: 30 
+      },
+      buttonActivate: {
+        backgroundColor: '#47B840',                
+        borderRadius: 30,
+       
+      },
+      buttonDesactivate: {
+        backgroundColor: '#DC1625',                
+        borderRadius: 30,
+                
+      },
       
 
 

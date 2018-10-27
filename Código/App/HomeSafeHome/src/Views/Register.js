@@ -1,5 +1,5 @@
 import React,{ Component }  from "react";
-import { View, TextInput } from "react-native";
+import { View, TextInput,ScrollView } from "react-native";
 import { Card, Button, FormLabel, FormInput, Text } from "react-native-elements";
 //import ValidationComponent from 'react-native-form-validator';
 //import ValidateTextInput from "react-native-validate-textinput";
@@ -89,7 +89,7 @@ registrar(){
       
         return (
   <View style={ myStyles.container}>
-    <View style={myStyles.loginFormContainer}>
+    <ScrollView style={myStyles.loginFormContainer}>
                
       <FormInput ref="nombre" inputStyle={myStyles.registerFormInputs} placeholderTextColor='#6289A3' placeholder="Nombre"   onChangeText={(varia) => this.setState({nombre: varia.trim()})} />
 
@@ -116,7 +116,7 @@ registrar(){
         this.registrar();
     }}
       />
-    </View>
+    </ScrollView>
   </View>
         );
      }

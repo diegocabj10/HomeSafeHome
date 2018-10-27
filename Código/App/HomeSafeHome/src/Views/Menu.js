@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
     //flex: 1,
     width: window.width,
     height: window.height,
-    backgroundColor: '#c2c5c7'
+    backgroundColor: '#EBEBEB'
     //padding: 20,
   },
   avatarContainer: {
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
   itemsContainer: {
     flex: 2,
     paddingLeft: 20,
-    backgroundColor: '#c2c5c7'
+    backgroundColor: '#EBEBEB'
   },
   avatar: {
     width: window.height*0.1,
@@ -97,6 +97,7 @@ export function renderItems(items){
   );
 }
 
+/*
 export function _retrieveData(){
   try {
     AsyncStorage.getItem('email')
@@ -109,7 +110,7 @@ export function _retrieveData(){
     catch (error) {
       return (<Text> 1{error} </Text>);
    }
-}
+}*/
 
 Menu.propTypes = {
   onItemSelected: PropTypes.func.isRequired,

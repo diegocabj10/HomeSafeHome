@@ -1,16 +1,18 @@
 import React,{ Component }  from "react";
-import { View } from "react-native";
+import { View,ActivityIndicator } from "react-native";
 import { Card, Button, FormLabel, FormInput, Text } from "react-native-elements";
 import { Actions } from 'react-native-router-flux';
 import { onSignInAuth } from "../Functions/auth";
 import { AsyncStorage, Image, StatusBar } from "react-native";
 import axios from 'axios';
+import RenderIf from './RenderIf';
 var myStyles = require('./Styles');
 export const FLAGLOGUEADO = "logueado";
 export const EMAIL = "email";
 export const PASSWORD = "password";
 export const MENU = "menu";
 export const NOMBRE = "nombre";
+export const IDUSUARIO = "idusuario";
 export var logueado=false;
 export var datos='';
 const image = require('../assets/logoHomeSafeHome.png');
@@ -23,7 +25,8 @@ class Login extends Component{
         email : '',
         password : '',
         error: '',
-        logueado: 'false'
+        logueado: 'false',
+        cargando:false
         }
         
     }   
@@ -54,18 +57,24 @@ class Login extends Component{
           AsyncStorage.setItem(PASSWORD, passwordPar);
           AsyncStorage.setItem(MENU, itemsMenu);
           AsyncStorage.setItem(NOMBRE, response.data.Usuario.PersonaNombre);
+          AsyncStorage.setItem(IDUSUARIO, response.data.Usuario.Id);
           global.nombreUsuario= response.data.Usuario.PersonaNombre;
-          logueado=true;         
+          global.idUsuario= response.data.Usuario.Id;
+          global.menu= response.data.Menu[0].Hijos;
+          logueado=true;        
+          this.setState({cargando:false}); 
           this.setState( {error : itemsMenu});      
           Actions.inicio();         
         }).catch(error => {          
           logueado=false;
-          datos=error.response.data.Message;       
+          datos=error.response.data.Message; 
+          this.setState({cargando:false});       
           this.setState({error : datos});           
         });          
   }
 
-    ingresar(){        
+    ingresar(){   
+      this.setState({cargando:true, error:''});        
       this._onSignIn(this.state.email, this.state.password);            
     }
 
@@ -91,6 +100,9 @@ class Login extends Component{
       <FormInput  inputStyle={myStyles.loginFormInputs} placeholderTextColor='#6289A3' secureTextEntry placeholder="password" onChangeText={(password) => this.setState({password})} />
       
       <Text style={myStyles.messageError} >{this.state.error}</Text>
+      
+      {RenderIf(this.state.cargando, <ActivityIndicator  size="small" color="#EBEBEB" /> )}
+      
       
       <Button
         buttonStyle={myStyles.buttonSubmit}
