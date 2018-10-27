@@ -79,6 +79,8 @@
   <ItemGroup>
     <Compile Include="DtoAbmBase.cs" />
     <Compile Include="DtoAviso.cs" />
+    <Compile Include="DtoContacto.cs" />
+    <Compile Include="DtoDispositivo.cs" />
     <Compile Include="DtoId.cs" />
     <Compile Include="DtoIdNombre.cs" />
     <Compile Include="DtoIdNombreIdTipo.cs" />
