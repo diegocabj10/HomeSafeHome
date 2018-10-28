@@ -150,7 +150,7 @@ class Lista extends Component {
   };
 
   verBotones = () => {
-    if(this.props.entidad != 'Eventos'  ){
+    if(this.props.entidad != 'Eventos'){
       return (
       <Icon
       reverse

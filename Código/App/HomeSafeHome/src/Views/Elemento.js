@@ -102,13 +102,33 @@ class Elemento extends Component {
     }
     if(this.props.tipo == 'Contactos'){
       return (
-       
         <ScrollView>
-          <Text>{this.props.tipo}</Text>
-          <Text>Id: {this.state.datos.Id}</Text>
-          <Text>Usuario: {this.state.datos.Nombre} {this.state.datos.Apellido}</Text>
-          <Text>Email: {this.state.datos.Email}</Text>
-          <Text>Perfil Id: {this.state.datos.IdPerfil}</Text>
+          <Card title="Datos del Contacto"containerStyle={{padding: 20 }} >
+          <Text style={{marginTop:10,fontWeight:'bold'}}>Datos del Contacto: </Text>
+          <Text style={{marginTop:10}}>Id: {this.state.datos.Id}</Text>
+          <Text>Fecha: {this.state.datos.FechaInicio}  </Text> 
+          <Text>Usuario: {this.state.datos.PersonaNombre}</Text>
+          <Text>Email: {this.state.datos.Email}  </Text>
+          </Card>
+
+        </ScrollView>
+      )
+    }
+    if(this.props.tipo == 'Dispositivos'){
+      return (
+        <ScrollView>
+          <Card title="Datos del Dispositivo"containerStyle={{padding: 20 }} >
+          <Text style={{marginTop:10,fontWeight:'bold'}}>Datos del Dispositivo: </Text>
+          <Text style={{marginTop:10}}>Id: {this.state.datos.Id}</Text>
+          <Text>Fecha de Alta: {this.state.datos.FechaInicio}  </Text> 
+          <Text>Nombre: {this.state.datos.Nombre}</Text>
+          <Divider style={{ backgroundColor: '#EBEBEB',marginTop:10 }} />
+          <Card title="Alarma de Intrusiones"containerStyle={{padding: 20 }} >
+            <Text>Alarma Activada: {this.state.datos.Activo}</Text>
+            <Text>Última vez Activada: {this.state.datos.FechaAfueraCasa}</Text>
+          </Card>
+          </Card>
+
         </ScrollView>
       )
     }
