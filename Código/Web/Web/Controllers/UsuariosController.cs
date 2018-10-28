@@ -6,6 +6,8 @@ using System.Net.Http;
 using System.Web.Http;
 using DTO;
 using BL;
+using System.Dynamic;
+
 namespace Web.Controllers
 {
     public class UsuariosController : BaseController<DtoUsuario, rnAbmBase<DtoUsuario>>
@@ -37,12 +39,8 @@ namespace Web.Controllers
                 }
                 return Ok(Dto);
             }
-        }        
-        //public override IHttpActionResult Post(DtoPerfil DtoSel)
-        //{
-        //    FuncionesSeguridad.EliminarCacheElementosSeguridad();
-        //    return base.Post(DtoSel);
-        //}
+        }
+       
 
         //public override IHttpActionResult Put(DtoPerfil DtoSel)
         //{

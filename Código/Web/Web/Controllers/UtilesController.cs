@@ -23,6 +23,7 @@ namespace Web.Controllers
       
         public virtual IHttpActionResult PostLogin(DtoUsuario usuario)
         {
+            FuncionesSeguridad.EliminarCacheElementosSeguridad();
             DtoUsuario UsuarioLogueado = FuncionesSeguridad.LoginInterno(usuario.Email, usuario.Password);
             List<DtoMenuPadre> menuesPadres;
             List<DtoMenuHijo> menuesHijos;
@@ -41,10 +42,5 @@ namespace Web.Controllers
         }
     }
 
-    class TokenObject
-    {
-        public List<DtoMenuPadre> menu { get; set; }
-        public DtoUsuario dtoUs { get; set; }
-    }
-
+   
 }
