@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-import { FlatList, Text, View, Picker, Button, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { FlatList, ScrollView, View, Picker, Button, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import Fila from './Fila';
-import { List, Icon, ListItem } from "react-native-elements";
-import { Actions } from 'react-native-router-flux';
+import { Card,Divider,Text,Icon } from 'react-native-elements';
+import RenderIf from './RenderIf'
 
+import { Actions } from 'react-native-router-flux';
+var myStyles = require('./Styles');
 class Lista extends Component {
   constructor(props){
     super(props);
@@ -19,7 +21,13 @@ class Lista extends Component {
     refreshing: false,
     registros: 1,
     pagina: 1,
-    ultima: 1
+    ultima: 1,
+    parametroBusqueda: '',
+    nombreBuscado: '',
+    idBuscado: '',
+    messageContacto: '',
+    mensaje: '',
+    error: ''
   };
   
 
@@ -142,8 +150,7 @@ class Lista extends Component {
   };
 
   verBotones = () => {
-    if(this.props.entidad != 'Eventos'){
-
+    if(this.props.entidad != 'Eventos'  ){
       return (
       <Icon
       reverse
@@ -219,14 +226,27 @@ class Lista extends Component {
         </View> 
       );
     }
-    if(this.props.entidad == 'Usuarios'){
+    if(this.props.entidad == 'Contactos'){
       return (
-        <View key={item.Id}>
+        <View key={item.Id} style={{flex: 1,flexDirection: 'row'}}>
           <Text key={item.Id}>
             {item.Id} - {item.FechaInicio}
           </Text>
           <Text key={item.Id} >
             {item.Email}
+          </Text>
+        </View>
+      );
+    }
+
+    if(this.props.entidad == 'Dispositivos'){
+      return (
+        <View key={item.Id} style={{flex: 1,flexDirection: 'row'}}>
+          <Text key={item.Id}>
+            {item.Id} - {item.FechaInicio}
+          </Text>
+          <Text key={item.Id} >
+            {item.Nombre}
           </Text>
         </View>
       );
@@ -258,7 +278,7 @@ class Lista extends Component {
 
     return (
       <View>
-      
+       
           <FlatList
             keyExtractor={item => item.Id}
             data={this.state.listaElementos}

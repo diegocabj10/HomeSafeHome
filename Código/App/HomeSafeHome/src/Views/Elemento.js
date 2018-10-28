@@ -100,8 +100,9 @@ class Elemento extends Component {
         </ScrollView>
       )
     }
-    if(this.props.tipo == 'Usuarios'){
+    if(this.props.tipo == 'Contactos'){
       return (
+       
         <ScrollView>
           <Text>{this.props.tipo}</Text>
           <Text>Id: {this.state.datos.Id}</Text>

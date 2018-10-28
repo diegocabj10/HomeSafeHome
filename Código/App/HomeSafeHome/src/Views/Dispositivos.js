@@ -47,7 +47,7 @@ import {
   });
 
 
-class Contactos extends Component{
+class Dispositivos extends Component{
     
   constructor(props) {
     super(props);
@@ -63,12 +63,12 @@ class Contactos extends Component{
   }
   
     render(){
-        const helloMessage = 'Contactos';
+        const helloMessage = 'Dispositivos';
       
         return (
      
                         <View style={styles}>
-                         <Lista entidad= 'Contactos' clave= 'lista' titulo= 'Contactos de Confianza' />                                                    
+                         <Lista entidad= 'Dispositivos' clave= 'lista' titulo= 'Listado de Dispositivos' />                                                    
                         </View>
 
 
@@ -76,4 +76,4 @@ class Contactos extends Component{
         );
     }
 }
-export default Contactos;
+export default Dispositivos;

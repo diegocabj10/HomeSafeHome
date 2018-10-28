@@ -10,6 +10,7 @@ import Register from './src/Views/Register';
 import Configuracion from './src/Views/Configuracion';
 import Avisos from './src/Views/Avisos';
 import Contactos from './src/Views/Contactos';
+import Dispositivos from './src/Views/Dispositivos';
 import Reclamos from './src/Views/Reclamos';
 import Initial from './src/Views/Initial';
 import Nuevo from './src/Views/Nuevo';
@@ -86,6 +87,7 @@ constructor(props, context) {
           <Scene key="eventos" component={Eventos} title="Eventos"  back />  
           <Scene key="contactos" component={Contactos} title="Contactos"  back />
           <Scene key="reclamos" component={Reclamos} title="Reclamos"  back />
+          <Scene key="dispositivos" component={Dispositivos} title="Dispositivos"  back />
           <Scene key="avisos" component={Avisos} title="Avisos"  back />
           <Scene key="nuevo" component={Nuevo} title="Nuevo"  back />
           <Scene key="elemento" component={Elemento} title={this.state.title} />

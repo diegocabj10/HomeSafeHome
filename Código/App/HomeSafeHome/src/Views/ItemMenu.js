@@ -9,6 +9,7 @@ const iconos = {
   'reclamos': require('../assets/reclamos.png'),
   'contactos': require('../assets/contactos.png'),
   'configuracion': require('../assets/configuracion.png'),
+  'dispositivos': require('../assets/dispositivos.png'),
 };
 
 const ItemMenu = ({name}) => {

@@ -43,6 +43,9 @@ module.exports = StyleSheet.create({
         height: window.height*0.2,
         padding:20
       },
+      cardsAgregar:{     
+        padding:20
+      },
       
       loginFormContainer: {
         //width: window.width*0.8,        
