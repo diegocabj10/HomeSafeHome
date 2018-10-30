@@ -1,0 +1,50 @@
+1) Registro
+Se accede desde la pantalla de Inicio de Sesión. Aquí puede registrar su nueva cuenta de usuario,
+ingresando sus datos. Todos los campos son obligatorio.
+
+2) Inicio de Sesión
+Aquí podrá ingresar a la aplicación con su usuario, ingresando sus datos, y haciendo click en ingresar.
+El menú se cargará según el perfil que tenga el usuario, permitiendo acceder sólo a la funcionalidad
+permitida para el perfil asociado al usuario. 
+Los perfiles pueden ser: Administrador del Sistema, Administrador del edificio, Habitante del edificio, Contacto, e Inicial
+El perfil inicial corresponde al usuario que ha descargado la aplicación y puede registrarse
+
+3) 1. Abre el menú que permite navegar entre las diferentes pantallas. Los ítems del menú se cargan según el perfil de usuario. 
+También se puede acceder al menú arrastrando el dedo desde el borde izquierdo hacia el centro de la pantalla.
+   2. Activa/desactiva detección de intrusos. Mientras esté activada se enviarán notificaciones ante eventos de apertura de 
+puertas o ventanas
+
+4) El menú puede accederse permite ingresar a los diferentes listados haciendo click sobre su ítem. Para cerrarlo simplemente haga click fuera 
+del mismo. 
+
+
+5) Tanto los eventos, avisos, reclamos, contactos y dispositivos pueden ser mostrados en forma de lista. Las funcionalidades son 
+similares, pudiendo recorrer la lista de elementos, y en caso de seleccionar alguno se mostrará en otra pantalla el detalle de 
+los datos del item de la lista seleccionado. Cuando se presiona el botón agregar se puede agregar el nuevo elemento que corresponderá
+a lo que se está listando en pantalla, no se podrá agregar un nuevo evento, debido a que los eventos sólo son generados por el Gadget
+
+6) En esta pantalla se puden ver los datos en detalle del elemento listado que fue previamente seleccionado
+
+7) Nuevo Contacto de Confianza
+La pantalla permite agregar un contacto de confianza, para esto el contacto debe estar registrado previamente, y se debe ingresar
+el mail de la persona que se agregará, esto se hace por seguridad para asegurar que se registren personas conocidas. 
+Si el mail es coincidente con el del contacto se permitirá mostrará el nombre y apellido del contacto, al presionar el botón Guardar
+se mostrará un mensaje informando que se guardó con éxito. En caso de que no se pueda guardar se informará mediante un mensaje.
+
+8) Nuevo Dispositivo
+Aquí se podrá asociar el dispositivo al Habitante del Edificio mediante el ingreso de la descripción del mismo, ésta será enviada 
+al mail del usuario que da de alta el dispositivo, y es otorgada por el encargado de administrar los dispositivos. Esta medida 
+también se hace por seguridad para garantizar que se haya entregado el equipo al usuario y sólo pueda ser activado por éste.
+
+
+10) Evento
+Los eventos que se muestran son los que se han capturado mediante los sensores que posee el Gadget, dichos sensores envían señales al
+Gadget, y en base al valor se envía el mensaje al servidor Web API
+
+11) Aviso
+Los avisos son recibidos por todos los usuarios con perfil Habitantes de Edificio, y son generados por los Administradores del Edificio
+
+
+12) Reclamo
+Los reclamos son generados por un usuario Habitante de Edificio, y se envían al Administrador del Edificio, este reclamo puede ser 
+respondido por los mismos
