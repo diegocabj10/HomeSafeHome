@@ -1,7 +1,7 @@
----------------------------------------------
--- Export file for user HOMESAFEHOME       --
--- Created by diego on 6/10/2018, 23:44:07 --
----------------------------------------------
+----------------------------------------------
+-- Export file for user HOMESAFEHOME        --
+-- Created by diego on 27/10/2018, 19:09:15 --
+----------------------------------------------
 
 spool HomeSafeHome.log
 
@@ -9,49 +9,26 @@ prompt
 prompt Creating table T_AUDITORIAS_PROCESO
 prompt ===================================
 prompt
-create table HOMESAFEHOME.T_AUDITORIAS_PROCESO
+create table T_AUDITORIAS_PROCESO
 (
   ID_AUDITORIA_PROCESO NUMBER(10) not null,
   N_AUDITORIA_PROCESO  VARCHAR2(100),
   DESCRIPCION          VARCHAR2(200),
   FECHA_BAJA           DATE
 )
-tablespace USERS
-  pctfree 10
-  initrans 1
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
-alter table HOMESAFEHOME.T_AUDITORIAS_PROCESO
-  add constraint PK_AUDITORIAS_PROCESO primary key (ID_AUDITORIA_PROCESO)
-  using index 
-  tablespace USERS
-  pctfree 10
-  initrans 2
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
+;
+alter table T_AUDITORIAS_PROCESO
+  add constraint PK_AUDITORIAS_PROCESO primary key (ID_AUDITORIA_PROCESO);
 
 prompt
 prompt Creating table T_USUARIOS
 prompt =========================
 prompt
-create table HOMESAFEHOME.T_USUARIOS
+create table T_USUARIOS
 (
   ID_USUARIO   NUMBER(10) not null,
   LOGIN        VARCHAR2(30),
   FECHA_INICIO DATE,
-  FECHA_FIN    DATE,
   EMAIL        VARCHAR2(40),
   ULTIMO_LOGIN DATE,
   FECHA_BAJA   DATE,
@@ -59,51 +36,17 @@ create table HOMESAFEHOME.T_USUARIOS
   NOMBRE       VARCHAR2(100),
   APELLIDO     VARCHAR2(100)
 )
-tablespace USERS
-  pctfree 10
-  initrans 1
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
-alter table HOMESAFEHOME.T_USUARIOS
-  add constraint PK_USUARIOS primary key (ID_USUARIO)
-  using index 
-  tablespace USERS
-  pctfree 10
-  initrans 2
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
-alter table HOMESAFEHOME.T_USUARIOS
-  add constraint UK_USU_EMAIL unique (EMAIL)
-  using index 
-  tablespace USERS
-  pctfree 10
-  initrans 2
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
+;
+alter table T_USUARIOS
+  add constraint PK_USUARIOS primary key (ID_USUARIO);
+alter table T_USUARIOS
+  add constraint UK_USU_EMAIL unique (EMAIL);
 
 prompt
 prompt Creating table T_SESIONES
 prompt =========================
 prompt
-create table HOMESAFEHOME.T_SESIONES
+create table T_SESIONES
 (
   ID_SESION    VARCHAR2(40) not null,
   IP           VARCHAR2(15),
@@ -111,40 +54,18 @@ create table HOMESAFEHOME.T_SESIONES
   FECHA_FIN    DATE,
   ID_USUARIO   NUMBER(10)
 )
-tablespace USERS
-  pctfree 10
-  initrans 1
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
-alter table HOMESAFEHOME.T_SESIONES
-  add constraint PK_SESIONES primary key (ID_SESION)
-  using index 
-  tablespace USERS
-  pctfree 10
-  initrans 2
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
-alter table HOMESAFEHOME.T_SESIONES
+;
+alter table T_SESIONES
+  add constraint PK_SESIONES primary key (ID_SESION);
+alter table T_SESIONES
   add constraint FK_SES_USU foreign key (ID_USUARIO)
-  references HOMESAFEHOME.T_USUARIOS (ID_USUARIO);
+  references T_USUARIOS (ID_USUARIO);
 
 prompt
 prompt Creating table T_AUDITORIAS
 prompt ===========================
 prompt
-create table HOMESAFEHOME.T_AUDITORIAS
+create table T_AUDITORIAS
 (
   ID_AUDITORIA         NUMBER(10) not null,
   ID_SESION            VARCHAR2(40),
@@ -153,43 +74,21 @@ create table HOMESAFEHOME.T_AUDITORIAS
   ID_CLAVE             VARCHAR2(40),
   ID_AUDITORIA_PROCESO NUMBER(10)
 )
-tablespace USERS
-  pctfree 10
-  initrans 1
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
-alter table HOMESAFEHOME.T_AUDITORIAS
-  add constraint PK_AUDITORIAS primary key (ID_AUDITORIA)
-  using index 
-  tablespace USERS
-  pctfree 10
-  initrans 2
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
-alter table HOMESAFEHOME.T_AUDITORIAS
+;
+alter table T_AUDITORIAS
+  add constraint PK_AUDITORIAS primary key (ID_AUDITORIA);
+alter table T_AUDITORIAS
   add constraint FK_AUD_PROC foreign key (ID_AUDITORIA_PROCESO)
-  references HOMESAFEHOME.T_AUDITORIAS_PROCESO (ID_AUDITORIA_PROCESO);
-alter table HOMESAFEHOME.T_AUDITORIAS
+  references T_AUDITORIAS_PROCESO (ID_AUDITORIA_PROCESO);
+alter table T_AUDITORIAS
   add constraint FK_AUD_SES foreign key (ID_SESION)
-  references HOMESAFEHOME.T_SESIONES (ID_SESION);
+  references T_SESIONES (ID_SESION);
 
 prompt
 prompt Creating table T_AVISOS
 prompt =======================
 prompt
-create table HOMESAFEHOME.T_AVISOS
+create table T_AVISOS
 (
   ID_AVISO    NUMBER(10) not null,
   FECHA_AVISO DATE,
@@ -198,37 +97,52 @@ create table HOMESAFEHOME.T_AVISOS
   ID_USUARIO  NUMBER(10),
   FECHA_BAJA  DATE
 )
-tablespace USERS
-  pctfree 10
-  initrans 1
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
-alter table HOMESAFEHOME.T_AVISOS
-  add constraint PK_AVISO primary key (ID_AVISO)
-  using index 
-  tablespace USERS
-  pctfree 10
-  initrans 2
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
+;
+alter table T_AVISOS
+  add constraint PK_AVISO primary key (ID_AVISO);
+alter table T_AVISOS
+  add constraint FK_AVISO_USUARIO foreign key (ID_USUARIO)
+  references T_USUARIOS (ID_USUARIO);
+
+prompt
+prompt Creating table T_SENIALES
+prompt =========================
+prompt
+create table T_SENIALES
+(
+  ID_SENIAL  NUMBER(10) not null,
+  N_SENIAL   VARCHAR2(200),
+  FECHA_BAJA DATE
+)
+;
+alter table T_SENIALES
+  add constraint PK_SENIAL primary key (ID_SENIAL);
+
+prompt
+prompt Creating table T_CONFIGURACIONES_NOTIFICACION
+prompt =============================================
+prompt
+create table T_CONFIGURACIONES_NOTIFICACION
+(
+  ID_CONFIGURACION_NOTIFICACION NUMBER(10) not null,
+  ID_SENIAL                     NUMBER(10),
+  VALOR_DESDE                   NUMBER(5),
+  VALOR_HASTA                   NUMBER(5),
+  TITULO                        VARCHAR2(100),
+  MENSAJE                       VARCHAR2(400)
+)
+;
+alter table T_CONFIGURACIONES_NOTIFICACION
+  add constraint PK_CONFIGURACION_NOTIFICACION primary key (ID_CONFIGURACION_NOTIFICACION);
+alter table T_CONFIGURACIONES_NOTIFICACION
+  add constraint FK_SENIAL foreign key (ID_SENIAL)
+  references T_SENIALES (ID_SENIAL);
 
 prompt
 prompt Creating table T_CONTACTOS
 prompt ==========================
 prompt
-create table HOMESAFEHOME.T_CONTACTOS
+create table T_CONTACTOS
 (
   ID_CONTACTO         NUMBER(10) not null,
   FECHA_INICIO        DATE,
@@ -236,146 +150,37 @@ create table HOMESAFEHOME.T_CONTACTOS
   ID_USUARIO_CONTACTO NUMBER(10),
   FECHA_BAJA          DATE
 )
-tablespace USERS
-  pctfree 10
-  initrans 1
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
-alter table HOMESAFEHOME.T_CONTACTOS
-  add constraint PK_CONTACTOS primary key (ID_CONTACTO)
-  using index 
-  tablespace USERS
-  pctfree 10
-  initrans 2
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
-alter table HOMESAFEHOME.T_CONTACTOS
+;
+alter table T_CONTACTOS
+  add constraint PK_CONTACTOS primary key (ID_CONTACTO);
+alter table T_CONTACTOS
   add constraint FK_CONTACTO_USUARIO foreign key (ID_USUARIO_CONTACTO)
-  references HOMESAFEHOME.T_USUARIOS (ID_USUARIO);
-alter table HOMESAFEHOME.T_CONTACTOS
+  references T_USUARIOS (ID_USUARIO);
+alter table T_CONTACTOS
   add constraint FK_DUENIO_USUARIO foreign key (ID_USUARIO_DUENIO)
-  references HOMESAFEHOME.T_USUARIOS (ID_USUARIO);
+  references T_USUARIOS (ID_USUARIO);
 
 prompt
 prompt Creating table T_DISPOSITIVOS
 prompt =============================
 prompt
-create table HOMESAFEHOME.T_DISPOSITIVOS
+create table T_DISPOSITIVOS
 (
   ID_DISPOSITIVO NUMBER(10) not null,
   N_DISPOSITIVO  VARCHAR2(200),
   FECHA_BAJA     DATE
 )
-tablespace USERS
-  pctfree 10
-  initrans 1
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
-alter table HOMESAFEHOME.T_DISPOSITIVOS
-  add constraint PK_DISPOSITIVO primary key (ID_DISPOSITIVO)
-  using index 
-  tablespace USERS
-  pctfree 10
-  initrans 2
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
-alter table HOMESAFEHOME.T_DISPOSITIVOS
-  add constraint UK_DISPOSITIVO unique (N_DISPOSITIVO)
-  using index 
-  tablespace USERS
-  pctfree 10
-  initrans 2
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
-
-prompt
-prompt Creating table T_SENIALES
-prompt =========================
-prompt
-create table HOMESAFEHOME.T_SENIALES
-(
-  ID_SENIAL   NUMBER(10) not null,
-  N_SENIAL    VARCHAR2(200),
-  FECHA_BAJA  DATE,
-  TIPO_SENIAL VARCHAR2(2),
-  VALOR_DESDE NUMBER(5),
-  VALOR_HASTA NUMBER(5)
-)
-tablespace USERS
-  pctfree 10
-  initrans 1
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
-alter table HOMESAFEHOME.T_SENIALES
-  add constraint PK_SENIAL primary key (ID_SENIAL)
-  using index 
-  tablespace USERS
-  pctfree 10
-  initrans 2
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
-alter table HOMESAFEHOME.T_SENIALES
-  add constraint UK_SENIAL unique (N_SENIAL)
-  using index 
-  tablespace USERS
-  pctfree 10
-  initrans 2
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
+;
+alter table T_DISPOSITIVOS
+  add constraint PK_DISPOSITIVO primary key (ID_DISPOSITIVO);
+alter table T_DISPOSITIVOS
+  add constraint UK_DISPOSITIVO unique (N_DISPOSITIVO);
 
 prompt
 prompt Creating table T_EVENTOS
 prompt ========================
 prompt
-create table HOMESAFEHOME.T_EVENTOS
+create table T_EVENTOS
 (
   ID_EVENTO      NUMBER(10) not null,
   FECHA_EVENTO   DATE,
@@ -384,183 +189,62 @@ create table HOMESAFEHOME.T_EVENTOS
   VALOR          NUMBER(10),
   FECHA_BAJA     DATE
 )
-tablespace USERS
-  pctfree 10
-  initrans 1
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
-alter table HOMESAFEHOME.T_EVENTOS
-  add constraint PK_EVENTOS primary key (ID_EVENTO)
-  using index 
-  tablespace USERS
-  pctfree 10
-  initrans 2
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
-alter table HOMESAFEHOME.T_EVENTOS
+;
+alter table T_EVENTOS
+  add constraint PK_EVENTOS primary key (ID_EVENTO);
+alter table T_EVENTOS
   add constraint FK_EVENTOS_DISPOSITIVOS foreign key (ID_DISPOSITIVO)
-  references HOMESAFEHOME.T_DISPOSITIVOS (ID_DISPOSITIVO);
-alter table HOMESAFEHOME.T_EVENTOS
+  references T_DISPOSITIVOS (ID_DISPOSITIVO);
+alter table T_EVENTOS
   add constraint FK_EVENTOS_SENIAL foreign key (ID_SENIAL)
-  references HOMESAFEHOME.T_SENIALES (ID_SENIAL);
-
-prompt
-prompt Creating table T_RECLAMOS
-prompt =========================
-prompt
-create table HOMESAFEHOME.T_RECLAMOS
-(
-  ID_RECLAMO    NUMBER(10) not null,
-  FECHA_RECLAMO DATE,
-  TITULO        VARCHAR2(100),
-  MENSAJE       VARCHAR2(400),
-  RESPUESTA     VARCHAR2(400),
-  ID_USUARIO    NUMBER(10),
-  FECHA_BAJA    DATE
-)
-tablespace USERS
-  pctfree 10
-  initrans 1
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
-alter table HOMESAFEHOME.T_RECLAMOS
-  add constraint PK_RECLAMO primary key (ID_RECLAMO)
-  using index 
-  tablespace USERS
-  pctfree 10
-  initrans 2
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
+  references T_SENIALES (ID_SENIAL);
 
 prompt
 prompt Creating table T_NOTIFICACIONES
 prompt ===============================
 prompt
-create table HOMESAFEHOME.T_NOTIFICACIONES
+create table T_NOTIFICACIONES
 (
   ID_NOTIFICACION    NUMBER(10) not null,
   FECHA_NOTIFICACION DATE,
   ID_EVENTO          NUMBER(10),
-  ID_RECLAMO         NUMBER(10),
-  ID_AVISO           NUMBER(10),
-  FECHA_ENTREGA      DATE,
   FECHA_LECTURA      DATE,
-  FECHA_BAJA         DATE
+  FECHA_BAJA         DATE,
+  ID_USUARIO         NUMBER(10),
+  TITULO             VARCHAR2(100),
+  MENSAJE            VARCHAR2(400)
 )
-tablespace USERS
-  pctfree 10
-  initrans 1
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
-alter table HOMESAFEHOME.T_NOTIFICACIONES
-  add constraint PK_NOTIFICACION primary key (ID_NOTIFICACION)
-  using index 
-  tablespace USERS
-  pctfree 10
-  initrans 2
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
-alter table HOMESAFEHOME.T_NOTIFICACIONES
-  add constraint FK_NOT_AVISOS foreign key (ID_AVISO)
-  references HOMESAFEHOME.T_AVISOS (ID_AVISO);
-alter table HOMESAFEHOME.T_NOTIFICACIONES
+;
+alter table T_NOTIFICACIONES
+  add constraint PK_NOTIFICACION primary key (ID_NOTIFICACION);
+alter table T_NOTIFICACIONES
   add constraint FK_NOT_EVENTOS foreign key (ID_EVENTO)
-  references HOMESAFEHOME.T_EVENTOS (ID_EVENTO);
-alter table HOMESAFEHOME.T_NOTIFICACIONES
-  add constraint FK_NOT_RECLAMOS foreign key (ID_RECLAMO)
-  references HOMESAFEHOME.T_RECLAMOS (ID_RECLAMO);
+  references T_EVENTOS (ID_EVENTO);
+alter table T_NOTIFICACIONES
+  add constraint FK_NOT_USU foreign key (ID_USUARIO)
+  references T_USUARIOS (ID_USUARIO);
 
 prompt
 prompt Creating table T_PERFILES
 prompt =========================
 prompt
-create table HOMESAFEHOME.T_PERFILES
+create table T_PERFILES
 (
   ID_PERFIL  NUMBER(10) not null,
   N_PERFIL   VARCHAR2(200),
   FECHA_BAJA DATE
 )
-tablespace USERS
-  pctfree 10
-  initrans 1
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
-alter table HOMESAFEHOME.T_PERFILES
-  add constraint PK_PERFIL primary key (ID_PERFIL)
-  using index 
-  tablespace USERS
-  pctfree 10
-  initrans 2
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
-alter table HOMESAFEHOME.T_PERFILES
-  add constraint UK_PERFIL unique (N_PERFIL)
-  using index 
-  tablespace USERS
-  pctfree 10
-  initrans 2
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
+;
+alter table T_PERFILES
+  add constraint PK_PERFIL primary key (ID_PERFIL);
+alter table T_PERFILES
+  add constraint UK_PERFIL unique (N_PERFIL);
 
 prompt
 prompt Creating table T_PROCESOS
 prompt =========================
 prompt
-create table HOMESAFEHOME.T_PROCESOS
+create table T_PROCESOS
 (
   ID_PROCESO       NUMBER(10) not null,
   TIPO             VARCHAR2(2),
@@ -571,165 +255,99 @@ create table HOMESAFEHOME.T_PROCESOS
   URL              VARCHAR2(100),
   ID_PROCESO_PADRE NUMBER(10)
 )
-tablespace USERS
-  pctfree 10
-  initrans 1
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
-alter table HOMESAFEHOME.T_PROCESOS
-  add constraint PK_PROCESOS primary key (ID_PROCESO)
-  using index 
-  tablespace USERS
-  pctfree 10
-  initrans 2
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
+;
+alter table T_PROCESOS
+  add constraint PK_PROCESOS primary key (ID_PROCESO);
 
 prompt
 prompt Creating table T_PERFILES_PROCESO
 prompt =================================
 prompt
-create table HOMESAFEHOME.T_PERFILES_PROCESO
+create table T_PERFILES_PROCESO
 (
   ID_PERFIL_PROCESO NUMBER(10) not null,
   ID_PROCESO        NUMBER(10),
   ID_PERFIL         NUMBER(10)
 )
-tablespace USERS
-  pctfree 10
-  initrans 1
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
-alter table HOMESAFEHOME.T_PERFILES_PROCESO
-  add constraint PK_PERFILES_PROCESO primary key (ID_PERFIL_PROCESO)
-  using index 
-  tablespace USERS
-  pctfree 10
-  initrans 2
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
-alter table HOMESAFEHOME.T_PERFILES_PROCESO
+;
+alter table T_PERFILES_PROCESO
+  add constraint PK_PERFILES_PROCESO primary key (ID_PERFIL_PROCESO);
+alter table T_PERFILES_PROCESO
   add constraint FK_PERFIL_PROCESO foreign key (ID_PROCESO)
-  references HOMESAFEHOME.T_PROCESOS (ID_PROCESO);
-alter table HOMESAFEHOME.T_PERFILES_PROCESO
+  references T_PROCESOS (ID_PROCESO);
+alter table T_PERFILES_PROCESO
   add constraint FK_PROCESO_PERFIL foreign key (ID_PERFIL)
-  references HOMESAFEHOME.T_PERFILES (ID_PERFIL);
+  references T_PERFILES (ID_PERFIL);
+
+prompt
+prompt Creating table T_RECLAMOS
+prompt =========================
+prompt
+create table T_RECLAMOS
+(
+  ID_RECLAMO    NUMBER(10) not null,
+  FECHA_RECLAMO DATE,
+  TITULO        VARCHAR2(100),
+  MENSAJE       VARCHAR2(400),
+  RESPUESTA     VARCHAR2(400),
+  ID_USUARIO    NUMBER(10),
+  FECHA_BAJA    DATE
+)
+;
+alter table T_RECLAMOS
+  add constraint PK_RECLAMO primary key (ID_RECLAMO);
+alter table T_RECLAMOS
+  add constraint FK_RECLAMO_USUARIO foreign key (ID_USUARIO)
+  references T_USUARIOS (ID_USUARIO);
 
 prompt
 prompt Creating table T_USUARIOS_DISPOSITIVO
 prompt =====================================
 prompt
-create table HOMESAFEHOME.T_USUARIOS_DISPOSITIVO
+create table T_USUARIOS_DISPOSITIVO
 (
   ID_USUARIO_DISPOSITIVO NUMBER(10) not null,
   FECHA_INICIO           DATE,
   ID_USUARIO             NUMBER(10),
   ID_DISPOSITIVO         NUMBER(10),
-  FECHA_BAJA             DATE
+  FECHA_BAJA             DATE,
+  FECHA_AFUERA_CASA      DATE
 )
-tablespace USERS
-  pctfree 10
-  initrans 1
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
-alter table HOMESAFEHOME.T_USUARIOS_DISPOSITIVO
-  add constraint PK_USU_DISP primary key (ID_USUARIO_DISPOSITIVO)
-  using index 
-  tablespace USERS
-  pctfree 10
-  initrans 2
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
-alter table HOMESAFEHOME.T_USUARIOS_DISPOSITIVO
+;
+alter table T_USUARIOS_DISPOSITIVO
+  add constraint PK_USU_DISP primary key (ID_USUARIO_DISPOSITIVO);
+alter table T_USUARIOS_DISPOSITIVO
   add constraint FK_DISP_USU foreign key (ID_DISPOSITIVO)
-  references HOMESAFEHOME.T_DISPOSITIVOS (ID_DISPOSITIVO);
-alter table HOMESAFEHOME.T_USUARIOS_DISPOSITIVO
+  references T_DISPOSITIVOS (ID_DISPOSITIVO);
+alter table T_USUARIOS_DISPOSITIVO
   add constraint FK_USU_DISP foreign key (ID_USUARIO)
-  references HOMESAFEHOME.T_USUARIOS (ID_USUARIO);
+  references T_USUARIOS (ID_USUARIO);
 
 prompt
 prompt Creating table T_USUARIOS_PERFIL
 prompt ================================
 prompt
-create table HOMESAFEHOME.T_USUARIOS_PERFIL
+create table T_USUARIOS_PERFIL
 (
   ID_USUARIO_PERFIL NUMBER(10) not null,
   ID_USUARIO        NUMBER(10),
   ID_PERFIL         NUMBER(10)
 )
-tablespace USERS
-  pctfree 10
-  initrans 1
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
-alter table HOMESAFEHOME.T_USUARIOS_PERFIL
-  add constraint PK_USUARIO_PERFIL primary key (ID_USUARIO_PERFIL)
-  using index 
-  tablespace USERS
-  pctfree 10
-  initrans 2
-  maxtrans 255
-  storage
-  (
-    initial 64K
-    next 1M
-    minextents 1
-    maxextents unlimited
-  );
-alter table HOMESAFEHOME.T_USUARIOS_PERFIL
+;
+alter table T_USUARIOS_PERFIL
+  add constraint PK_USUARIO_PERFIL primary key (ID_USUARIO_PERFIL);
+alter table T_USUARIOS_PERFIL
   add constraint FK_PERFIL_USUARIO foreign key (ID_USUARIO)
-  references HOMESAFEHOME.T_USUARIOS (ID_USUARIO);
-alter table HOMESAFEHOME.T_USUARIOS_PERFIL
+  references T_USUARIOS (ID_USUARIO);
+alter table T_USUARIOS_PERFIL
   add constraint FK_USUARIO_PERFIL foreign key (ID_PERFIL)
-  references HOMESAFEHOME.T_PERFILES (ID_PERFIL);
+  references T_PERFILES (ID_PERFIL);
 
 prompt
 prompt Creating sequence SEQ_AUDITORIA
 prompt ===============================
 prompt
-create sequence HOMESAFEHOME.SEQ_AUDITORIA
+create sequence SEQ_AUDITORIA
 minvalue 1
 maxvalue 9999999999
 start with 1
@@ -740,7 +358,7 @@ prompt
 prompt Creating sequence SEQ_AUDITORIA_PROCESO
 prompt =======================================
 prompt
-create sequence HOMESAFEHOME.SEQ_AUDITORIA_PROCESO
+create sequence SEQ_AUDITORIA_PROCESO
 minvalue 1
 maxvalue 9999999999
 start with 1
@@ -751,7 +369,18 @@ prompt
 prompt Creating sequence SEQ_AVISO
 prompt ===========================
 prompt
-create sequence HOMESAFEHOME.SEQ_AVISO
+create sequence SEQ_AVISO
+minvalue 1
+maxvalue 9999999999
+start with 141
+increment by 1
+cache 20;
+
+prompt
+prompt Creating sequence SEQ_CONTACTO
+prompt ==============================
+prompt
+create sequence SEQ_CONTACTO
 minvalue 1
 maxvalue 9999999999
 start with 21
@@ -762,7 +391,7 @@ prompt
 prompt Creating sequence SEQ_DISPOSITIVO
 prompt =================================
 prompt
-create sequence HOMESAFEHOME.SEQ_DISPOSITIVO
+create sequence SEQ_DISPOSITIVO
 minvalue 1
 maxvalue 9999999999
 start with 21
@@ -773,10 +402,21 @@ prompt
 prompt Creating sequence SEQ_EVENTO
 prompt ============================
 prompt
-create sequence HOMESAFEHOME.SEQ_EVENTO
+create sequence SEQ_EVENTO
 minvalue 1
 maxvalue 9999999999
-start with 181
+start with 321
+increment by 1
+cache 20;
+
+prompt
+prompt Creating sequence SEQ_NOTIFICACION
+prompt ==================================
+prompt
+create sequence SEQ_NOTIFICACION
+minvalue 1
+maxvalue 9999999999
+start with 41
 increment by 1
 cache 20;
 
@@ -784,7 +424,7 @@ prompt
 prompt Creating sequence SEQ_PERFIL
 prompt ============================
 prompt
-create sequence HOMESAFEHOME.SEQ_PERFIL
+create sequence SEQ_PERFIL
 minvalue 1
 maxvalue 9999999999
 start with 1
@@ -795,7 +435,7 @@ prompt
 prompt Creating sequence SEQ_PERFIL_PROCESO
 prompt ====================================
 prompt
-create sequence HOMESAFEHOME.SEQ_PERFIL_PROCESO
+create sequence SEQ_PERFIL_PROCESO
 minvalue 1
 maxvalue 9999999999
 start with 1
@@ -806,7 +446,7 @@ prompt
 prompt Creating sequence SEQ_PROCESO
 prompt =============================
 prompt
-create sequence HOMESAFEHOME.SEQ_PROCESO
+create sequence SEQ_PROCESO
 minvalue 1
 maxvalue 9999999999
 start with 1
@@ -817,10 +457,10 @@ prompt
 prompt Creating sequence SEQ_RECLAMO
 prompt =============================
 prompt
-create sequence HOMESAFEHOME.SEQ_RECLAMO
+create sequence SEQ_RECLAMO
 minvalue 1
 maxvalue 9999999999
-start with 21
+start with 141
 increment by 1
 cache 20;
 
@@ -828,7 +468,7 @@ prompt
 prompt Creating sequence SEQ_SENIAL
 prompt ============================
 prompt
-create sequence HOMESAFEHOME.SEQ_SENIAL
+create sequence SEQ_SENIAL
 minvalue 1
 maxvalue 9999999999
 start with 21
@@ -839,7 +479,7 @@ prompt
 prompt Creating sequence SEQ_SESION
 prompt ============================
 prompt
-create sequence HOMESAFEHOME.SEQ_SESION
+create sequence SEQ_SESION
 minvalue 1
 maxvalue 9999999999
 start with 1
@@ -850,10 +490,10 @@ prompt
 prompt Creating sequence SEQ_USUARIO
 prompt =============================
 prompt
-create sequence HOMESAFEHOME.SEQ_USUARIO
+create sequence SEQ_USUARIO
 minvalue 1
 maxvalue 9999999999
-start with 21
+start with 121
 increment by 1
 cache 20;
 
@@ -861,10 +501,10 @@ prompt
 prompt Creating sequence SEQ_USUARIO_PERFIL
 prompt ====================================
 prompt
-create sequence HOMESAFEHOME.SEQ_USUARIO_PERFIL
+create sequence SEQ_USUARIO_PERFIL
 minvalue 1
 maxvalue 9999999999
-start with 21
+start with 81
 increment by 1
 cache 20;
 
@@ -872,14 +512,14 @@ prompt
 prompt Creating type TABLE_NUMBER
 prompt ==========================
 prompt
-CREATE OR REPLACE TYPE HOMESAFEHOME.table_number is table of number
+CREATE OR REPLACE TYPE table_number is table of number
 /
 
 prompt
 prompt Creating package PKG_ARRAY
 prompt ==========================
 prompt
-CREATE OR REPLACE PACKAGE HOMESAFEHOME.pkg_array AS
+CREATE OR REPLACE PACKAGE pkg_array AS
 
   TYPE stringtabletype IS TABLE OF VARCHAR2(50) INDEX BY BINARY_INTEGER;
 
@@ -895,7 +535,7 @@ prompt
 prompt Creating package PKG_AUDITORIA
 prompt ==============================
 prompt
-CREATE OR REPLACE PACKAGE HOMESAFEHOME.PKG_AUDITORIA AS
+CREATE OR REPLACE PACKAGE PKG_AUDITORIA AS
   -- Author  : DIEGO
   -- Created : 3/7/2018 20:33:36
   -- Purpose : Auditorias
@@ -914,15 +554,16 @@ prompt
 prompt Creating package PKG_AVISOS
 prompt ===========================
 prompt
-CREATE OR REPLACE PACKAGE HOMESAFEHOME.pkg_avisos IS
+CREATE OR REPLACE PACKAGE pkg_avisos IS
 
   -- Author  : DIEGO
   -- Created : 6/10/2018 19:27:23
-  -- Purpose : Gestion avisos
+  -- Purpose : Gestion de los avisos
   PROCEDURE pr_getbyid(p_id     IN t_avisos.id_aviso%TYPE
                       ,p_cursor OUT SYS_REFCURSOR);
 
-  PROCEDURE pr_getall(p_titulo                IN t_avisos.titulo%TYPE
+  PROCEDURE pr_getall(p_id_usuario            IN t_avisos.id_usuario%TYPE
+                     ,p_titulo                IN t_avisos.titulo%TYPE
                      ,p_mensaje               IN t_avisos.mensaje%TYPE
                      ,p_activo                IN OUT VARCHAR2
                      ,p_numeropaginalistado   IN NUMBER
@@ -942,10 +583,39 @@ END pkg_avisos;
 /
 
 prompt
+prompt Creating package PKG_CONTACTOS
+prompt ==============================
+prompt
+CREATE OR REPLACE PACKAGE pkg_contactos IS
+
+  -- Author  : DIEGO
+  -- Created : 27/10/2018 14:17:47
+  -- Purpose : Gestion de los contactos
+  PROCEDURE pr_getbyid(p_id     IN t_contactos.id_contacto%TYPE
+                      ,p_cursor OUT SYS_REFCURSOR);
+
+  PROCEDURE pr_getall(p_idDuenio              IN t_contactos.id_usuario_duenio%TYPE
+                     ,p_activo                IN OUT VARCHAR2
+                     ,p_numeropaginalistado   IN NUMBER
+                     ,p_totalregistroslistado OUT NUMBER
+                     ,p_cursor                OUT SYS_REFCURSOR);
+
+  PROCEDURE pr_postput(p_id          IN OUT t_contactos.id_contacto%TYPE
+                      ,p_IdDuenio      IN t_contactos.id_usuario_duenio%TYPE
+                      ,p_IdContacto     IN t_contactos.id_usuario_contacto%TYPE
+                      ,p_FechaInicio IN t_contactos.fecha_inicio%TYPE);
+
+  PROCEDURE pr_delete(p_id           IN t_contactos.id_contacto%TYPE
+                     ,p_activo_nuevo IN VARCHAR2);
+
+END pkg_contactos;
+/
+
+prompt
 prompt Creating package PKG_DISPOSITIVOS
 prompt =================================
 prompt
-CREATE OR REPLACE PACKAGE HOMESAFEHOME.pkg_dispositivos IS
+CREATE OR REPLACE PACKAGE pkg_dispositivos IS
 
   -- Author  : MARCOS
   -- Created : 04/08/2018 20:22:01
@@ -953,14 +623,22 @@ CREATE OR REPLACE PACKAGE HOMESAFEHOME.pkg_dispositivos IS
   PROCEDURE pr_getbyid(p_id     IN t_dispositivos.id_dispositivo%TYPE
                       ,p_cursor OUT SYS_REFCURSOR);
 
-  PROCEDURE pr_getall(p_activo                IN OUT VARCHAR2
-                     ,p_nombre                IN VARCHAR2
+  PROCEDURE pr_getall(p_nombre                IN t_dispositivos.n_dispositivo%TYPE
+                     ,p_activo                IN OUT VARCHAR2
                      ,p_numeropaginalistado   IN NUMBER
                      ,p_totalregistroslistado OUT NUMBER
                      ,p_cursor                OUT SYS_REFCURSOR);
 
-  PROCEDURE pr_postput(p_id     IN OUT t_dispositivos.id_dispositivo%TYPE
-                      ,p_nombre IN t_dispositivos.n_dispositivo%TYPE);
+  PROCEDURE pr_getbyusuario(p_id_usuario            IN t_usuarios_dispositivo.id_usuario%TYPE
+                           ,p_activo                IN OUT VARCHAR2
+                           ,p_numeropaginalistado   IN NUMBER
+                           ,p_totalregistroslistado OUT NUMBER
+                           ,p_cursor                OUT SYS_REFCURSOR);
+
+  PROCEDURE pr_postput(p_id            IN OUT t_dispositivos.id_dispositivo%TYPE
+                      ,p_idusuario     IN t_usuarios_dispositivo.id_usuario%TYPE
+                      ,p_iddispositivo IN t_usuarios_dispositivo.id_dispositivo%TYPE
+                      ,p_fechainicio   IN t_contactos.fecha_inicio%TYPE);
 
   PROCEDURE pr_delete(p_id           IN t_dispositivos.id_dispositivo%TYPE
                      ,p_activo_nuevo IN VARCHAR2);
@@ -972,7 +650,7 @@ prompt
 prompt Creating package PKG_EVENTOS
 prompt ============================
 prompt
-CREATE OR REPLACE PACKAGE HOMESAFEHOME.pkg_eventos IS
+CREATE OR REPLACE PACKAGE pkg_eventos IS
 
   -- Author  : DIEGO y MARCOS
   -- Created : 20/07/2018 21:18:55
@@ -1003,10 +681,33 @@ END pkg_eventos;
 /
 
 prompt
+prompt Creating package PKG_NOTIFICACIONES
+prompt ===================================
+prompt
+CREATE OR REPLACE PACKAGE pkg_notificaciones IS
+
+  -- Author  : DIEGO
+  -- Created : 24/08/2018 16:07:51
+  -- Purpose : Gestionar Notificaciones
+  PROCEDURE pr_getbyid(p_id     IN t_notificaciones.id_notificacion%TYPE
+                      ,p_cursor OUT SYS_REFCURSOR);
+
+  PROCEDURE pr_getall(p_id_usuario            IN t_notificaciones.id_usuario%TYPE
+                     ,p_titulo                IN t_notificaciones.titulo%TYPE
+                     ,p_mensaje               IN t_notificaciones.mensaje%TYPE
+                     ,p_activo                IN OUT VARCHAR2
+                     ,p_numeropaginalistado   IN NUMBER
+                     ,p_totalregistroslistado OUT NUMBER
+                     ,p_cursor                OUT SYS_REFCURSOR);
+
+END pkg_notificaciones;
+/
+
+prompt
 prompt Creating package PKG_PERFILES
 prompt =============================
 prompt
-CREATE OR REPLACE PACKAGE HOMESAFEHOME.pkg_perfiles IS
+CREATE OR REPLACE PACKAGE pkg_perfiles IS
 
   -- Author  : DIEGO
   -- Created : 3/7/2018 20:33:36
@@ -1037,7 +738,7 @@ prompt
 prompt Creating package PKG_RECLAMOS
 prompt =============================
 prompt
-CREATE OR REPLACE PACKAGE HOMESAFEHOME.pkg_reclamos IS
+CREATE OR REPLACE PACKAGE pkg_reclamos IS
 
   -- Author  : DIEGO
   -- Created : 6/10/2018 19:26:56
@@ -1045,7 +746,8 @@ CREATE OR REPLACE PACKAGE HOMESAFEHOME.pkg_reclamos IS
   PROCEDURE pr_getbyid(p_id     IN t_reclamos.id_reclamo%TYPE
                       ,p_cursor OUT SYS_REFCURSOR);
 
-  PROCEDURE pr_getall(p_titulo                IN t_reclamos.titulo%TYPE
+  PROCEDURE pr_getall(p_id_usuario            IN t_reclamos.id_usuario%TYPE
+                     ,p_titulo                IN t_reclamos.titulo%TYPE
                      ,p_mensaje               IN t_reclamos.mensaje%TYPE
                      ,p_activo                IN OUT VARCHAR2
                      ,p_numeropaginalistado   IN NUMBER
@@ -1066,10 +768,27 @@ END pkg_reclamos;
 /
 
 prompt
+prompt Creating package PKG_REPORTES
+prompt =============================
+prompt
+CREATE OR REPLACE PACKAGE pkg_reportes IS
+
+  PROCEDURE pr_get_cuenta_eventos(p_id_dispositivo NUMBER,
+                                  p_conteos  OUT SYS_REFCURSOR,
+                                  p_msj_error OUT VARCHAR2);
+  
+  PROCEDURE pr_get_ultimos_eventos(p_id_dispositivo NUMBER,
+                                  p_conteos  OUT SYS_REFCURSOR,
+                                  p_msj_error OUT VARCHAR2);
+
+END pkg_reportes;
+/
+
+prompt
 prompt Creating package PKG_SEGURIDAD
 prompt ==============================
 prompt
-CREATE OR REPLACE PACKAGE HOMESAFEHOME.pkg_seguridad IS
+CREATE OR REPLACE PACKAGE pkg_seguridad IS
 
   -- Author  : DIEGO
   -- Created : 3/7/2018 20:33:36
@@ -1087,12 +806,13 @@ CREATE OR REPLACE PACKAGE HOMESAFEHOME.pkg_seguridad IS
                                     ,p_cursor4 OUT SYS_REFCURSOR);
 
   --Registra en la tabla t_sesiones el login del usuario
-  PROCEDURE pr_usuarios_login(p_email      IN t_usuarios.email%TYPE
-                             ,p_password   IN t_usuarios.password%TYPE
-                             ,p_id_sesion  IN t_sesiones.id_sesion%TYPE
-                             ,p_ip         IN t_sesiones.ip%TYPE
-                             ,p_id_usuario OUT t_usuarios.id_usuario%TYPE
-                             ,p_cursor     OUT SYS_REFCURSOR);
+  PROCEDURE pr_usuarios_login(p_email          IN t_usuarios.email%TYPE
+                             ,p_password       IN t_usuarios.password%TYPE
+                             ,p_id_sesion      IN t_sesiones.id_sesion%TYPE
+                             ,p_ip             IN t_sesiones.ip%TYPE
+                             ,p_id_usuario     OUT t_usuarios.id_usuario%TYPE
+                             ,p_nombrecompleto OUT VARCHAR2
+                             ,p_cursor         OUT SYS_REFCURSOR);
 
   --Registra en la tabla t_sesiones el logout del usuario
   PROCEDURE pr_usuarios_logout(p_id_sesion       IN t_sesiones.id_sesion%TYPE
@@ -1107,7 +827,7 @@ prompt
 prompt Creating package PKG_SENIALES
 prompt =============================
 prompt
-CREATE OR REPLACE PACKAGE HOMESAFEHOME.pkg_seniales IS
+CREATE OR REPLACE PACKAGE pkg_seniales IS
 
   -- Author  : MARCOS
   -- Created : 04/08/2018 19:42:47
@@ -1134,7 +854,7 @@ prompt
 prompt Creating package PKG_USUARIOS
 prompt =============================
 prompt
-CREATE OR REPLACE PACKAGE HOMESAFEHOME.pkg_usuarios IS
+CREATE OR REPLACE PACKAGE pkg_usuarios IS
 
   -- Author  : DIEGO
   -- Created : 3/7/2018 21:18:55
@@ -1168,7 +888,7 @@ prompt
 prompt Creating package body PKG_ARRAY
 prompt ===============================
 prompt
-CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_array IS
+CREATE OR REPLACE PACKAGE BODY pkg_array IS
 
   FUNCTION fn_get_table_number(asociativearray IN pkg_array.inttabletype)
     RETURN table_number IS
@@ -1189,7 +909,7 @@ prompt
 prompt Creating package body PKG_AUDITORIA
 prompt ===================================
 prompt
-CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_auditoria AS
+CREATE OR REPLACE PACKAGE BODY pkg_auditoria AS
 
   FUNCTION check_val(l_new       IN VARCHAR2
                     ,l_old       IN VARCHAR2
@@ -1235,7 +955,7 @@ prompt
 prompt Creating package body PKG_AVISOS
 prompt ================================
 prompt
-CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_avisos IS
+CREATE OR REPLACE PACKAGE BODY pkg_avisos IS
 
   PROCEDURE pr_getbyid(p_id     IN t_avisos.id_aviso%TYPE
                       ,p_cursor OUT SYS_REFCURSOR) AS
@@ -1243,7 +963,7 @@ CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_avisos IS
     OPEN p_cursor FOR
       SELECT a.id_aviso id
             ,a.titulo titulo
-            ,a.mensaje iddispositivo
+            ,a.mensaje mensaje
             ,a.fecha_aviso fechaaviso
             ,a.fecha_baja fechabaja
             ,CASE
@@ -1260,7 +980,8 @@ CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_avisos IS
   END pr_getbyid;
 
   --------------------------------------------------------------------------------------------------------------------------------------------
-  PROCEDURE pr_getall(p_titulo                IN t_avisos.titulo%TYPE
+  PROCEDURE pr_getall(p_id_usuario            IN t_avisos.id_usuario%TYPE
+                     ,p_titulo                IN t_avisos.titulo%TYPE
                      ,p_mensaje               IN t_avisos.mensaje%TYPE
                      ,p_activo                IN OUT VARCHAR2
                      ,p_numeropaginalistado   IN NUMBER
@@ -1270,11 +991,15 @@ CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_avisos IS
     v_registro_hasta NUMBER(10) := v_registro_desde + 9;
     v_sql_count      VARCHAR2(4000);
     v_sql_datos      VARCHAR2(4000);
-    v_with           VARCHAR2(2000) := 'WITH param as (SELECT :p1 p_titulo, :p2 p_mensaje, :p3 p_activo FROM dual) ';
+    v_with           VARCHAR2(2000) := 'WITH param as (SELECT :p1 p_id_usuario, :p2 p_titulo, :p3 p_mensaje, :p4 p_activo FROM dual) ';
     v_where          VARCHAR2(2000);
   BEGIN
     -- contar resultados para el paginado
     v_sql_count := v_with || 'SELECT COUNT(*) FROM t_avisos t';
+    IF p_id_usuario IS NOT NULL
+    THEN
+      v_where := v_where || ' AND t.id_usuario = ' || p_id_usuario;
+    END IF;
     IF p_titulo IS NOT NULL
     THEN
       v_where := v_where ||
@@ -1283,7 +1008,7 @@ CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_avisos IS
     IF p_mensaje IS NOT NULL
     THEN
       v_where := v_where ||
-                 ' AND t.mensaje LIKE ''%'' || p_mensaje || ''%'' ';
+                 ' AND t.mensaje LIKE ''%'' || up_mensaje || ''%'' ';
     END IF;
     IF p_activo = 'SI'
     THEN
@@ -1299,10 +1024,9 @@ CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_avisos IS
       v_where     := ', param where ' || v_where;
       v_sql_count := v_sql_count || v_where;
     END IF;
-    dbms_output.put_line(v_sql_count);
     EXECUTE IMMEDIATE v_sql_count
       INTO p_totalregistroslistado
-      USING p_titulo, p_mensaje, p_activo;
+      USING p_id_usuario, p_titulo, p_mensaje, p_activo;
     v_sql_datos := v_with || 'SELECT c.id_aviso id
             ,c.titulo titulo
             ,c.mensaje mensaje
@@ -1320,7 +1044,7 @@ CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_avisos IS
                    ') c WHERE rnum >= ' || v_registro_desde ||
                    ' ORDER BY c.fecha_aviso';
     OPEN p_cursor FOR v_sql_datos
-      USING p_titulo, p_mensaje, p_activo;
+      USING p_id_usuario, p_titulo, p_mensaje, p_activo;
   EXCEPTION
     WHEN OTHERS THEN
       RAISE;
@@ -1341,6 +1065,17 @@ CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_avisos IS
         (id_aviso, titulo, mensaje, fecha_aviso, id_usuario)
       VALUES
         (p_id, p_titulo, p_mensaje, p_fecha_aviso, p_id_usuario);
+      INSERT INTO t_avisos
+        (id_aviso, titulo, mensaje, fecha_aviso, id_usuario)
+        SELECT seq_aviso.nextval
+              ,p_titulo
+              ,p_mensaje
+              ,p_fecha_aviso
+              ,c.id_usuario_contacto
+          FROM t_usuarios_dispositivo d
+          LEFT JOIN t_contactos c
+            ON c.id_usuario_duenio = d.id_usuario
+         WHERE d.id_usuario = p_id_usuario;
     ELSE
       -- modificacion
       UPDATE t_avisos a
@@ -1376,10 +1111,149 @@ END pkg_avisos;
 /
 
 prompt
+prompt Creating package body PKG_CONTACTOS
+prompt ===================================
+prompt
+CREATE OR REPLACE PACKAGE BODY pkg_contactos IS
+
+  PROCEDURE pr_getbyid(p_id     IN t_contactos.id_contacto%TYPE
+                      ,p_cursor OUT SYS_REFCURSOR) AS
+  BEGIN
+    OPEN p_cursor FOR
+      SELECT c.id_contacto id
+            ,u.email email
+            ,u.apellido || ', ' || u.nombre AS personanombre
+            ,c.fecha_inicio fechainicio
+            ,c.fecha_baja fechabaja
+            ,CASE
+               WHEN c.fecha_baja IS NULL THEN
+                'SI'
+               ELSE
+                'NO'
+             END activo
+        FROM t_contactos c
+        LEFT JOIN t_usuarios u
+          ON c.id_usuario_contacto = u.id_usuario
+       WHERE c.id_contacto = p_id;
+  EXCEPTION
+    WHEN OTHERS THEN
+      RAISE;
+  END pr_getbyid;
+
+  --------------------------------------------------------------------------------------------------------------------------------------------
+  PROCEDURE pr_getall(p_idDuenio              IN t_contactos.id_usuario_duenio%TYPE
+                     ,p_activo                IN OUT VARCHAR2
+                     ,p_numeropaginalistado   IN NUMBER
+                     ,p_totalregistroslistado OUT NUMBER
+                     ,p_cursor                OUT SYS_REFCURSOR) AS
+    v_registro_desde NUMBER(10) := (p_numeropaginalistado * 10) - 9;
+    v_registro_hasta NUMBER(10) := v_registro_desde + 9;
+    v_sql_count      VARCHAR2(4000);
+    v_sql_datos      VARCHAR2(4000);
+    v_with           VARCHAR2(2000) := 'WITH param as (SELECT :p1 p_idDuenio, :p2 p_activo FROM dual) ';
+    v_where          VARCHAR2(2000);
+  BEGIN
+    -- contar resultados para el paginado
+    v_sql_count := v_with || 'SELECT COUNT(*) FROM t_contactos t';
+    IF p_idDuenio IS NOT NULL
+    THEN
+      v_where := v_where || ' AND t.id_usuario_duenio = ' || p_idDuenio;
+    END IF;
+    IF p_activo = 'SI'
+    THEN
+      v_where := v_where || ' AND t.fecha_baja IS NULL ';
+    END IF;
+    IF p_activo = 'NO'
+    THEN
+      v_where := v_where || ' AND t.fecha_baja IS NOT NULL ';
+    END IF;
+    IF (v_where IS NOT NULL)
+    THEN
+      v_where     := substr(v_where, 5);
+      v_where     := ', param where ' || v_where;
+      v_sql_count := v_sql_count || v_where;
+    END IF;
+    EXECUTE IMMEDIATE v_sql_count
+      INTO p_totalregistroslistado
+      USING p_idDuenio, p_activo;
+    v_sql_datos := v_with || ' SELECT c.id_contacto id
+            ,c.email email
+            ,c.apellido || '', '' || c.nombre AS personanombre
+            ,c.fecha_inicio fechainicio
+            ,c.fecha_baja fechabaja
+            ,CASE
+               WHEN c.fecha_baja IS NULL THEN
+                ''SI''
+               ELSE
+                ''NO''
+             END activo
+         FROM (SELECT a.*,rownum rnum FROM ' ||
+                   '(SELECT t.*,u.apellido,u.nombre,u.email FROM t_contactos t LEFT JOIN t_usuarios u
+          ON t.id_usuario_contacto = u.id_usuario' || v_where || ' )a ' ||
+                   'WHERE rownum <= ' || v_registro_hasta ||
+                   ') c WHERE rnum >= ' || v_registro_desde ||
+                   ' ORDER BY c.fecha_inicio';
+   
+    OPEN p_cursor FOR v_sql_datos
+      USING p_idDuenio, p_activo;
+  EXCEPTION
+    WHEN OTHERS THEN
+      RAISE;
+  END pr_getall;
+
+  --------------------------------------------------------------------------------------------------------------------------------------------
+  PROCEDURE pr_postput(p_id          IN OUT t_contactos.id_contacto%TYPE
+                      ,p_IdDuenio      IN t_contactos.id_usuario_duenio%TYPE
+                      ,p_IdContacto     IN t_contactos.id_usuario_contacto%TYPE
+                      ,p_FechaInicio IN t_contactos.fecha_inicio%TYPE) AS
+  BEGIN
+    IF p_id = 0
+    THEN
+      -- alta
+      p_id := seq_contacto.nextval;
+      INSERT INTO t_contactos
+       (id_contacto,id_usuario_duenio,id_usuario_contacto,fecha_inicio)
+      VALUES
+        (p_id, p_IdDuenio, p_IdContacto, p_FechaInicio);
+      
+    ELSE
+      -- modificacion
+      UPDATE t_contactos c
+         SET c.id_usuario_duenio      = p_IdDuenio
+            ,c.id_usuario_contacto     = p_IdContacto
+            ,c.fecha_inicio = p_FechaInicio
+       WHERE c.id_contacto = p_id;
+    END IF;
+  EXCEPTION
+    WHEN OTHERS THEN
+      RAISE;
+  END pr_postput;
+
+  --------------------------------------------------------------------------------------------------------------------------------------------
+  PROCEDURE pr_delete(p_id           IN t_contactos.id_contacto%TYPE
+                     ,p_activo_nuevo IN VARCHAR2) AS
+  BEGIN
+    UPDATE t_contactos c
+       SET c.fecha_baja = CASE
+                            WHEN p_activo_nuevo = 'SI' THEN
+                             NULL
+                            ELSE
+                             SYSDATE
+                          END
+     WHERE c.id_contacto = p_id;
+  EXCEPTION
+    WHEN OTHERS THEN
+      RAISE;
+  END pr_delete;
+
+END pkg_contactos;
+/
+
+prompt
 prompt Creating package body PKG_DISPOSITIVOS
 prompt ======================================
 prompt
-CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_dispositivos IS
+CREATE OR REPLACE PACKAGE BODY pkg_dispositivos IS
 
   PROCEDURE pr_getbyid(p_id     IN t_dispositivos.id_dispositivo%TYPE
                       ,p_cursor OUT SYS_REFCURSOR) AS
@@ -1401,8 +1275,8 @@ CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_dispositivos IS
   END pr_getbyid;
 
   --------------------------------------------------------------------------------------------------------------------------------------------
-  PROCEDURE pr_getall(p_activo                IN OUT VARCHAR2
-                     ,p_nombre                IN VARCHAR2
+  PROCEDURE pr_getall(p_nombre                IN t_dispositivos.n_dispositivo%TYPE
+                     ,p_activo                IN OUT VARCHAR2
                      ,p_numeropaginalistado   IN NUMBER
                      ,p_totalregistroslistado OUT NUMBER
                      ,p_cursor                OUT SYS_REFCURSOR) AS
@@ -1418,8 +1292,7 @@ CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_dispositivos IS
     IF p_nombre IS NOT NULL
     THEN
       v_where := v_where ||
-                 ' AND t.n_dispositivo LIKE ''%'' || p_nombre || ''%'' ';
-      -- (p_nombre IS NULL OR p.n_perfil LIKE '%' || p_nombre || '%') AND
+                 ' AND lower(t.n_dispositivo) = lower(p_nombre) ';
     END IF;
     IF p_activo = 'SI'
     THEN
@@ -1449,10 +1322,10 @@ CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_dispositivos IS
                 '' NO ''
              END activo
              FROM (SELECT a.*,rownum rnum FROM ' ||
-                   '(SELECT di.* FROM t_dispositivos di' || v_where ||
-                   ' )a ' || 'WHERE rownum <= ' || v_registro_hasta ||
+                   '(SELECT t.* FROM t_dispositivos t' || v_where || ' )a ' ||
+                   'WHERE rownum <= ' || v_registro_hasta ||
                    ') c WHERE rownum >= ' || v_registro_desde ||
-                   ' ORDER BY c.n_dispositivo';
+                   ' ORDER BY c.id_dispositivo';
     OPEN p_cursor FOR v_sql_datos
       USING p_nombre, p_activo;
   EXCEPTION
@@ -1461,22 +1334,84 @@ CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_dispositivos IS
   END pr_getall;
 
   --------------------------------------------------------------------------------------------------------------------------------------------
-  PROCEDURE pr_postput(p_id     IN OUT t_dispositivos.id_dispositivo%TYPE
-                      ,p_nombre IN t_dispositivos.n_dispositivo%TYPE) AS
+  PROCEDURE pr_getbyusuario(p_id_usuario            IN t_usuarios_dispositivo.id_usuario%TYPE
+                           ,p_activo                IN OUT VARCHAR2
+                           ,p_numeropaginalistado   IN NUMBER
+                           ,p_totalregistroslistado OUT NUMBER
+                           ,p_cursor                OUT SYS_REFCURSOR) AS
+    v_registro_desde NUMBER(10) := (p_numeropaginalistado * 10) - 9;
+    v_registro_hasta NUMBER(10) := v_registro_desde + 9;
+    v_sql_count      VARCHAR2(4000);
+    v_sql_datos      VARCHAR2(4000);
+    v_with           VARCHAR2(2000) := 'WITH param as (SELECT :p1 p_id_usuario, :p2 p_activo  FROM dual) ';
+    v_where          VARCHAR2(2000);
+  BEGIN
+    -- contar resultados para el paginado
+    v_sql_count := v_with ||
+                   'SELECT COUNT(*) FROM t_usuarios_dispositivo t left join t_dispositivos d on t.id_dispositivo = d.id_dispositivo';
+    IF p_id_usuario IS NOT NULL
+    THEN
+      v_where := v_where || ' AND t.id_usuario = ' || p_id_usuario;
+    END IF;
+    IF p_activo = 'SI'
+    THEN
+      v_where := v_where || ' AND t.fecha_baja IS NULL ';
+    END IF;
+    IF p_activo = 'NO'
+    THEN
+      v_where := v_where || ' AND t.fecha_baja IS NOT NULL ';
+    END IF;
+    IF (v_where IS NOT NULL)
+    THEN
+      v_where     := substr(v_where, 5);
+      v_where     := ', param where ' || v_where;
+      v_sql_count := v_sql_count || v_where;
+    END IF;
+    EXECUTE IMMEDIATE v_sql_count
+      INTO p_totalregistroslistado
+      USING p_id_usuario, p_activo;
+    v_sql_datos := v_with ||
+                   'SELECT c.id_dispositivo Id,
+            c.n_dispositivo nombre,
+            c.fecha_baja fechaBaja,
+            CASE
+               WHEN c.fecha_baja IS NULL THEN
+                '' SI ''
+               ELSE
+                '' NO ''
+             END activo
+             FROM (SELECT a.*,rownum rnum FROM ' ||
+                   '(SELECT t.*, d.n_dispositivo FROM t_usuarios_dispositivo t left join t_dispositivos d on t.id_dispositivo = d.id_dispositivo' ||
+                   v_where || ' )a ' || 'WHERE rownum <= ' ||
+                   v_registro_hasta || ') c WHERE rownum >= ' ||
+                   v_registro_desde || ' ORDER BY c.id_dispositivo';
+    OPEN p_cursor FOR v_sql_datos
+      USING p_id_usuario, p_activo;
+  EXCEPTION
+    WHEN OTHERS THEN
+      RAISE;
+  END pr_getbyusuario;
+
+  --------------------------------------------------------------------------------------------------------------------------------------------
+  PROCEDURE pr_postput(p_id            IN OUT t_dispositivos.id_dispositivo%TYPE
+                      ,p_idusuario     IN t_usuarios_dispositivo.id_usuario%TYPE
+                      ,p_iddispositivo IN t_usuarios_dispositivo.id_dispositivo%TYPE
+                      ,p_fechainicio   IN t_contactos.fecha_inicio%TYPE) AS
   BEGIN
     IF p_id = 0
     THEN
       -- alta
       p_id := seq_dispositivo.nextval;
-      INSERT INTO t_dispositivos
-        (id_dispositivo, n_dispositivo)
+      INSERT INTO t_usuarios_dispositivo
+        (id_usuario_dispositivo, id_usuario, id_dispositivo, fecha_inicio)
       VALUES
-        (p_id, p_nombre);
+        (p_id, p_idusuario, p_iddispositivo, p_fechainicio);
     ELSE
       -- modificacion
-      UPDATE t_dispositivos e
-         SET e.n_dispositivo = p_nombre
-       WHERE e.id_dispositivo = p_id;
+      UPDATE t_usuarios_dispositivo ud
+         SET ud.id_usuario     = p_idusuario
+            ,ud.id_dispositivo = p_iddispositivo
+       WHERE ud.id_dispositivo = p_id;
     END IF;
   EXCEPTION
     WHEN OTHERS THEN
@@ -1507,7 +1442,7 @@ prompt
 prompt Creating package body PKG_EVENTOS
 prompt =================================
 prompt
-CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_eventos IS
+CREATE OR REPLACE PACKAGE BODY pkg_eventos IS
 
   PROCEDURE pr_getcombos(p_seniales     OUT SYS_REFCURSOR
                         ,p_dispositivos OUT SYS_REFCURSOR) AS
@@ -1611,7 +1546,7 @@ CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_eventos IS
                    ' )a ' || 'WHERE rownum <= ' || v_registro_hasta ||
                    ') c WHERE rnum >= ' || v_registro_desde ||
                    ' ORDER BY c.id_evento desc';
-                   dbms_output.put_line(v_sql_datos);
+              
     OPEN p_cursor FOR v_sql_datos
       USING p_id_dispositivo, p_id_senial, p_activo;
   EXCEPTION
@@ -1668,10 +1603,122 @@ END pkg_eventos;
 /
 
 prompt
+prompt Creating package body PKG_NOTIFICACIONES
+prompt ========================================
+prompt
+CREATE OR REPLACE PACKAGE BODY pkg_notificaciones IS
+
+  --------------------------------------------------------------------------------------------------------------------------------------------
+  PROCEDURE pr_getbyid(p_id     IN t_notificaciones.id_notificacion%TYPE
+                      ,p_cursor OUT SYS_REFCURSOR) IS
+  BEGIN
+    OPEN p_cursor FOR
+      SELECT n.id_notificacion id
+            ,n.titulo
+            ,n.mensaje           
+            ,n.fecha_notificacion
+            ,d.n_dispositivo nombredispositivo
+            ,CASE
+               WHEN e.fecha_baja IS NULL THEN
+                'SI'
+               ELSE
+                'NO'
+             END activo
+        FROM t_notificaciones n
+        JOIN t_eventos e
+          ON n.id_evento = e.id_evento
+        JOIN t_dispositivos d
+          ON e.id_dispositivo = d.id_dispositivo
+       WHERE n.id_notificacion = p_id;
+  EXCEPTION
+    WHEN OTHERS THEN
+      RAISE;
+  END pr_getbyid;
+
+  --------------------------------------------------------------------------------------------------------------------------------------------
+  PROCEDURE pr_getall(p_id_usuario            IN t_notificaciones.id_usuario%TYPE
+                     ,p_titulo                IN t_notificaciones.titulo%TYPE
+                     ,p_mensaje               IN t_notificaciones.mensaje%TYPE
+                     ,p_activo                IN OUT VARCHAR2
+                     ,p_numeropaginalistado   IN NUMBER
+                     ,p_totalregistroslistado OUT NUMBER
+                     ,p_cursor                OUT SYS_REFCURSOR) IS
+    v_registro_desde NUMBER(10) := (p_numeropaginalistado * 10) - 9;
+    v_registro_hasta NUMBER(10) := v_registro_desde + 9;
+    v_sql_count      VARCHAR2(4000);
+    v_sql_datos      VARCHAR2(4000);
+    v_with           VARCHAR2(2000) := 'WITH param as (SELECT :p1 p_id_usuario,:p2 p_titulo,:p3 p_mensaje, :p4 p_activo FROM dual) ';
+    v_where          VARCHAR2(2000);
+  BEGIN
+    -- contar resultados para el paginado
+    v_sql_count := v_with || 'SELECT COUNT(*) FROM t_notificaciones t';
+    IF p_id_usuario IS NOT NULL
+    THEN
+      v_where := v_where || ' AND t.id_usuario = ' || p_id_usuario;
+    END IF;
+    IF p_titulo IS NOT NULL
+    THEN
+      v_where := v_where ||
+                 ' AND lower(t.titulo) LIKE ''%'' || lower(p_titulo) || ''%'' ';
+    END IF;
+    IF p_mensaje IS NOT NULL
+    THEN
+      v_where := v_where ||
+                 ' AND lower(t.mensaje) LIKE ''%'' || lower(p_mensaje) || ''%'' ';
+    END IF;
+    IF p_activo = 'SI'
+    THEN
+      v_where := v_where || ' AND t.fecha_baja IS NULL ';
+    END IF;
+    IF p_activo = 'NO'
+    THEN
+      v_where := v_where || ' AND t.fecha_baja IS NOT NULL ';
+    END IF;
+    IF (v_where IS NOT NULL)
+    THEN
+      v_where     := substr(v_where, 5);
+      v_where     := ', param where ' || v_where;
+      v_sql_count := v_sql_count || v_where;
+    END IF;
+    EXECUTE IMMEDIATE v_sql_count
+      INTO p_totalregistroslistado
+      USING p_id_usuario, p_titulo, p_mensaje, p_activo;
+    dbms_output.put_line(v_sql_count);
+    v_sql_datos := v_with || 'SELECT c.id_notificacion id
+            ,c.n_dispositivo nombredispositivo
+            ,c.fecha_notificacion FechaNotificacion
+            ,c.titulo titulo
+            ,c.mensaje mensaje
+            ,c.fecha_baja fechabaja
+          ,CASE
+           WHEN c.fecha_baja IS NULL THEN
+            ''SI''
+           ELSE
+            ''NO''
+         END activo
+         FROM (SELECT a.*,rownum rnum FROM ' ||
+                   '(SELECT t.*,d.n_dispositivo FROM t_notificaciones t LEFT JOIN t_eventos e ON t.id_evento = e.id_evento LEFT JOIN t_dispositivos d
+                   ON e.id_dispositivo = d.id_dispositivo' ||
+                   v_where || ' )a ' || 'WHERE rownum <= ' ||
+                   v_registro_hasta || ') c WHERE rnum >= ' ||
+                   v_registro_desde || ' ORDER BY c.id_notificacion';
+    dbms_output.put_line(v_sql_datos);
+    OPEN p_cursor FOR v_sql_datos
+      USING p_id_usuario, p_titulo, p_mensaje, p_activo;
+
+  EXCEPTION
+    WHEN OTHERS THEN
+      RAISE;
+  END pr_getall;
+
+END pkg_notificaciones;
+/
+
+prompt
 prompt Creating package body PKG_PERFILES
 prompt ==================================
 prompt
-CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_perfiles IS
+CREATE OR REPLACE PACKAGE BODY pkg_perfiles IS
 
   PROCEDURE pr_getcombos(p_procesos OUT SYS_REFCURSOR) AS
   BEGIN
@@ -1837,7 +1884,7 @@ prompt
 prompt Creating package body PKG_RECLAMOS
 prompt ==================================
 prompt
-CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_reclamos IS
+CREATE OR REPLACE PACKAGE BODY pkg_reclamos IS
 
   PROCEDURE pr_getbyid(p_id     IN t_reclamos.id_reclamo%TYPE
                       ,p_cursor OUT SYS_REFCURSOR) AS
@@ -1845,7 +1892,7 @@ CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_reclamos IS
     OPEN p_cursor FOR
       SELECT r.id_reclamo id
             ,r.titulo titulo
-            ,r.mensaje iddispositivo
+            ,r.mensaje mensaje
             ,r.fecha_reclamo fechareclamo
             ,r.fecha_baja fechabaja
             ,r.respuesta respuesta
@@ -1863,7 +1910,8 @@ CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_reclamos IS
   END pr_getbyid;
 
   --------------------------------------------------------------------------------------------------------------------------------------------
-  PROCEDURE pr_getall(p_titulo                IN t_reclamos.titulo%TYPE
+  PROCEDURE pr_getall(p_id_usuario            IN t_reclamos.id_usuario%TYPE
+                     ,p_titulo                IN t_reclamos.titulo%TYPE
                      ,p_mensaje               IN t_reclamos.mensaje%TYPE
                      ,p_activo                IN OUT VARCHAR2
                      ,p_numeropaginalistado   IN NUMBER
@@ -1873,11 +1921,15 @@ CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_reclamos IS
     v_registro_hasta NUMBER(10) := v_registro_desde + 9;
     v_sql_count      VARCHAR2(4000);
     v_sql_datos      VARCHAR2(4000);
-    v_with           VARCHAR2(2000) := 'WITH param as (SELECT :p1 p_titulo, :p2 p_mensaje, :p3 p_activo FROM dual) ';
+    v_with           VARCHAR2(2000) := 'WITH param as (SELECT :p1 p_id_usuario, :p2 p_titulo, :p3 p_mensaje, :p3 p_activo FROM dual) ';
     v_where          VARCHAR2(2000);
   BEGIN
     -- contar resultados para el paginado
     v_sql_count := v_with || 'SELECT COUNT(*) FROM t_reclamos t';
+    IF p_id_usuario IS NOT NULL
+    THEN
+      v_where := v_where || ' AND t.id_usuario = ' || p_id_usuario;
+    END IF;
     IF p_titulo IS NOT NULL
     THEN
       v_where := v_where ||
@@ -1902,10 +1954,9 @@ CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_reclamos IS
       v_where     := ', param where ' || v_where;
       v_sql_count := v_sql_count || v_where;
     END IF;
-    dbms_output.put_line(v_sql_count);
     EXECUTE IMMEDIATE v_sql_count
       INTO p_totalregistroslistado
-      USING p_titulo, p_mensaje, p_activo;
+      USING p_id_usuario, p_titulo, p_mensaje, p_activo;
     v_sql_datos := v_with || 'SELECT c.id_reclamo id
             ,c.titulo titulo
             ,c.mensaje mensaje
@@ -1924,7 +1975,7 @@ CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_reclamos IS
                    ') c WHERE rnum >= ' || v_registro_desde ||
                    ' ORDER BY c.fecha_reclamo';
     OPEN p_cursor FOR v_sql_datos
-      USING p_titulo, p_mensaje, p_activo;
+      USING p_id_usuario, p_titulo, p_mensaje, p_activo;
   EXCEPTION
     WHEN OTHERS THEN
       RAISE;
@@ -1988,10 +2039,71 @@ END pkg_reclamos;
 /
 
 prompt
+prompt Creating package body PKG_REPORTES
+prompt ==================================
+prompt
+CREATE OR REPLACE PACKAGE BODY pkg_reportes IS
+
+  PROCEDURE pr_get_cuenta_eventos(p_id_dispositivo NUMBER,
+                                  p_conteos  OUT SYS_REFCURSOR,
+                                  p_msj_error OUT VARCHAR2) IS
+    v_id_usuario t_usuarios.id_usuario%TYPE := NULL;
+    BEGIN      
+      BEGIN
+        SELECT ud.id_usuario
+        INTO v_id_usuario
+        FROM t_usuarios_dispositivo ud
+        WHERE ud.id_dispositivo = p_id_dispositivo
+        AND NVL(ud.fecha_baja, SYSDATE + 1) >= SYSDATE;
+      EXCEPTION 
+        WHEN OTHERS THEN 
+          p_msj_error := 'Se produjo un Error: ' || SQLERRM; 
+      END;
+    
+      IF v_id_usuario IS NOT NULL THEN
+        OPEN p_conteos FOR 
+          SELECT s.n_senial, count(e.id_evento) as total 
+          FROM t_eventos e inner join t_seniales s on e.id_senial = s.id_senial 
+          WHERE e.id_dispositivo = id_dispositivo 
+          GROUP BY s.n_senial; 
+      END IF;
+
+  END pr_get_cuenta_eventos;
+
+  PROCEDURE pr_get_ultimos_eventos(p_id_dispositivo NUMBER,
+                                  p_conteos  OUT SYS_REFCURSOR,
+                                  p_msj_error OUT VARCHAR2) IS
+    v_id_usuario t_usuarios.id_usuario%TYPE := NULL;
+    BEGIN
+      BEGIN
+        SELECT ud.id_usuario
+        INTO v_id_usuario
+        FROM t_usuarios_dispositivo ud
+        WHERE ud.id_dispositivo = p_id_dispositivo
+        AND NVL(ud.fecha_baja, SYSDATE + 1) >= SYSDATE;
+      EXCEPTION
+        WHEN OTHERS THEN
+          p_msj_error := 'Se produjo un Error: ' || SQLERRM;
+      END;
+
+      IF v_id_usuario IS NOT NULL THEN
+        OPEN p_conteos FOR
+          SELECT s.n_senial, max(e.fecha_evento) as total
+          FROM t_eventos e inner join t_seniales s on e.id_senial = s.id_senial
+          WHERE e.id_dispositivo = id_dispositivo
+          AND NVL(e.fecha_baja, SYSDATE + 1) >= SYSDATE
+          GROUP BY s.n_senial;
+      END IF;
+  END pr_get_ultimos_eventos;
+
+END pkg_reportes;
+/
+
+prompt
 prompt Creating package body PKG_SEGURIDAD
 prompt ===================================
 prompt
-CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_seguridad IS
+CREATE OR REPLACE PACKAGE BODY pkg_seguridad IS
 
   -------------------------------------------------------------------------------------------------------------------------------
   FUNCTION fn_id_session RETURN VARCHAR2 IS
@@ -2047,21 +2159,22 @@ CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_seguridad IS
   END;
 
   ----------------------------------------------------------------------------------------------------------------------------
-  PROCEDURE pr_usuarios_login(p_email      IN t_usuarios.email%TYPE
-                             ,p_password   IN t_usuarios.password%TYPE
-                             ,p_id_sesion  IN t_sesiones.id_sesion%TYPE
-                             ,p_ip         IN t_sesiones.ip%TYPE
-                             ,p_id_usuario OUT t_usuarios.id_usuario%TYPE
-                             ,p_cursor     OUT SYS_REFCURSOR) AS
+  PROCEDURE pr_usuarios_login(p_email          IN t_usuarios.email%TYPE
+                             ,p_password       IN t_usuarios.password%TYPE
+                             ,p_id_sesion      IN t_sesiones.id_sesion%TYPE
+                             ,p_ip             IN t_sesiones.ip%TYPE
+                             ,p_id_usuario     OUT t_usuarios.id_usuario%TYPE
+                             ,p_nombrecompleto OUT VARCHAR2
+                             ,p_cursor         OUT SYS_REFCURSOR) AS
     ex_empty_array EXCEPTION;
   BEGIN
     --Obtiene el id_usuario a traves del cuil
-    SELECT u.id_usuario
-      INTO p_id_usuario
+    SELECT u.id_usuario, u.apellido || ', ' ||  u.nombre 
+      INTO p_id_usuario, p_nombrecompleto
       FROM t_usuarios u
      WHERE u.email = lower(p_email)
        AND u.password = lower(p_password)
-       AND nvl(u.fecha_fin, SYSDATE + 1) > SYSDATE;
+       AND nvl(u.fecha_baja, SYSDATE + 1) > SYSDATE;
     --Actualiza el ultimo login del usuario
     UPDATE t_usuarios u
        SET u.ultimo_login = SYSDATE
@@ -2180,7 +2293,7 @@ prompt
 prompt Creating package body PKG_SENIALES
 prompt ==================================
 prompt
-CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_seniales IS
+CREATE OR REPLACE PACKAGE BODY pkg_seniales IS
 
   PROCEDURE pr_getbyid(p_id     IN t_seniales.id_senial%TYPE
                       ,p_cursor OUT SYS_REFCURSOR) AS
@@ -2309,7 +2422,7 @@ prompt
 prompt Creating package body PKG_USUARIOS
 prompt ==================================
 prompt
-CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_usuarios IS
+CREATE OR REPLACE PACKAGE BODY pkg_usuarios IS
 
   PROCEDURE pr_getcombos(p_perfiles OUT SYS_REFCURSOR) AS
   BEGIN
@@ -2333,12 +2446,12 @@ CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_usuarios IS
     OPEN p_cursor FOR
       SELECT t.id_usuario id
             ,t.fecha_inicio fechainicio
-            ,t.fecha_fin fechabaja
+            ,t.fecha_baja fechabaja
             ,t.email
-            ,t.password
+            --,t.password
             ,t.ultimo_login ultimologin
             ,CASE
-               WHEN t.fecha_fin IS NULL THEN
+               WHEN t.fecha_baja IS NULL THEN
                 'SI'
                ELSE
                 'NO'
@@ -2357,13 +2470,13 @@ CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_usuarios IS
     v_registro_hasta NUMBER(10) := v_registro_desde + 9;
     v_sql_count      VARCHAR2(4000);
     v_sql_datos      VARCHAR2(4000);
-    v_with           VARCHAR2(2000) := 'WITH param as (SELECT :p1 p_nombre, :p2 p_activo FROM dual) ';
+    v_with           VARCHAR2(2000) := 'WITH param as (SELECT :p1 p_email, :p2 p_activo FROM dual) ';
     v_where          VARCHAR2(2000);
   BEGIN
     v_sql_count := v_with || 'SELECT COUNT(*) FROM t_usuarios t';
     IF p_email IS NOT NULL
     THEN
-      v_where := v_where || ' AND t.email LIKE ''%'' || p_nombre || ''%'' ';
+      v_where := v_where || ' AND lower(t.email) = lower(p_email)';
     END IF;
     IF p_activo = 'SI'
     THEN
@@ -2384,10 +2497,11 @@ CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_usuarios IS
       USING p_email, p_activo;
     v_sql_datos := v_with || 'SELECT c.id_usuario id
           ,c.fecha_inicio fechainicio
-          ,c.fecha_fin fechabaja
+          ,c.fecha_baja fechabaja
           ,c.email
           ,c.nombre
-          ,c.apellido
+          ,c.apellido         
+          ,c.apellido || '', '' ||  c.nombre as PersonaNombre
           ,c.ultimo_login ultimologin
           ,CASE
            WHEN c.fecha_baja IS NULL THEN
@@ -2477,6 +2591,83 @@ CREATE OR REPLACE PACKAGE BODY HOMESAFEHOME.pkg_usuarios IS
   END pr_delete;
 
 END pkg_usuarios;
+/
+
+prompt
+prompt Creating trigger TRG_EVENTOS
+prompt ============================
+prompt
+create or replace trigger TRG_EVENTOS
+  after insert or update on t_eventos  
+  for each row
+DECLARE
+  v_usuario_duenio t_usuarios_dispositivo.id_usuario%TYPE;
+  v_minimo_valor   t_configuraciones_notificacion.valor_desde%TYPE;
+  v_maximo_valor   t_configuraciones_notificacion.valor_hasta%TYPE;
+  v_titulo         t_configuraciones_notificacion.titulo%TYPE := '';
+  v_mensaje        t_configuraciones_notificacion.titulo%TYPE := '';
+BEGIN
+  SELECT d.id_usuario
+    INTO v_usuario_duenio
+    FROM t_usuarios_dispositivo d
+   WHERE d.id_dispositivo = :new.id_dispositivo;
+  --Definicion el tipo de mensaje segun la señal que venga
+  /*1 
+  id_senial 1 MONOXIDO DE CARBONO Valores
+  id_senial 3 PUERTA (0=abierto, 1 = cerrado) 
+  2 LUZ
+  4 GARAGE*/
+  SELECT MIN(valor_desde)
+    INTO v_minimo_valor
+    FROM t_configuraciones_notificacion
+   WHERE id_senial = :new.id_senial;
+  SELECT MAX(valor_hasta)
+    INTO v_maximo_valor
+    FROM t_configuraciones_notificacion
+   WHERE id_senial = :new.id_senial;
+  IF (:new.valor >= v_minimo_valor AND :new.valor <= v_maximo_valor)
+  THEN
+    SELECT cn.titulo, cn.mensaje
+      INTO v_titulo, v_mensaje
+      FROM t_configuraciones_notificacion cn
+     WHERE :new.id_senial = cn.id_senial
+       AND :new.valor BETWEEN cn.valor_desde AND cn.valor_hasta;
+  END IF;
+  -------------------------------------------------------------------------------------
+  --Notificacion dueño
+  INSERT INTO t_notificaciones
+    (id_notificacion
+    ,fecha_notificacion
+    ,id_evento
+    ,id_usuario
+    ,titulo
+    ,mensaje)
+  VALUES
+    (seq_notificacion.nextval
+    ,:new.fecha_evento
+    ,:new.id_evento
+    ,v_usuario_duenio
+    ,v_titulo
+    ,v_mensaje);
+  --Notificaciones contactos
+  INSERT INTO t_notificaciones
+    (id_notificacion
+    ,fecha_notificacion
+    ,id_evento
+    ,id_usuario
+    ,titulo
+    ,mensaje)
+    SELECT seq_notificacion.nextval
+          ,:new.fecha_evento
+          ,:new.id_evento
+          ,c.id_usuario_contacto
+          ,v_titulo
+          ,v_mensaje
+      FROM t_usuarios_dispositivo d
+      LEFT JOIN t_contactos c
+        ON c.id_usuario_duenio = d.id_usuario
+     WHERE :new.id_dispositivo = d.id_dispositivo;
+END trg_eventos;
 /
 
 

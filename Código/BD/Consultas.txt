@@ -1,0 +1,11 @@
+SELECT u.nombre, u.apellido, p.n_perfil, pr.n_proceso
+  FROM t_usuarios u
+  JOIN t_usuarios_perfil up
+    ON u.id_usuario = up.id_usuario
+  JOIN t_perfiles p
+    ON up.id_perfil = p.id_perfil
+  JOIN t_perfiles_proceso pp
+    ON pp.id_perfil = p.id_perfil
+  JOIN t_procesos pr
+    ON pr.id_proceso = pp.id_proceso;
+
