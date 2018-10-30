@@ -8,6 +8,8 @@ export const PASSWORD = "password";
 export const MENU = "menu";
 export const NOMBRE = "nombre";
 export const IDUSUARIO = "idusuario";
+export const NUEVOAVISO = "nuevoaviso";
+export const NUEVORECLAMO = "nuevoreclamo";
 export var logueado=false;
 export var datos='';
 
@@ -25,6 +27,8 @@ export const isSignedIn = () => {
             _retrieveData();  
             _retrieveDataIdUsuario();
             _retrieveDataNombreUsuario();
+            _retrieveDataBoolCrearAviso();
+            _retrieveDataBoolCrearReclamo();
             resolve(true);
           } else {
             resolve(false);
@@ -66,6 +70,29 @@ export const isSignedIn = () => {
         // We have data!!
         global.nombreUsuario= value;
       }
+     } catch (error) {
+       // Error retrieving data
+     }
+  }
+
+  _retrieveDataBoolCrearAviso = async () => {
+    try {
+      const value = await AsyncStorage.getItem(NUEVOAVISO);
+      global.nuevoaviso= value;
+     } catch (error) {
+       // Error retrieving data
+     }
+  }
+
+  _retrieveDataBoolCrearReclamo = async () => {
+    try {
+      const value = await AsyncStorage.getItem(NUEVORECLAMO);
+      
+        // We have data!!
+        global.nuevoreclamo= value;
+      
+        
+      
      } catch (error) {
        // Error retrieving data
      }

@@ -80,6 +80,12 @@ module.exports = StyleSheet.create({
         width: window.width*0.7, 
         borderRadius: 30 
       },
+      buttonDelete: {
+        backgroundColor: '#DC1625',
+        marginTop: 20,
+        width: window.width*0.7, 
+        borderRadius: 30 
+      },
       buttonAdd: {
         backgroundColor: '#2E4452',
         marginTop: 20,

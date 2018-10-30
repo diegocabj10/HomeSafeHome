@@ -32,32 +32,40 @@ class Lista extends Component {
   
 
   componentWillMount() {
-    this.makeRemoteRequest()
+    this.makeRemoteRequest();
+ 
   }
 
   componentWillFocus() {
     this.makeRemoteRequest()
   }
+ 
+
   
   makeRemoteRequest = () => {  
-  axios.get(`http://proyectofinal2018.ddns.net:8080/api/${this.props.entidad}?numeroPagina=${this.state.pagina}&IdUsuario=${this.state.idUsuario}`).then(response => {
-        if (response.data.Lista && response.data.TotalRegistrosListado) {
+  axios.get(`http://proyectofinal2018.ddns.net:8080/api/${this.props.entidad}?numeroPagina=${this.state.pagina}&IdUsuario=${this.state.idUsuario}`)
+  .then(response => {     
+  if (response.data.Lista && response.data.TotalRegistrosListado) {
           this.setState({
             listaElementos: response.data.Lista,
             vacio: false,
             refreshing: false,
             registros: response.data.TotalRegistrosListado,
             ultima: Math.ceil(response.data.TotalRegistrosListado / 10)
-          })
-        } else {
-          this.setState({
-            photoset: null,
-            vacio: true,
-            refreshing: false
-          })
+          });
         }
-      });
+      }
+   )
+   .catch(err => {
+    this.setState({
+      //photoset: null,
+      vacio: true,
+      refreshing: false
+    });
+   })
   }
+    
+  
 
   handleRefreshing = () => {
     this.setState({
@@ -150,7 +158,8 @@ class Lista extends Component {
   };
 
   verBotones = () => {
-    if(this.props.entidad != 'Eventos'){
+    if(this.props.entidad != 'Eventos'  ){
+      if ((this.props.entidad == 'Contactos') || (this.props.entidad == 'Dispositivos') || (this.props.entidad == 'Reclamos' && global.nuevoreclamo == 'true') || (this.props.entidad == 'Avisos' && global.nuevoaviso  == 'true')){
       return (
       <Icon
       reverse
@@ -159,6 +168,7 @@ class Lista extends Component {
       size={18}
       onPress={() => Actions.nuevo({entidad: this.props.entidad, title:'Nuevo '+this.props.entidad.toString().slice(0,-1).toLowerCase()})}
       />   );  
+     }
     }
     return null;
   }
@@ -228,14 +238,29 @@ class Lista extends Component {
     }
     if(this.props.entidad == 'Contactos'){
       return (
-        <View key={item.Id} style={{flex: 1,flexDirection: 'row'}}>
-          <Text key={item.Id}>
-            {item.Id} - {item.FechaInicio}
-          </Text>
-          <Text key={item.Id} >
-            {item.Email}
-          </Text>
-        </View>
+        <View  key={item.Id}>  
+          <View key={item.Id} style={{flex: 1,flexDirection: 'row'}}>
+          <View style={{flex: 1}}>         
+                  <Text key={item.Id}>
+                    ID Contacto: {item.Id} 
+                  </Text>
+              </View>   
+              <View style={{flex: 1}}>       
+                  <Text style={styles.textDerecha}>
+                  {(item.FechaInicio != null) ?  item.FechaInicio.toString().replace('T','   ') : 'Sin cargar'}                    
+                  </Text>
+              </View>     
+          
+          </View>
+
+            <View  key={item.Id} style={{flex: 1,flexDirection: 'row'}}>
+            <View style={{flex: 1}}>
+                <Text style={styles.textCentro}>
+                  Nombre: {item.PersonaNombre}
+                </Text>
+            </View>
+            </View>
+        </View>        
       );
     }
 
@@ -256,10 +281,16 @@ class Lista extends Component {
   render() {    
     if (this.state.vacio) {
       return (
-        <View>
-          <Text>
-            No hay {this.props.entidad}
+        <View  style={{flex: 1, flexDirection: 'row'}}>
+          <View>
+          <Text style={{marginTop:10,marginLeft:10,fontWeight:'bold',textAlign:'center'}}>
+            No hay {this.props.entidad.toLowerCase()}
+
 					</Text>
+          </View>
+          <View style={{position: 'absolute', right: 0}}>
+          {this.verBotones()}
+            </View>
         </View>
       );
     }

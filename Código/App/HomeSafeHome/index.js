@@ -84,8 +84,8 @@ constructor(props, context) {
          
           <Scene key="register" component={Register} title="Registro" back  /> 
           <Scene key="configuracion" component={Configuracion} title="Configuracion"  back />
-          <Scene key="eventos" component={Eventos} title="Eventos"  back />  
-          <Scene key="contactos" component={Contactos} title="Contactos"  back />
+          <Scene key="eventos" component={Eventos} title="Eventos"  back  />  
+          <Scene key="contactos" component={Contactos} title="Contactos"  back  />
           <Scene key="reclamos" component={Reclamos} title="Reclamos"  back />
           <Scene key="dispositivos" component={Dispositivos} title="Dispositivos"  back />
           <Scene key="avisos" component={Avisos} title="Avisos"  back />

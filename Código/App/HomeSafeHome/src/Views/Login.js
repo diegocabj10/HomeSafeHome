@@ -13,6 +13,8 @@ export const PASSWORD = "password";
 export const MENU = "menu";
 export const NOMBRE = "nombre";
 export const IDUSUARIO = "idusuario";
+export const NUEVOAVISO = "nuevoaviso";
+export const NUEVORECLAMO = "nuevoreclamo";
 export var logueado=false;
 export var datos='';
 const image = require('../assets/logoHomeSafeHome.png');
@@ -52,15 +54,38 @@ class Login extends Component{
        }).then(response => { 
           AsyncStorage.setItem(FLAGLOGUEADO, "true");
           var itemsMenu = "";
+          var boolAviso='false';
+          var boolReclamo='false';
+          var nada='';
+
+          response.data.Usuario.IdPerfiles.map(elemento =>  {
+            switch(elemento)
+            {
+              case 1: boolAviso='true'; boolReclamo='true'; break;
+              case 2: boolAviso='true'; break;
+              case 3: boolReclamo='true'; break;
+             // case 4: {if (boolAviso == 'false') boolAviso='false'; if (boolReclamo == 'false') boolReclamo='false'; break;}
+             // case 5: {if (boolAviso == 'false') boolAviso='false'; if (boolReclamo == 'false') boolReclamo='false'; break;}
+              default : nada=''; break;
+            }  
+          }
+          );
+
+         
+          
           itemsMenu=JSON.stringify(response.data.Menu[0].Hijos);
           AsyncStorage.setItem(EMAIL, emailPar);
           AsyncStorage.setItem(PASSWORD, passwordPar);
           AsyncStorage.setItem(MENU, itemsMenu);
           AsyncStorage.setItem(NOMBRE, response.data.Usuario.PersonaNombre);
           AsyncStorage.setItem(IDUSUARIO, response.data.Usuario.Id);
+          AsyncStorage.setItem(NUEVOAVISO, boolAviso);
+          AsyncStorage.setItem(NUEVORECLAMO, boolReclamo);
           global.nombreUsuario= response.data.Usuario.PersonaNombre;
           global.idUsuario= response.data.Usuario.Id;
           global.menu= response.data.Menu[0].Hijos;
+          global.nuevoaviso= boolAviso;
+          global.nuevoreclamo= boolReclamo;
           logueado=true;        
           this.setState({cargando:false}); 
           this.setState( {error : itemsMenu});      
@@ -73,9 +98,22 @@ class Login extends Component{
         });          
   }
 
+    validar(){
+      if (this.state.email != '' && this.state.password != ''){
+        if (this.state.email.trim() != '' && this.state.password.trim() != ''){
+            return true;
+        }
+      }
+      return false;
+    }
+
     ingresar(){   
+      if (this.validar()){
       this.setState({cargando:true, error:''});        
-      this._onSignIn(this.state.email, this.state.password);            
+      this._onSignIn(this.state.email.toLowerCase().trim(), this.state.password.toLowerCase().trim());   
+    }else{
+      this.setState({error: 'Ambos campos son obligatorios'});
+    }         
     }
 
     render(){

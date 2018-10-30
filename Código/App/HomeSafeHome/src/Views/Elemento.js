@@ -102,13 +102,24 @@ class Elemento extends Component {
     }
     if(this.props.tipo == 'Contactos'){
       return (
-        <ScrollView>
-          <Card title="Datos del Contacto"containerStyle={{padding: 20 }} >
-          <Text style={{marginTop:10,fontWeight:'bold'}}>Datos del Contacto: </Text>
-          <Text style={{marginTop:10}}>Id: {this.state.datos.Id}</Text>
-          <Text>Fecha: {this.state.datos.FechaInicio}  </Text> 
-          <Text>Usuario: {this.state.datos.PersonaNombre}</Text>
-          <Text>Email: {this.state.datos.Email}  </Text>
+        <ScrollView style={{ backgroundColor: '#EBEBEB' }}>
+          <Card title={"Datos del Contacto".toUpperCase()} containerStyle={{padding: 20 }} >
+          <View style={{flex:1, flexDirection:'row'}}>
+          <Text style={{marginTop:10,fontWeight:'bold'}}>Id: </Text>
+          <Text style={{marginTop:10}}> {this.state.datos.Id} </Text>
+          </View>
+          <View style={{flex:1, flexDirection:'row'}}>
+          <Text style={{marginTop:10,fontWeight:'bold'}}>Fecha Alta:</Text> 
+          <Text style={{marginTop:10}}> {(this.state.datos.FechaInicio != null) ?  this.state.datos.FechaInicio.toString().replace('T','   ') : 'Sin cargar'} </Text>
+          </View>
+         <View style={{flex:1, flexDirection:'row'}}>
+          <Text style={{marginTop:10,fontWeight:'bold'}}>Usuario: </Text>
+          <Text style={{marginTop:10}}> {this.state.datos.PersonaNombre} </Text>
+          </View>
+          <View style={{flex:1, flexDirection:'row'}}>
+          <Text style={{marginTop:10,fontWeight:'bold'}}>Email:  </Text>
+          <Text style={{marginTop:10}}> {this.state.datos.Email}   </Text>
+          </View>
           </Card>
 
         </ScrollView>
@@ -116,17 +127,31 @@ class Elemento extends Component {
     }
     if(this.props.tipo == 'Dispositivos'){
       return (
-        <ScrollView>
-          <Card title="Datos del Dispositivo"containerStyle={{padding: 20 }} >
-          <Text style={{marginTop:10,fontWeight:'bold'}}>Datos del Dispositivo: </Text>
-          <Text style={{marginTop:10}}>Id: {this.state.datos.Id}</Text>
-          <Text>Fecha de Alta: {this.state.datos.FechaInicio}  </Text> 
-          <Text>Nombre: {this.state.datos.Nombre}</Text>
-          <Divider style={{ backgroundColor: '#EBEBEB',marginTop:10 }} />
-          <Card title="Alarma de Intrusiones"containerStyle={{padding: 20 }} >
-            <Text>Alarma Activada: {this.state.datos.Activo}</Text>
-            <Text>Última vez Activada: {this.state.datos.FechaAfueraCasa}</Text>
-          </Card>
+        <ScrollView style={{ backgroundColor: '#EBEBEB' }}>
+              <Card title={"Datos del Dispositivo".toUpperCase()} containerStyle={{padding: 20 }} >
+              <View style={{flex:1, flexDirection:'row'}}>
+              <Text style={{marginTop:10,fontWeight:'bold'}}>Id: </Text>
+              <Text style={{marginTop:10}}> {this.state.datos.Id} </Text>
+              </View>
+              <View style={{flex:1, flexDirection:'row'}}>
+              <Text style={{marginTop:10,fontWeight:'bold'}}>Fecha de Alta: </Text> 
+              <Text style={{marginTop:10}}> {(this.state.datos.FechaInicio != null) ?  this.state.datos.FechaInicio.toString().replace('T','   ') : 'Sin cargar'}</Text>
+              </View>
+              <View style={{flex:1, flexDirection:'row'}}>
+              <Text style={{marginTop:10,fontWeight:'bold'}}>Nombre: </Text>
+              <Text style={{marginTop:10}}> {this.state.datos.Nombre} </Text>
+              </View>
+              <Divider style={{ backgroundColor: '#EBEBEB',marginTop:10 }} />              
+              <Text style={{marginTop:10,fontWeight:'bold',textAlign:'center'}}>Alarma de Intrusiones </Text>
+              
+              <View style={{flex:1, flexDirection:'row'}}>
+              <Text style={{marginTop:10,fontWeight:'bold'}}>Alarma Activada: </Text>
+              <Text style={{marginTop:10}}> {this.state.datos.Activo}  </Text> 
+              </View>
+              <View style={{flex:1, flexDirection:'row'}}>      
+              <Text style={{marginTop:10,fontWeight:'bold'}}>Última vez Activada: </Text>
+             <Text style={{marginTop:10}}> {(this.state.datos.FechaAfueraCasa != null) ?  this.state.datos.FechaAfueraCasa.toString().replace('T','   ') : 'Sin cargar'}   </Text>
+             </View>
           </Card>
 
         </ScrollView>

@@ -55,6 +55,7 @@ constructor(){
             <StatusBar
                 backgroundColor={myStyles.container.backgroundColor}
                 barStyle="light-content"
+               
                 />
 
             <View style={myStyles.loginLogoContainer}>

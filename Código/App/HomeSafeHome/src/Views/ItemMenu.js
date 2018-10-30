@@ -15,7 +15,7 @@ const iconos = {
 const ItemMenu = ({name}) => {
      
     return (
-      <TouchableOpacity onPress={() => Actions[name].call()}>
+      <TouchableOpacity onPress={() => Actions[name].call(rightTitle="asdasd")}>
       <View style={styles.menuItem}>
       
       <Image                  

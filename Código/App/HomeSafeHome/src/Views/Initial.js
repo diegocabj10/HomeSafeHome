@@ -151,7 +151,9 @@ listarItems(){
             <View  style={{ flexDirection: 'row', justifyContent: 'space-between'}}>
             <View ><Text style={{fontWeight:'bold'}}>Estado:</Text>
             </View>
-            <View ><Text style={{fontWeight:'bold'}}>{this.state.estado}</Text>
+            <View >
+              {RenderIf(this.state.estado=='Activado',<Text style={{fontWeight:'bold',color:'green'}}>{this.state.estado}</Text>)}
+              {RenderIf(this.state.estado=='Desactivado',<Text style={{fontWeight:'bold',color:'red'}}>{this.state.estado}</Text>)}
             </View>            
             <View >
             <Switch
@@ -162,7 +164,7 @@ listarItems(){
           </Card>
 
           <Card title='Resúmen de eventos' containerStyle={myStyles.cardsInicio} >  
-          <Text style={{fontWeight:'bold'}}>No posees resúmen de envetos</Text>
+          <Text style={{fontWeight:'bold'}}>No posees resúmen de eventos</Text>
           <Text style={{fontWeight:'bold'}}>{this.state.resumen}</Text>
           </Card>
 

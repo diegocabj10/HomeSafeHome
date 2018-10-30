@@ -75,16 +75,16 @@ class Configuracion extends Component{
       
         return (
          
-                        <View style={myStyles.container}>
-                
+             <View style={styles.container}>
+                <View style={{position: 'absolute', bottom: 10}}>
                 <Button
-        buttonStyle={{ marginTop: 20 }}
-        backgroundColor="#03A9F4"
-        title="LOG OUT"
-        onPress={() => {
-         this.salir();
-        }}
-      />
+                    buttonStyle={myStyles.buttonDelete}                
+                    title="Salir"
+                    onPress={() => {
+                    this.salir();
+                    }}
+                  />
+                </View>
             </View>
 
     
