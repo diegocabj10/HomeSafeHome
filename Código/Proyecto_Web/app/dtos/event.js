@@ -30,9 +30,9 @@ module.exports = class Event {
   set device(newDevice) { this[_event_device] = newDevice; }
   set value(newValue) { this[_event_value] = newValue; }
 
-  get JSON() {
+  get toJSON() {
     return {
-      "date": this.date, "idOfSignal": this.idOfSignal, "signal": this.signal, "idOfDevice": this.idOfDevice, "device": this.device, "value": this.value
+      date: this.date, idOfSignal: this.idOfSignal, signal: this.signal, idOfDevice: this.idOfDevice, device: this.device, value: this.value
     };
   }
 

@@ -20,7 +20,7 @@ exports.create =  async (req, res) =>{
   const Event = new dtoEvento(req.body.date, req.body.idOfSignal, req.body.signal, req.body.idOfDevice, req.body.device, req.body.value);
 
   // Save Event in the database
-  EventModel.create(Event.JSON)
+  EventModel.create(Event.toJSON)
     .then(data => {
       res.send(data);
     })
