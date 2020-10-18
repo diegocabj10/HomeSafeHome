@@ -1,5 +1,5 @@
 const express = require('express');
-const events = require('./events.route');
+const events = require('../Events/events.route');
 
 module.exports = function (app) {
 

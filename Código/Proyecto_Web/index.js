@@ -1,14 +1,14 @@
-const express = require("express");
+const express = require('express');
 const app = express();
-const bodyParser = require("body-parser");
+const bodyParser = require('body-parser');
 
-const cors = require("cors");
+const cors = require('cors');
 var corsOptions = {
-  origin: "http://localhost:8081"
+  origin: 'http://localhost:8081'
 };
 
 
-const db = require("./app/models/index");
+const db = require('./app/models/index');
 db.sequelize.sync();
 
 
@@ -37,7 +37,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 
 
-require("./app/routes/index")(app);
+require('./app/routes/index')(app);
 
 
 
