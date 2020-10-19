@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const routeEvents = require('../Events/events.route');
 
 const cors = require('cors');
 var corsOptions = {
@@ -37,8 +38,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 
 
-require('./app/routes/index')(app);
+//Defining routes
+// simple route
+app.get('/', (req, res) => {
+  res.json({ message: 'Welcome to HSH application.' });
+});
 
+app.use('/api/events', routeEvents);
 
 
 

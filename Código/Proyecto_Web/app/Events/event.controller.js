@@ -1,9 +1,6 @@
 const db = require('../../config/db.config');
 const dtoEvento = require('./event.dto');
 const EventModel = require('./events.model');
-const Op = db.Sequelize.Op;
-
-
 
 // Create and Save a new Event
 exports.create =  async (req, res) =>{
