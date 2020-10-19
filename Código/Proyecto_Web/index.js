@@ -13,15 +13,7 @@ const db = require('./config/db.config');
 db.sync();
 
 
-
-// Middleware function: funciones que toman el request
-// y pueden terminar el ciclo de request/response o 
-// pasar el control hacia otro middleware function
-//Ejemplo de middleware para todas las rutas
-// app.use(function (req, res, next) {
-//   next();
-// });
-//Ejemplo de un middleware aplicada a una sola ruta
+//Example of middleware of route /
 // app.use('/',function (req, res, next) {
 //   next();
 // });
