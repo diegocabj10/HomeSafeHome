@@ -1,6 +1,6 @@
-const db = require('../models/index');
+const db = require('../../config/db.config');
 const dtoEvento = require('./event.dto');
-const EventModel = db.eventsModel;
+const EventModel = require('./events.model');
 const Op = db.Sequelize.Op;
 
 

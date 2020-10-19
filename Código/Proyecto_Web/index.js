@@ -8,8 +8,8 @@ var corsOptions = {
 };
 
 
-const db = require('./app/models/index');
-db.sequelize.sync();
+const db = require('./config/db.config');
+db.sync();
 
 
 
