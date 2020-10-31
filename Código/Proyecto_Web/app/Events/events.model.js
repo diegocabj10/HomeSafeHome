@@ -1,27 +1,31 @@
 const Sequelize = require('sequelize');
 const dbConfig = require('../../config/db.config');
 
-const Event = dbConfig.define('events', {
-  date: {
-    type: Sequelize.STRING
+const Event = dbConfig.define('T_EVENTOS', {
+  ID_EVENTO: {
+    type: Sequelize.INTEGER,
+    primaryKey: true
   },
-  idOfSignal: {
-    type: Sequelize.STRING
+  FECHA_EVENTO: {
+    type: Sequelize.DATE
   },
-  signal: {
-    type: Sequelize.STRING
+  ID_SENIAL: {
+    type: Sequelize.INTEGER,
+    allowNull: false
   },
-  idOfDevice: {
-    type: Sequelize.STRING
+  ID_DISPOSITIVO: {
+    type: Sequelize.INTEGER,
+    references: {
+      model: T_DISPOSITIVOS,
+      key: 'ID_DISPOSITIVO'
+    },
+    allowNull: false
   },
-  device: {
-    type: Sequelize.STRING
+  VALOR: {
+    type: Sequelize.INTEGER
   },
-  value: {
-    type: Sequelize.STRING
+  FECHA_BAJA: {
+    type: Sequelize.DATE
   }
 });
 module.exports = Event;
-
-
-

@@ -1,8 +1,8 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-const routeEvents = require('../Events/events.route');
-
+const routeEvents = require('./app/Events/events.route');
+const routeDevices = require('./app/Devices/devices.route');
 const cors = require('cors');
 var corsOptions = {
   origin: 'http://localhost:8081'
@@ -37,6 +37,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/events', routeEvents);
+app.use('/api/devices', routeDevices);
 
 
 

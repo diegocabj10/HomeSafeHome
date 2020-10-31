@@ -1,23 +1,22 @@
 const db = require('../../config/db.config');
 const dtoEvento = require('./event.dto');
-const EventModel = require('./events.model');
+const eventModel = require('./events.model');
 
 // Create and Save a new Event
 exports.create =  async (req, res) =>{
   
   // Validate request
-  if (!req.body.value) {
+  if (!req.body.eventValue) {
     res.status(400).send({
       message: 'Content can not be empty!'
     });
     return;
   }
-
-  // Create a Event
-  const Event = new dtoEvento(req.body.date, req.body.idOfSignal, req.body.signal, req.body.idOfDevice, req.body.device, req.body.value);
+   // Create a Event
+  const Event = new dtoEvento(req.body.eventDate, req.body.eventIdOfSignal, req.body.eventIdOfDevice, req.body.idOfDevice, req.body.device, req.body.eventValue);
 
   // Save Event in the database
-  EventModel.create(Event.toJSON)
+  eventModel.create(Event.toJSON)
     .then(data => {
       res.send(data);
     })
@@ -34,7 +33,7 @@ exports.create =  async (req, res) =>{
 
 // Retrieve all Events from the database.
 exports.findAll = (req, res) => {
-  EventModel.findAll()
+  eventModel.findAll()
     .then(data => {
       res.send(data);
     })
@@ -47,7 +46,7 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {
   const id = req.params.id;
 
-  EventModel.findByPk(id)
+  eventModel.findByPk(id)
     .then(data => {
       res.send(data);
     })
@@ -62,7 +61,7 @@ exports.findOne = (req, res) => {
 exports.update = (req, res) => {
   const id = req.params.id;
 
-  EventModel.update(req.body, {
+  eventModel.update(req.body, {
     where: { id: id }
   })
     .then(num => {
@@ -87,7 +86,7 @@ exports.update = (req, res) => {
 exports.delete = (req, res) => {
   const id = req.params.id;
 
-  EventModel.destroy({
+  eventModel.destroy({
     where: { id: id }
   })
     .then(num => {
@@ -110,7 +109,7 @@ exports.delete = (req, res) => {
 
 // Delete all Events from the database.
 exports.deleteAll = (req, res) => {
-  EventModel.destroy({
+  eventModel.destroy({
     where: {},
     truncate: false
   })
@@ -127,7 +126,7 @@ exports.deleteAll = (req, res) => {
 
 // Find all published Events
 exports.findAllPublished = (req, res) => {
-  EventModel.findAll({ where: { published: true } })
+  eventModel.findAll({ where: { published: true } })
     .then(data => {
       res.send(data);
     })
