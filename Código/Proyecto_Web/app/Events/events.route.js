@@ -9,10 +9,7 @@
   
     // Retrieve all Events
     router.get('/', events.findAll);
-  
-    // Retrieve all published Events
-    router.get('/published', events.findAllPublished);
-  
+    
     // Retrieve a single Event with id
     router.get('/:id', events.findOne);
   

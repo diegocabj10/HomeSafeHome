@@ -1,11 +1,7 @@
 const Sequelize = require('sequelize');
 const dbConfig = require('../../config/db.config');
-
+const modelDevice = require('../Devices/devices.model');
 const Event = dbConfig.define('T_EVENTOS', {
-  ID_EVENTO: {
-    type: Sequelize.INTEGER,
-    primaryKey: true
-  },
   FECHA_EVENTO: {
     type: Sequelize.DATE
   },
@@ -16,8 +12,8 @@ const Event = dbConfig.define('T_EVENTOS', {
   ID_DISPOSITIVO: {
     type: Sequelize.INTEGER,
     references: {
-      model: T_DISPOSITIVOS,
-      key: 'ID_DISPOSITIVO'
+      model: modelDevice,
+      key: 'id'
     },
     allowNull: false
   },
