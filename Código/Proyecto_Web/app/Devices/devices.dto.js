@@ -21,7 +21,5 @@ module.exports = class Device {
       deviceId: this.deviceId, deviceName: this.deviceName, deviceDeletionDate: this.deviceDeletionDate
     };
   }
-
-
 };
 

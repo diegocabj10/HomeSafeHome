@@ -5,7 +5,7 @@ const routeEvents = require('./app/Events/events.route');
 const routeDevices = require('./app/Devices/devices.route');
 const cors = require('cors');
 var corsOptions = {
-  origin: 'http://localhost:8081'
+  origin: 'http://localhost:8080'
 };
 
 
@@ -33,7 +33,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //Defining routes
 // simple route
 app.get('/', (req, res) => {
-  res.json({ message: 'Welcome to HSH application.' });
+  res.json({ message: 'Welcome everybody to HSH application.' });
 });
 
 app.use('/api/events', routeEvents);

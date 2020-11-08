@@ -24,6 +24,12 @@ const User = dbConfig.define('T_USUARIOS', {
     ULTIMO_LOGIN: {
         type: Sequelize.DATE
     },
+    FECHA_INICIO: {
+        type: Sequelize.DATE
+    },
+    FECHA_FIN: {
+        type: Sequelize.DATE
+    },
     FECHA_BAJA: {
         type: Sequelize.DATE
     }
