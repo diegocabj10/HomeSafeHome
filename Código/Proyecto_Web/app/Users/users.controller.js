@@ -41,7 +41,8 @@ exports.findAll = (req, res) => {
 
   UserModel.findAndCountAll({ where: condition, limit, offset })
     .then(data => {
-      res.send(data);
+      const response = getPagingData(data, page, limit);
+      res.send(response);
     })
     .catch(err => {
       res.status(500).send({ message: 'Error buscando los usuarios: ' + err.message })
