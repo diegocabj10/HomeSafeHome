@@ -8,6 +8,8 @@ var corsOptions = {
   origin: 'http://localhost:8080'
 };
 
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
 
 const db = require('./config/db.config');
 db.sync();
@@ -29,13 +31,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 
 
-
 //Defining routes
 // simple route
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome everybody to HSH application.' });
 });
 
+app.use('/api/docs', swaggerUi.serve,swaggerUi.setup(swaggerDocument));
 app.use('/api/events', routeEvents);
 app.use('/api/devices', routeDevices);
 

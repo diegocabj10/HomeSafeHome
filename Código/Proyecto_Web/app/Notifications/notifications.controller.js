@@ -1,30 +1,30 @@
-const db = require('../../config/db.config');
-// const dtoEvento = require('./events.dto');
+const dtoNotificationo = require('./notifications.dto');
 const notificationModel = require('./notifications.model');
 const { getPagination, getPagingData } = require('../Core/pagination');
-// Create and Save a new Event
+
+
+// Create and Save a new Notification
 exports.create = async (req, res) => {
 
   // Validate request
-  if (!req.body.eventValue) {
+  if (!req.body.notificationValue) {
     res.status(400).send({
       message: 'Content can not be empty!'
     });
     return;
   }
   
-  // Create a Event
-  const Event = new dtoEvento(req.body.eventDate, req.body.eventSignalId, req.body.eventDeviceId, req.body.eventValue);
-  console.log(Event.toJSON);
-  // Save Event in the database
-  notificationModel.create(Event.toJSON)
+  // Create a Notification
+  const Notification = new dtoNotificationo(req.body.notificationDate, req.body.notificationSignalId, req.body.notificationDeviceId, req.body.notificationValue);
+  // Save Notification in the database
+  notificationModel.create(Notification.toJSON)
     .then(data => {
       res.send(data);
     })
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || 'Some error occurred while creating the Event.'
+          err.message || 'Some error occurred while creating the Notification.'
       });
     });
 
@@ -32,7 +32,7 @@ exports.create = async (req, res) => {
 
 
 
-// Retrieve all Events from the database.
+// Retrieve all Notifications from the database.
 exports.findAll = (req, res) => {
   const { page, size, title } = req.query;
   var condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
@@ -45,12 +45,12 @@ exports.findAll = (req, res) => {
       res.send(response);
     })
     .catch(err => {
-      res.status(500).send({ message: 'Error retrieving all Events' })
+      res.status(500).send({ message: 'Error retrieving all Notifications' })
     });
 
 };
 
-// Find a single Event with an id
+// Find a single Notification with an id
 exports.findOne = (req, res) => {
   const id = req.params.id;
 
@@ -60,12 +60,12 @@ exports.findOne = (req, res) => {
     })
     .catch(err => {
       res.status(500).send({
-        message: 'Error retrieving Event with id=' + id
+        message: 'Error retrieving Notification with id=' + id
       });
     });
 };
 
-// Update a Event by the id in the request
+// Update a Notification by the id in the request
 exports.update = (req, res) => {
   const id = req.params.id;
 
@@ -75,22 +75,22 @@ exports.update = (req, res) => {
     .then(num => {
       if (num == 1) {
         res.send({
-          message: 'Event was updated successfully.'
+          message: 'Notification was updated successfully.'
         });
       } else {
         res.send({
-          message: `Cannot update Event with id=${id}. Maybe Event was not found or req.body is empty!`
+          message: `Cannot update Notification with id=${id}. Maybe Notification was not found or req.body is empty!`
         });
       }
     })
     .catch(err => {
       res.status(500).send({
-        message: 'Error updating Event with id=' + id
+        message: 'Error updating Notification with id=' + id
       });
     });
 };
 
-// Delete a Event with the specified id in the request
+// Delete a Notification with the specified id in the request
 exports.delete = (req, res) => {
   const id = req.params.id;
 
@@ -100,34 +100,34 @@ exports.delete = (req, res) => {
     .then(num => {
       if (num == 1) {
         res.send({
-          message: 'Event was deleted successfully!'
+          message: 'Notification was deleted successfully!'
         });
       } else {
         res.send({
-          message: `Cannot delete Event with id=${id}. Maybe Event was not found!`
+          message: `Cannot delete Notification with id=${id}. Maybe Notification was not found!`
         });
       }
     })
     .catch(err => {
       res.status(500).send({
-        message: 'Could not delete Event with id=' + id
+        message: 'Could not delete Notification with id=' + id
       });
     });
 };
 
-// Delete all Events from the database.
+// Delete all Notifications from the database.
 exports.deleteAll = (req, res) => {
   notificationModel.destroy({
     where: {},
     truncate: false
   })
     .then(nums => {
-      res.send({ message: `${nums} Events were deleted successfully!` });
+      res.send({ message: `${nums} Notifications were deleted successfully!` });
     })
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || 'Some error occurred while removing all Events.'
+          err.message || 'Some error occurred while removing all Notifications.'
       });
     });
 };

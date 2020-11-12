@@ -1,4 +1,3 @@
-const db = require('../../config/db.config');
 const dtoDevice = require('./devices.dto');
 const deviceModel = require('./devices.model');
 
