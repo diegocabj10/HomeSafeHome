@@ -11,9 +11,8 @@ exports.create = async (req, res) => {
     });
     return;
   }
- 
   // Create a Event
-  const Event = new dtoEvento(req.body.eventDate, req.body.eventSignalId, req.body.eventDeviceId, req.body.eventValue);
+  const Event = new dtoEvento(new Date(), req.body.eventSignalId, req.body.eventDeviceId, req.body.eventValue);
   // Save Event in the database
   eventModel.create(Event.toJSON)
     .then(data => {

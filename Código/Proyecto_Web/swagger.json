@@ -1,0 +1,76 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Home Safe Home Swagger",
+        "description": "",
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        }
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "tags": [],
+    "schemes": [
+        "http"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/api/events": {
+            "post": {
+                "tags": [
+                    "Events"
+                ],
+                "description": "Create new event",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "event",
+                        "description": "Event that we want to create",
+                        "schema": {
+                            "$ref": "#/definitions/Event"
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "New event is created",
+                        "schema": {
+                            "$ref": "#/definitions/Event"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Event": {
+            "type": "object",
+            "required": [
+                "eventSignalId",
+                "eventDeviceId",
+                "eventValue"
+            ],
+            "properties": {
+                "eventSignalId": {
+                    "type": "integer"
+                },
+                "eventDeviceId": {
+                    "type": "integer"
+                },
+                "eventValue": {
+                    "type": "integer"
+                }
+            }
+        }
+    }
+}

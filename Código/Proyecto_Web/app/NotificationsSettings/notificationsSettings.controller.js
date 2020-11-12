@@ -7,19 +7,17 @@ exports.notificationCreator = (evento) => {
   // 2 LUZ
   // 4 GARAGE
   let {
-    eventDate: FECHA_EVENTO, eventSignalId: ID_SENIAL,
-    eventDeviceId: ID_DISPOSITIVO, eventValue: VALOR
+    eventDate, eventSignalId,
+    eventDeviceId, eventValue
   } = evento;
 
   //Obtener id_usuario con deviceId desde t_usuarios_dispositivos
   const userId = userDeviceController.findUserIdfromDeviceId(eventDeviceId);
-  console.log(userId);
-
   //Obtener valor_desde y valor_hasta, segun el id_senial de t_configuraciones_notificacion
 
   //Si el valor se encuentra entre los valores obtenidos, obtener el titulo y mensaje de t_configuraciones_notificacion
 
-  return { userId, tittle, message };
+  return { userId };
 
   //Con estos valores despues hay que insertar el registro en T_NOTIFICACIONES
 };
