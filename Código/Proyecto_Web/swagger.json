@@ -1,5 +1,5 @@
 {
-    "swagger": "2.0",
+    "openapi": "3.0.1",
     "info": {
         "version": "1.0.0",
         "title": "Home Safe Home Swagger",
@@ -9,50 +9,62 @@
             "url": "https://opensource.org/licenses/MIT"
         }
     },
-    "host": "localhost:8080",
-    "basePath": "/",
-    "tags": [],
-    "schemes": [
-        "http"
+    "servers": [
+        {
+            "url": "http://localhost:8080/api",
+            "description": "Dev Server"
+        }
     ],
-    "consumes": [
-        "application/json"
-    ],
-    "produces": [
-        "application/json"
+    "tags": [
+        {
+            "name": "Events"
+        }
     ],
     "paths": {
-        "/api/events": {
+        "/events": {
             "post": {
                 "tags": [
                     "Events"
                 ],
                 "description": "Create new event",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "event",
-                        "description": "Event that we want to create",
-                        "schema": {
-                            "$ref": "#/definitions/Event"
+                "operationId": "createEvent",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/Event"
+                            }
                         }
                     }
-                ],
-                "produces": [
-                    "application/json"
-                ],
+                },
                 "responses": {
                     "200": {
                         "description": "New event is created",
-                        "schema": {
-                            "$ref": "#/definitions/Event"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Event"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid parameters",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error"
+                                }
+                            }
                         }
                     }
                 }
             }
         }
     },
-    "definitions": {
+    "components": {
         "Event": {
             "type": "object",
             "required": [
@@ -62,13 +74,30 @@
             ],
             "properties": {
                 "eventSignalId": {
-                    "type": "integer"
+                    "type": "integer",
+                    "description": "Signal identification number",
+                    "example": 1
                 },
                 "eventDeviceId": {
-                    "type": "integer"
+                    "type": "integer",
+                    "description": "Device identification number",
+                    "example": 1
                 },
                 "eventValue": {
-                    "type": "integer"
+                    "type": "integer",
+                    "description": "Signal value",
+                    "example": 10
+                }
+            }
+        },
+        "Error": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "internal_code": {
+                    "type": "string"
                 }
             }
         }
