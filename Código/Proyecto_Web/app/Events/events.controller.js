@@ -16,7 +16,7 @@ exports.create = async (req, res) => {
   // Save Event in the database
   eventModel.create(Event.toJSON)
     .then(data => {
-      notificationCreator(Event.toJSON);
+      notificationCreator(data);
       res.send(data);
     })
     .catch(err => {

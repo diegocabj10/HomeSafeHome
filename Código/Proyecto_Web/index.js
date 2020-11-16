@@ -3,6 +3,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const routeEvents = require('./app/Events/events.route');
 const routeDevices = require('./app/Devices/devices.route');
+const routeNotifications = require('./app/Notifications/notifications.route');
 const cors = require('cors');
 var corsOptions = {
   origin: 'http://localhost:8080'
@@ -40,6 +41,8 @@ app.get('/', (req, res) => {
 app.use('/api/docs', swaggerUi.serve,swaggerUi.setup(swaggerDocument));
 app.use('/api/events', routeEvents);
 app.use('/api/devices', routeDevices);
+app.use('/api/notifications', routeNotifications);
+
 
 
 

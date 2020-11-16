@@ -42,7 +42,8 @@ exports.findAll = (req, res) => {
 
   NoticeModel.findAndCountAll({ where: condition, limit, offset })
     .then(data => {
-      res.send(data);
+      const response = getPagingData(data, page, limit);
+      res.send(response);
     })
     .catch(err => {
       res.status(500).send({ message: 'Error buscando los avisos: ' + err.message })
@@ -67,7 +68,7 @@ exports.findOne = (req, res) => {
 // Update a notice by the id in the request
 exports.update = (req, res) => {
   const id = req.params.id;
-  
+
   const Notice = new dtoNotice();
   if (req.body.noticeTitle) { Notice.noticeTitle = req.body.noticeTitle; }
   if (req.body.noticeMessage) { Notice.noticeMessage = req.body.noticeMessage; }

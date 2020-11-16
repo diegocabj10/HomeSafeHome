@@ -18,6 +18,9 @@
     "tags": [
         {
             "name": "Events"
+        },
+        {
+            "name": "Notifications"
         }
     ],
     "paths": {
@@ -26,6 +29,49 @@
                 "tags": [
                     "Events"
                 ],
+                "description": "Create new event",
+                "operationId": "createEvent",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/Event"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "New event is created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Event"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid parameters",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/notifications": {
+            "get": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Return a list of notifications",
                 "description": "Create new event",
                 "operationId": "createEvent",
                 "parameters": [],

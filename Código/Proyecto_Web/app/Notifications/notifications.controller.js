@@ -4,28 +4,16 @@ const { getPagination, getPagingData } = require('../Core/pagination');
 
 
 // Create and Save a new Notification
-exports.create = async (req, res) => {
-
-  // Validate request
-  if (!req.body.notificationValue) {
-    res.status(400).send({
-      message: 'Content can not be empty!'
-    });
-    return;
-  }
-  
+exports.create = async (eventId, tittle, message, userId) => {
   // Create a Notification
-  const Notification = new dtoNotificationo(req.body.notificationDate, req.body.notificationSignalId, req.body.notificationDeviceId, req.body.notificationValue);
+  const Notification = new dtoNotificationo(new Date(), null, userId, eventId, tittle, message);
   // Save Notification in the database
   notificationModel.create(Notification.toJSON)
     .then(data => {
-      res.send(data);
+      console.log(data);
     })
     .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || 'Some error occurred while creating the Notification.'
-      });
+
     });
 
 }
