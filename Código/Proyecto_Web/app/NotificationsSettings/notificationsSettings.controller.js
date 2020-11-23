@@ -27,7 +27,6 @@ exports.notificationCreator = async (evento) => {
   let {
     TITULO: tittle, MENSAJE: message
   } = MessageAndTitle;
-
   //Con estos valores despues hay que insertar el registro en T_NOTIFICACIONES
   const ee = new EventEmitter();
   ee.addListener('New Notification', create);

@@ -71,27 +71,36 @@
                 "tags": [
                     "Notifications"
                 ],
-                "summary": "Return a list of notifications",
-                "description": "Create new event",
-                "operationId": "createEvent",
-                "parameters": [],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/Event"
-                            }
+                "description": "Returns all notifications from the system that the user has access to",
+                "operationId": "getNotifications",
+                "parameters": [
+                    {
+                        "name": "size",
+                        "in": "query",
+                        "description": "Max records to return",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Number of page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
                         }
                     }
-                },
+                ],
                 "responses": {
                     "200": {
-                        "description": "New event is created",
+                        "description": "A list of notifications",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/Event"
+                                    "type": "array",
+                                    "$ref": "#/components/Notification"
                                 }
                             }
                         }
@@ -133,6 +142,50 @@
                     "type": "integer",
                     "description": "Signal value",
                     "example": 10
+                }
+            }
+        },
+        "Notification": {
+            "type": "object",
+            "required": [
+                "size",
+                "page"
+            ],
+            "properties": {
+                "notificationId": {
+                    "type": "integer",
+                    "description": "Notification identification number"
+                },
+                "notificationDate": {
+                    "type": "string",
+                    "description": "Notification date",
+                    "format": "date-time"
+                },
+                "notificationReadtDate": {
+                    "type": "string",
+                    "description": "Read date of notification",
+                    "format": "date-time"
+                },
+                "notificationUserId": {
+                    "type": "integer",
+                    "description": "User identification number"
+                },
+                "notificationEventId": {
+                    "type": "integer",
+                    "description": "Event identification number"
+                },
+                "notificationDeletionDate": {
+                    "type": "string",
+                    "description": "Deletion date of notification",
+                    "format": "date-time"
+                },
+                "notificationTitle": {
+                    "type": "string",
+                    "description": "Title notification"
+                },
+                "notificationMessage": {
+                    "type": "string",
+                    "description": "Message notification"
                 }
             }
         },

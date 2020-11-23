@@ -4,15 +4,16 @@ const UserModel = require('./users.model');
 const { getPagination, getPagingData } = require('../Core/pagination');
 const Op = db.Sequelize.Op;
 
+
 // Create and Save a new User
 exports.create = async (req, res) => {
 
   // Validate request
   if (!req.body.userEmail || !req.body.userPassword) {
-    res.status(400).send({
+    return res.status(400).send({
       message: 'Debe ingresar email y password'
     });
-    return;
+
   }
 
   // Create a User
@@ -67,13 +68,13 @@ exports.findOne = (req, res) => {
 // Update a User by the id in the request
 exports.update = (req, res) => {
   const id = req.params.id;
-  
+
   const User = new dtoUser();
-  if(req.body.userEmail){User.userEmail = req.body.userEmail;}
-  if(req.body.userPassword){User.userPassword = req.body.userPassword;}
-  if(req.body.userName){User.userName = req.body.userName;}
-  if(req.body.userSurname){User.userSurname = req.body.userSurname;}
-  if(req.body.userDelete){User.userDeletionDate = new Date();}
+  if (req.body.userEmail) { User.userEmail = req.body.userEmail; }
+  if (req.body.userPassword) { User.userPassword = req.body.userPassword; }
+  if (req.body.userName) { User.userName = req.body.userName; }
+  if (req.body.userSurname) { User.userSurname = req.body.userSurname; }
+  if (req.body.userDelete) { User.userDeletionDate = new Date(); }
 
   UserModel.update(User.toJSON, {
     where: { id: id }
@@ -133,7 +134,7 @@ exports.deleteAll = (req, res) => {
     .catch(err => {
       res.status(500).send({
         message:
-           'Error al borrar todos los usuarios: ' + err.message
+          'Error al borrar todos los usuarios: ' + err.message
       });
     });
 };

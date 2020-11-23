@@ -1,9 +1,8 @@
 const Sequelize = require('sequelize');
-const newDatabase = new Sequelize('testdb', 'pepe', 'pepe', {
-  host: 'localhost',
-  dialect: 'mysql',
+const newDatabase = new Sequelize(process.env.DB_NAME, process.env.DB_USERNAME, process.env.DB_PASSWORD, {
+  host: process.env.DB_HOST,
+  dialect: process.env.DB_DIALECT,
   operatorsAliases: 0,
-
   pool: {
     max: 5,
     min: 0,
