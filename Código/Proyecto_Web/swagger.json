@@ -21,9 +21,54 @@
         },
         {
             "name": "Notifications"
+        },
+        {
+            "name": "Authentication"
         }
     ],
     "paths": {
+        "/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "description": "Login an user",
+                "operationId": "loginUser",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/UserLogin"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User login",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/UserLogin"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid parameters",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/events": {
             "post": {
                 "tags": [
@@ -120,6 +165,23 @@
         }
     },
     "components": {
+        "UserLogin": {
+            "type": "object",
+            "required": [
+                "username",
+                "password"
+            ],
+            "properties": {
+                "username": {
+                    "type": "string",
+                    "description": "Username"
+                },
+                "password": {
+                    "type": "string",
+                    "description": "Password"
+                }
+            }
+        },
         "Event": {
             "type": "object",
             "required": [

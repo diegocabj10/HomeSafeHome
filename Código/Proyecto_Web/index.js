@@ -43,7 +43,7 @@ app.get('/', (req, res) => {
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/api/events', routeEvents);
 app.use('/api/devices', routeDevices);
-app.use('/api/notifications', routeNotifications);
+app.use('/api/notifications', authenticate,routeNotifications);
 app.use('/api/login', login);
 
 

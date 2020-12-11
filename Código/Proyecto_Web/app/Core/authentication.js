@@ -25,9 +25,8 @@ const login = async (req, res) => {
     });
 
     //store the refresh token...
-
     res.cookie('jwt', accessToken)
-    res.send(accessToken);
+    res.send();
 
 }
 
