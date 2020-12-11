@@ -10,7 +10,6 @@ exports.create = async (eventId, tittle, message, userId) => {
   // Save Notification in the database
   notificationModel.create(Notification.toJSON)
     .then(data => {
-      console.log(data);
     })
     .catch(err => {
 

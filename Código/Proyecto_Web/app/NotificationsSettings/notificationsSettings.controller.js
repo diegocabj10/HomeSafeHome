@@ -20,7 +20,7 @@ exports.notificationCreator = async (evento) => {
   const valuesFromAndTo = await findValuesFromAndTo(eventSignalId);
 
   //Si el valor se encuentra entre los valores obtenidos, obtener el titulo y mensaje de t_configuraciones_notificacion
-  const MessageAndTitle = valuesFromAndTo.filter(function (valueFromAndTo) {
+  const MessageAndTitle = valuesFromAndTo.find((valueFromAndTo) =>{
     return valueFromAndTo.VALOR_DESDE <= eventValue && eventValue <= valueFromAndTo.VALOR_HASTA;
   });
 

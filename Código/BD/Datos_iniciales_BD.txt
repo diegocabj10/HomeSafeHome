@@ -1,0 +1,31 @@
+Insert into T_SENIALES (id,N_SENIAL,FECHA_BAJA, createdAt, updatedAt) values (1,'MONOXIDO DE CARBONO',null, now(), now());
+Insert into T_SENIALES (id,N_SENIAL,FECHA_BAJA, createdAt, updatedAt) values (2,'LUZ',null, now(), now());
+Insert into T_SENIALES (id,N_SENIAL,FECHA_BAJA, createdAt, updatedAt) values (3,'PUERTA',null, now(), now());
+Insert into T_SENIALES (id,N_SENIAL,FECHA_BAJA, createdAt, updatedAt) values (4,'GARAGE',null, now(), now());
+
+Insert into T_CONFIGURACIONES_NOTIFICACIONES (id,ID_SENIAL,VALOR_DESDE,VALOR_HASTA,TITULO,MENSAJE, createdAt, updatedAt) values (1,3,0,0,'Apertura Puerta','Se ha detectado una apertura de la puerta.', now(), now());
+Insert into T_CONFIGURACIONES_NOTIFICACIONES (id,ID_SENIAL,VALOR_DESDE,VALOR_HASTA,TITULO,MENSAJE, createdAt, updatedAt) values (2,3,1,1,'Cierre Puerta','Se ha detectado un cierre de la puerta', now(), now());
+Insert into T_CONFIGURACIONES_NOTIFICACIONES (id,ID_SENIAL,VALOR_DESDE,VALOR_HASTA,TITULO,MENSAJE, createdAt, updatedAt) values (3,1,35,99,'Monoxido de Carbono','Presencia de CO (+0.0035%): Dolor de cabeza y mareos en el plazo de 6 a 8 horas de exposición constante', now(), now());
+Insert into T_CONFIGURACIONES_NOTIFICACIONES (id,ID_SENIAL,VALOR_DESDE,VALOR_HASTA,TITULO,MENSAJE, createdAt, updatedAt) values (4,1,100,199,'Monoxido de Carbono','Presencia de CO (+0.01%): Cefalea leve en 2 o 3 horas.', now(), now());
+Insert into T_CONFIGURACIONES_NOTIFICACIONES (id,ID_SENIAL,VALOR_DESDE,VALOR_HASTA,TITULO,MENSAJE, createdAt, updatedAt) values (5,1,200,399,'Monoxido de Carbono','Presencia de CO (+0.02%): En 2 a 3 horas se puede observar un leve dolor de cabeza, náuseas, vértigo y síntomas mentales (pérdida de razonamiento).', now(), now());
+Insert into T_CONFIGURACIONES_NOTIFICACIONES (id,ID_SENIAL,VALOR_DESDE,VALOR_HASTA,TITULO,MENSAJE, createdAt, updatedAt) values (6,1,400,799,'Monoxido de Carbono','Presencia de CO (+0.04%): En 2 a 3 horas se puede observar un fuerte dolor de cabeza, incoordinación muscular, debilidad, vómitos y colapso.', now(), now());
+Insert into T_CONFIGURACIONES_NOTIFICACIONES (id,ID_SENIAL,VALOR_DESDE,VALOR_HASTA,TITULO,MENSAJE, createdAt, updatedAt) values (7,1,800,1099,'Monoxido de Carbono','Presencia de CO (+0.08%): Fuerte dolor de cabeza, debilidad, vómitos, mareos, náuseas, convulsiones y colapso dentro de los 45 minutos.', now(), now());
+Insert into T_CONFIGURACIONES_NOTIFICACIONES (id,ID_SENIAL,VALOR_DESDE,VALOR_HASTA,TITULO,MENSAJE, createdAt, updatedAt) values (8,1,1100,1599,'Monoxido de Carbono','Presencia de CO (+0.11%): Después de 1.5 a 3 horas se puede observar coma. (La respiración es aún bastante buena a no ser que el envenenamiento se haya prolongado).', now(), now());
+Insert into T_CONFIGURACIONES_NOTIFICACIONES (id,ID_SENIAL,VALOR_DESDE,VALOR_HASTA,TITULO,MENSAJE, createdAt, updatedAt) values (9,1,1600,3199,'Monoxido de Carbono','Presencia de CO (+0.16%): Cefalea, taquicardia, mareos y náuseas dentro de los 20 minutos; la muerte en menos de 2 horas.', now(), now());
+Insert into T_CONFIGURACIONES_NOTIFICACIONES (id,ID_SENIAL,VALOR_DESDE,VALOR_HASTA,TITULO,MENSAJE, createdAt, updatedAt) values (10,1,3200,4999,'Monoxido de Carbono','Presencia de CO (+0.32%): Cefaleas, mareos y náuseas en 5 o 10 minutos. Muerte dentro de los 30 minutos.', now(), now());
+Insert into T_CONFIGURACIONES_NOTIFICACIONES (id,ID_SENIAL,VALOR_DESDE,VALOR_HASTA,TITULO,MENSAJE, createdAt, updatedAt) values (11,1,5000,6399,'Monoxido de Carbono','Presencia de CO (+0.5%): Después de 2 a 15 minutos se puede producir la muerte.', now(), now());
+Insert into T_CONFIGURACIONES_NOTIFICACIONES (id,ID_SENIAL,VALOR_DESDE,VALOR_HASTA,TITULO,MENSAJE, createdAt, updatedAt) values (12,1,6400,12799,'Monoxido de Carbono','Presencia de CO (+0.64%): Dolor de cabeza y mareos en 1 o 2 minutos. Convulsiones, paro respiratorio y muerte en menos de 15 minutos.', now(), now());
+Insert into T_CONFIGURACIONES_NOTIFICACIONES (id,ID_SENIAL,VALOR_DESDE,VALOR_HASTA,TITULO,MENSAJE, createdAt, updatedAt) values (13,1,12800,99999,'Monoxido de Carbono','Presencia de CO (+1.28%): Inconsciencia después de 2 ó 3 respiraciones. Muerte en menos de 3 minutos.', now(), now());
+
+
+Insert into T_DISPOSITIVOS (id,N_DISPOSITIVO,FECHA_BAJA, createdAt, updatedAt) values (1,'Arduino1',null, now(), now());
+Insert into T_DISPOSITIVOS (id,N_DISPOSITIVO,FECHA_BAJA, createdAt, updatedAt) values (2,'Arduino2',null, now(), now());
+Insert into T_DISPOSITIVOS (id,N_DISPOSITIVO,FECHA_BAJA, createdAt, updatedAt) values (3,'Arduino3',null, now(), now());
+Insert into T_DISPOSITIVOS (id,N_DISPOSITIVO,FECHA_BAJA, createdAt, updatedAt) values (4,'Arduino4',null, now(), now());
+
+
+Insert into T_USUARIOS (id,LOGIN,EMAIL,NOMBRE,APELLIDO,PASSWORD,ULTIMO_LOGIN,FECHA_INICIO,FECHA_FIN,FECHA_BAJA,createdAt,updatedAt)
+VALUES (1,'diego','diegocampos0909@gmail.com','Diego','Campos','asd123',now(),now(),null,null,now(),now());
+
+INSERT INTO T_USUARIOS_DISPOSITIVOS (id,ID_DISPOSITIVO,ID_USUARIO,FECHA_INICIO,FECHA_BAJA,FECHA_AFUERA_CASA,createdAt,updatedAt)
+VALUES (1,1,1,now(),null,null,now(),now());
