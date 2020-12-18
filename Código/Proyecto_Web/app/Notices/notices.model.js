@@ -1,20 +1,20 @@
 const Sequelize = require('sequelize');
 const dbConfig = require('../../config/db.config');
 const modelUser = require('../Users/users.model')
-const Notice = dbConfig.define('T_AVISOS', {
-    FECHA_AVISO: {
+const Notice = dbConfig.define('Notices', {
+    noticeDate: {
         type: Sequelize.DATE
     },
-    TITULO: {
+    tittle: {
         type: Sequelize.STRING
     },
-    MENSAJE: {
+    message: {
         type: Sequelize.STRING
     },
-    RESPUESTA: {
+    response: {
         type: Sequelize.STRING
     },
-    ID_USUARIO: {
+    userId: {
         type: Sequelize.INTEGER,
         references: {
             model: modelUser,
@@ -22,8 +22,14 @@ const Notice = dbConfig.define('T_AVISOS', {
         },
         allowNull: false
     },
-    FECHA_BAJA: {
+    deletionDate: {
         type: Sequelize.DATE
-    }
+    },
+    createdAt: {
+      type: Sequelize.DATE
+    },
+    updatedAt: {
+      type: Sequelize.DATE
+    }  
 });
 module.exports = Notice;

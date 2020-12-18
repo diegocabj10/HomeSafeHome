@@ -1,136 +1,100 @@
-const db = require('../../config/db.config');
-const dtoSignal = require('./signals.dto');
-const signalModel = require('./signals.model');
-const { getPagination, getPagingData } = require('../Core/pagination');
+const db = require("../../config/db.config");
+const signalModel = require("./signals.model");
+const { getPagination, getPagingData } = require("../Core/pagination");
 const Op = db.Sequelize.Op;
+const joi = require("joi");
 
 // Create and Save a new signal
 exports.create = async (req, res) => {
-
-  // Validate request
-  if (!req.body.signalName) {
-    res.status(400).send({
-      message: 'Debe ingresar nombre'
-    });
-    return;
-  }
-
-  // Create a signal
-  const Signal = new dtoSignal(req.body.signalName);
-  // Save signal in the database
-  signalModel.create(Signal.toJSON)
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          'Error dando de alta la señal: ' + err.message
+  try {
+    // Validate request
+    const { error, value } = schemaSignal.validate(req.body);
+    if (error) {
+      res.status(400).send({
+        message: error.message,
       });
-    });
-
-}
+      return;
+    }
+    // Create a signal
+    const newSignal = signalModel.build({ signalName: value.signalName });
+    // Save signal in the database
+    const signal = await newSignal.save();
+    res.send(signal);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+};
 
 // Retrieve all signals from the database.
-exports.findAll = (req, res) => {
+exports.findAll = async (req, res) => {
   const { page, size, signalName } = req.query;
-  var condition = signalName ? { n_senial: { [Op.like]: `%${signalName}%` } } : null;
-
-  const { limit, offset } = getPagination(page, size);
-
-  signalModel.findAndCountAll({ where: condition, limit, offset })
-    .then(data => {
-      const response = getPagingData(data, page, limit);
-      res.send(response);
-    })
-    .catch(err => {
-      res.status(500).send({ message: 'Error buscando las señales: ' + err.message })
+  var condition = signalName
+    ? { n_senial: { [Op.like]: `%${signalName}%` } }
+    : null;
+  try {
+    const { limit, offset } = getPagination(page, size);
+    const data = await signalModel.findAndCountAll({
+      where: condition,
+      limit,
+      offset,
     });
-
+    const response = getPagingData(data, page, limit);
+    res.send(response);
+  } catch (error) {
+    res.status(500).send(err.message);
+  }
 };
 
 // Find a single signal with an id
-exports.findOne = (req, res) => {
+exports.findOne = async (req, res) => {
   const id = req.params.id;
-
-  signalModel.findByPk(id)
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message: 'Error buscando la señal con id=' + id
-      });
-    });
+  try {
+    const data = await signalModel.findByPk(id);
+    res.send(data);
+  } catch (error) {
+    res.status(500).send({ message: err.message });
+  }
 };
 
 // Update a signal by the id in the request
-exports.update = (req, res) => {
-  const id = req.params.id;
-
-  const Signal = new dtoSignal();
-  if (req.body.signalName) { Signal.signalName = req.body.signalName; }
-  if (req.body.signalDelete) { Signal.signalDeletionDate = new Date(); }
-
-  signalModel.update(Signal.toJSON, {
-    where: { id: id }
-  })
-    .then(num => {
-      if (num == 1) {
-        res.send({
-          message: 'señal actualizada'
-        });
-      } else {
-        res.send({
-          message: `Con estos datos no se puede actualizar la señal con id=${id}`
-        });
-      }
-    })
-    .catch(err => {
-      res.status(500).send({
-        message: 'Error actualizando la señal con id=' + id + ' ' + err.message
+exports.update = async (req, res) => {
+  try {
+    const id = req.params.id;
+    // Validate request
+    const { error, value } = schemaSignal.validate(req.body);
+    if (error) {
+      res.status(400).send({
+        message: "Validation error: " + error.message,
       });
+      return;
+    }
+    // Create a signal
+    const newSignal = signalModel.build({
+      id: req.params.id,
+      signalName: value.signalName,
     });
+
+    // Update signal in the database
+    const signal = await newSignal.update();
+    res.send(signal);
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }
 };
 
 // Delete a signal with the specified id in the request
-exports.delete = (req, res) => {
+exports.delete = async (req, res) => {
   const id = req.params.id;
-
-  signalModel.destroy({
-    where: { id: id }
-  })
-    .then(num => {
-      if (num == 1) {
-        res.send({
-          message: 'señal borrada con éxito'
-        });
-      } else {
-        res.send({
-          message: `No se puede borrar la señal con id=${id}`
-        });
-      }
-    })
-    .catch(err => {
-      res.status(500).send({
-        message: 'No se puede borrar la señal con id=' + id + '. Error: ' + err.message
-      });
+  try {
+    const data = await signalModel.destroy({
+      where: { id: id },
     });
+    res.send(data);
+  } catch (error) {
+    res.status(500).send({ message: err.message });
+  }
 };
 
-// Delete all signals from the database.
-exports.deleteAll = (req, res) => {
-  signalModel.destroy({
-    where: {},
-    truncate: false
-  })
-    .then(nums => {
-      res.send({ message: `${nums} señales borradas con éxito` });
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          'Error al borrar todos las señales: ' + err.message
-      });
-    });
-};
+const schemaSignal = joi.object({
+  signalName: joi.string().alphanum().min(3).max(30).required(),
+});

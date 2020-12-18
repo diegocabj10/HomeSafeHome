@@ -2,8 +2,8 @@ const Sequelize = require('sequelize');
 const dbConfig = require('../../config/db.config');
 const modelDevice = require('../Devices/devices.model');
 const modelSignal = require('../Signals/signals.model');
-const NotificationSetting = dbConfig.define('T_CONFIGURACIONES_NOTIFICACIONES', {
-    ID_SENIAL: {
+const NotificationSetting = dbConfig.define('NotificationsSettings', {
+    signalId: {
         type: Sequelize.INTEGER,
         references: {
             model: modelSignal,
@@ -11,22 +11,22 @@ const NotificationSetting = dbConfig.define('T_CONFIGURACIONES_NOTIFICACIONES', 
         },
         allowNull: false
     },
-    VALOR_DESDE: {
+    valueFrom: {
         type: Sequelize.INTEGER
     },
-    VALOR_HASTA: {
+    valueTo: {
         type: Sequelize.INTEGER
     },
-    TITULO: {
+    tittle: {
         type: Sequelize.STRING
     },
-    MENSAJE: {
+    message: {
         type: Sequelize.STRING
     }
 });
 
-const findValuesFromAndTo = async (eventSignalId) => {
-    const valuesFromAndTo = await NotificationSetting.findAll({ raw: true, where: { ID_SENIAL: eventSignalId } });
+const findValuesFromAndTo = async (signalId) => {
+    const valuesFromAndTo = await NotificationSetting.findAll({ raw: true, where: { signalId: signalId } });
     return valuesFromAndTo;
 };
 

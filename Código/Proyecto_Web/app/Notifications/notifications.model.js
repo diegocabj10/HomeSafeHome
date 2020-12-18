@@ -2,11 +2,11 @@ const Sequelize = require('sequelize');
 const dbConfig = require('../../config/db.config');
 const modelUser = require('../Users/users.model');
 const modelEvent = require('../Events/events.model');
-const Notification = dbConfig.define('T_NOTIFICACIONES', {
-    FECHA_NOTIFICACION: {
+const Notification = dbConfig.define('Notifications', {
+    notificationDate: {
         type: Sequelize.DATE
     },
-    ID_EVENTO: {
+    eventId: {
         type: Sequelize.INTEGER,
         references: {
             model: modelEvent,
@@ -14,13 +14,13 @@ const Notification = dbConfig.define('T_NOTIFICACIONES', {
         },
         allowNull: false
     },
-    TITULO: {
+    tittle: {
         type: Sequelize.STRING
     },
-    MENSAJE: {
+    message: {
         type: Sequelize.STRING
     },
-    ID_USUARIO: {
+    userId: {
         type: Sequelize.INTEGER,
         references: {
             model: modelUser,
@@ -28,11 +28,17 @@ const Notification = dbConfig.define('T_NOTIFICACIONES', {
         },
         allowNull: false
     },    
-    FECHA_LECTURA: {
+    readDate: {
         type: Sequelize.DATE
     },
-    FECHA_BAJA: {
+    deletionDate: {
         type: Sequelize.DATE
-    }
+    },
+    createdAt: {
+      type: Sequelize.DATE
+    },
+    updatedAt: {
+      type: Sequelize.DATE
+    }  
 });
 module.exports = Notification;

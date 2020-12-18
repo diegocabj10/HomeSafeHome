@@ -12,6 +12,7 @@ const { login, authenticate } = require('./app/Core/authentication');
 const routeEvents = require('./app/Events/events.route');
 const routeDevices = require('./app/Devices/devices.route');
 const routeNotifications = require('./app/Notifications/notifications.route');
+const routeSignals = require('./app/Signals/signals.route');
 
 var corsOptions = {
   origin: 'http://localhost:8080'
@@ -43,6 +44,7 @@ app.get('/', (req, res) => {
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/api/events', routeEvents);
 app.use('/api/devices', routeDevices);
+app.use('/api/signals', routeSignals);
 app.use('/api/notifications', authenticate,routeNotifications);
 app.use('/api/login', login);
 

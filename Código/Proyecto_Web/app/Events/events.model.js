@@ -2,11 +2,11 @@ const Sequelize = require('sequelize');
 const dbConfig = require('../../config/db.config');
 const modelDevice = require('../Devices/devices.model');
 const modelSignal = require('../Signals/signals.model');
-const Event = dbConfig.define('T_EVENTOS', {
-  FECHA_EVENTO: {
+const Event = dbConfig.define('Events', {
+  eventDate: {
     type: Sequelize.DATE
   },
-  ID_SENIAL: {
+  signalId: {
     type: Sequelize.INTEGER,
     references: {
       model: modelSignal,
@@ -14,7 +14,7 @@ const Event = dbConfig.define('T_EVENTOS', {
     },
     allowNull: false
   },
-  ID_DISPOSITIVO: {
+  deviceId: {
     type: Sequelize.INTEGER,
     references: {
       model: modelDevice,
@@ -22,10 +22,10 @@ const Event = dbConfig.define('T_EVENTOS', {
     },
     allowNull: false
   },
-  VALOR: {
+  value: {
     type: Sequelize.INTEGER
   },
-  FECHA_BAJA: {
+  deletioDate: {
     type: Sequelize.DATE
   }
 });

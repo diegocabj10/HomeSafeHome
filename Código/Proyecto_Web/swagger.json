@@ -190,17 +190,17 @@
                 "eventValue"
             ],
             "properties": {
-                "eventSignalId": {
+                "signalId": {
                     "type": "integer",
                     "description": "Signal identification number",
                     "example": 1
                 },
-                "eventDeviceId": {
+                "deviceId": {
                     "type": "integer",
                     "description": "Device identification number",
                     "example": 1
                 },
-                "eventValue": {
+                "value": {
                     "type": "integer",
                     "description": "Signal value",
                     "example": 10
@@ -223,29 +223,29 @@
                     "description": "Notification date",
                     "format": "date-time"
                 },
-                "notificationReadtDate": {
+                "readDate": {
                     "type": "string",
                     "description": "Read date of notification",
                     "format": "date-time"
                 },
-                "notificationUserId": {
+                "userId": {
                     "type": "integer",
                     "description": "User identification number"
                 },
-                "notificationEventId": {
+                "eventId": {
                     "type": "integer",
                     "description": "Event identification number"
                 },
-                "notificationDeletionDate": {
+                "deletionDate": {
                     "type": "string",
                     "description": "Deletion date of notification",
                     "format": "date-time"
                 },
-                "notificationTitle": {
+                "tittle": {
                     "type": "string",
                     "description": "Title notification"
                 },
-                "notificationMessage": {
+                "message": {
                     "type": "string",
                     "description": "Message notification"
                 }

@@ -3,8 +3,8 @@ const dbConfig = require('../../config/db.config');
 const modelDevice = require('../Devices/devices.model');
 const modelUser = require('../Users/users.model');
 
-const UserDevice = dbConfig.define('T_USUARIOS_DISPOSITIVOS', {
-  ID_DISPOSITIVO: {
+const UserDevice = dbConfig.define('UsersDevices', {
+  deviceId: {
     type: Sequelize.INTEGER,
     references: {
       model: modelDevice,
@@ -12,7 +12,7 @@ const UserDevice = dbConfig.define('T_USUARIOS_DISPOSITIVOS', {
     },
     allowNull: false
   },
-  ID_USUARIO: {
+  userId: {
     type: Sequelize.INTEGER,
     references: {
       model: modelUser,
@@ -20,19 +20,25 @@ const UserDevice = dbConfig.define('T_USUARIOS_DISPOSITIVOS', {
     },
     allowNull: false
   },
-  FECHA_INICIO: {
+  startDate: {
     type: Sequelize.DATE
   },
-  FECHA_BAJA: {
+  deletionDate: {
     type: Sequelize.DATE
   },
-  FECHA_AFUERA_CASA: {
+  dateAwayFromHome: {
     type: Sequelize.DATE
-  }
+  },
+  createdAt: {
+    type: Sequelize.DATE
+  },
+  updatedAt: {
+    type: Sequelize.DATE
+  }  
 });
 
-const findUserIdfromDeviceId = async (eventDeviceId) => {
-  const userDevice = await UserDevice.findOne({ raw: true, where: { ID_DISPOSITIVO: eventDeviceId } });
+const findUserIdfromDeviceId = async (deviceId) => {
+  const userDevice = await UserDevice.findOne({ raw: true, where: { userId: deviceId } });
   return userDevice;
 };
 
