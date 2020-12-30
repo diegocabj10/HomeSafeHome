@@ -14,7 +14,7 @@ const Notification = dbConfig.define('Notifications', {
         },
         allowNull: false
     },
-    tittle: {
+    title: {
         type: Sequelize.STRING
     },
     message: {

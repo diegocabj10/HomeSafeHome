@@ -6,7 +6,7 @@ const Op = db.Sequelize.Op;
 // Create and Save a new device
 exports.create = async (req, res) => {
   try {
-    // Create and save device
+    // Create and save a device
     const newDevice = await deviceModel.create({
       deviceName: req.body.deviceName,
     });
@@ -51,7 +51,7 @@ exports.findOne = async (req, res) => {
 exports.update = async (req, res) => {
   try {
     // Update device in the database
-    const deviceUpdated = await newDevice.update(
+    const deviceUpdated = await deviceModel.update(
       {
         deviceName: req.body.deviceName,
       },

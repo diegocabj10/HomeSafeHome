@@ -4,9 +4,9 @@ const { getPagination, getPagingData } = require('../Core/pagination');
 
 
 // Create and Save a new Notification
-exports.create = async (eventId, tittle, message, userId) => {
+exports.create = async (eventId, title, message, userId) => {
   // Create a Notification
-  const Notification = new dtoNotificationo(new Date(), null, userId, eventId, tittle, message);
+  const Notification = new dtoNotificationo(new Date(), null, userId, eventId, title, message);
   // Save Notification in the database
   notificationModel.create(Notification.toJSON)
     .then(data => {

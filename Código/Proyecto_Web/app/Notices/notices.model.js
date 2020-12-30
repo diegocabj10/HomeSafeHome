@@ -5,7 +5,7 @@ const Notice = dbConfig.define('Notices', {
     noticeDate: {
         type: Sequelize.DATE
     },
-    tittle: {
+    title: {
         type: Sequelize.STRING
     },
     message: {

@@ -9,6 +9,7 @@ const {
   schemaUpdateDevice,
   schemaIdQueryParams,
 } = require("./devices.schemas");
+
 // Create a new Device
 router.post("/", validateBody(schemaCreateDevice), devices.create);
 
@@ -27,8 +28,5 @@ router.put(
 
 // Delete a Device with id
 router.delete("/:id", devices.delete);
-
-// Delete all Devices
-router.delete("/", devices.deleteAll);
 
 module.exports = router;

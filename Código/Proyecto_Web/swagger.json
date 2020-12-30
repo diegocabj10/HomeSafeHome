@@ -241,7 +241,7 @@
                     "description": "Deletion date of notification",
                     "format": "date-time"
                 },
-                "tittle": {
+                "title": {
                     "type": "string",
                     "description": "Title notification"
                 },

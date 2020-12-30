@@ -5,7 +5,7 @@ const Claim = dbConfig.define('Claims', {
     claimDate: {
         type: Sequelize.DATE
     },
-    tittle: {
+    title: {
         type: Sequelize.STRING
     },
     message: {
