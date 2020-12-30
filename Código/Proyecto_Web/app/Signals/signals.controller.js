@@ -6,7 +6,7 @@ const Op = db.Sequelize.Op;
 // Create and save a new signal
 exports.create = async (req, res) => {
   try {
-    // Create a signal and save signal
+    // Create and save signal
     const newSignal = await signalModel.create({
       signalName: req.body.signalName,
     });

@@ -1,26 +1,34 @@
+const router = require("express").Router();
+const devices = require("./devices.controller");
+const {
+  validateIdQueryParam,
+  validateBody,
+} = require("../Core/validationRequest");
+const {
+  schemaCreateDevice,
+  schemaUpdateDevice,
+  schemaIdQueryParams,
+} = require("./devices.schemas");
+// Create a new Device
+router.post("/", validateBody(schemaCreateDevice), devices.create);
 
-    const devices = require('./devices.controller');
-  
-    const router = require('express').Router();
+// Retrieve all Devices
+router.get("/", devices.findAll);
 
-   
-    // Create a new Device
-    router.post('/', devices.create);
-  
-    // Retrieve all Devices
-    router.get('/', devices.findAll);
-  
-    // Retrieve a single Device with id
-    router.get('/:id', devices.findOne);
-  
-    // Update a Device with id
-    router.put('/:id', devices.update);
-  
-    // Delete a Device with id
-    router.delete('/:id', devices.delete);
-  
-    // Delete all Devices
-    router.delete('/', devices.deleteAll);
-  
-     
-    module.exports = router;
+// Retrieve a single Device with id
+router.get("/:id", devices.findOne);
+
+// Update a Device with id
+router.put(
+  "/:id",
+  [validateIdQueryParam(schemaIdQueryParams), validateBody(schemaUpdateDevice)],
+  devices.update
+);
+
+// Delete a Device with id
+router.delete("/:id", devices.delete);
+
+// Delete all Devices
+router.delete("/", devices.deleteAll);
+
+module.exports = router;

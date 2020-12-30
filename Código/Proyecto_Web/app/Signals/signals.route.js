@@ -1,7 +1,7 @@
 const signals = require("./signals.controller");
 const router = require("express").Router();
 const {
-    validateIdQueryParam,
+  validateIdQueryParam,
   validateBody,
 } = require("../Core/validationRequest");
 const {
