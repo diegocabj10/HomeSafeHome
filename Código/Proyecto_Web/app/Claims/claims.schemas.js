@@ -1,3 +1,5 @@
+const joi = require("joi");
+
 const schemaCreateClaim = joi.object({
   claimDate: joi.date(),
   title: joi.string().alphanum().min(3).max(30).required(),
@@ -15,6 +17,7 @@ const schemaUpdateClaim = joi.object({
 const schemaIdQueryParams = joi.object().keys({
   id: joi.string().required(),
 });
+
 module.exports = {
   schemaCreateClaim,
   schemaUpdateClaim,

@@ -11,7 +11,7 @@ const {
 } = require("./claims.schemas");
 
 // Create a new claim
-router.post("/", validateBody(schemaCreateDevice), claims.create);
+router.post("/", validateBody(schemaCreateClaim), claims.create);
 
 // Retrieve all claims
 router.get("/", claims.findAll);
@@ -22,7 +22,7 @@ router.get("/:id", claims.findOne);
 // Update a claim with id
 router.put(
   "/:id",
-  [validateIdQueryParam(schemaIdQueryParams), validateBody(schemaUpdateDevice)],
+  [validateIdQueryParam(schemaIdQueryParams), validateBody(schemaUpdateClaim)],
   claims.update
 );
 
