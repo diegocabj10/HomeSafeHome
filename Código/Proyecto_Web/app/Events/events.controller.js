@@ -4,15 +4,8 @@ const notificationCreator = require("../NotificationsSettings/notificationsSetti
 
 // Create and Save a new event
 exports.create = async (req, res) => {
-  // Create and save an event
-  const Event = new dtoEvento(
-    new Date(),
-    req.body.eventSignalId,
-    req.body.eventDeviceId,
-    req.body.eventValue
-  );
   try {
-    // Save Event in the database
+    // Create and save an event
     const newEvent = await eventModel.create({
       eventDate: new Date(),
       signalId: req.body.signalId,
