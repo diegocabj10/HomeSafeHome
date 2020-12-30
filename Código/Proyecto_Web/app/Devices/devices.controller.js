@@ -63,11 +63,10 @@ exports.update = async (req, res) => {
   }
 };
 // Delete a device with the specified id in the request
-exports.delete = (req, res) => {
-  const id = req.params.id;
+exports.delete = async (req, res) => {
   try {
     const data = await deviceModel.destroy({
-      where: { id: id },
+      where: { id: req.params.id },
     });
     res.send(data);
   } catch (error) {

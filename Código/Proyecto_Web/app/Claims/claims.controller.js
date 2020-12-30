@@ -21,7 +21,7 @@ exports.create = async (req, res) => {
 
 // Retrieve all claims from the database.
 exports.findAll = async (req, res) => {
-  const { page, size, title, claimMessage } = req.query;
+  const { page, size, title, message } = req.query;
   var condition = title ? { titulo: { [Op.like]: `%${title}%` } } : null;
 
   try {
@@ -40,9 +40,8 @@ exports.findAll = async (req, res) => {
 
 // Find a single claim with an id
 exports.findOne = async (req, res) => {
-  const id = req.params.id;
   try {
-    const data = await claimModel.findByPk(id);
+    const data = await claimModel.findByPk(req.params.id);
     res.send(data);
   } catch (error) {
     res.status(500).send({ message: err.message });
