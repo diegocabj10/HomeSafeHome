@@ -40,7 +40,7 @@ exports.findAll = async (req, res) => {
 // Find a single Notification with an id
 exports.findOne = async (req, res) => {
   try {
-    const data = await claimModel.findByPk(req.params.id);
+    const data = await notificationModel.findByPk(req.params.id);
     res.send(data);
   } catch (error) {
     res.status(500).send({ message: err.message });

@@ -1,22 +1,32 @@
-const users = require('./users.controller');
-const router = require('express').Router();
+const users = require("./users.controller");
+const router = require("express").Router();
+const {
+  validateIdQueryParam,
+  validateBody,
+} = require("../Core/validationRequest");
+const {
+  schemaCreateUser,
+  schemaUpdateUser,
+  schemaIdQueryParams,
+} = require("./users.schemas");
 
 // Create a new user
-router.post('/', users.create);
+router.post("/", validateBody(schemaCreateUser), users.create);
 
 // Retrieve all users
-router.get('/', users.findAll);
+router.get("/", users.findAll);
 
 // Retrieve a single user with id
-router.get('/:id', users.findOne);
+router.get("/:id", users.findOne);
 
 // Update a user with id
-router.put('/:id', users.update);
+router.put(
+  "/:id",
+  [validateIdQueryParam(schemaIdQueryParams), validateBody(schemaUpdateUser)],
+  users.update
+);
 
 // Delete a user with id
-router.delete('/:id', users.delete);
-
-// Delete all users
-router.delete('/', users.deleteAll);
+router.delete("/:id", users.delete);
 
 module.exports = router;

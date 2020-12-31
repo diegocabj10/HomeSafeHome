@@ -53,7 +53,6 @@ exports.update = async (req, res) => {
   try {
     const claimUpdated = await claimModel.update(
       {
-        claimDate: new Date(),
         title: req.body.title,
         message: req.body.message,
         userId: req.body.userId,
@@ -70,11 +69,9 @@ exports.update = async (req, res) => {
 
 // Delete a claim with the specified id in the request
 exports.delete = (req, res) => {
-  const id = req.params.id;
-
   try {
     const data = await claimModel.destroy({
-      where: { id: id },
+      where: { id: req.params.id },
     });
     res.send(data);
   } catch (error) {
