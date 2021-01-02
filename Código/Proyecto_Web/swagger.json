@@ -23,14 +23,14 @@
             "name": "Notifications"
         },
         {
-            "name": "Authentication"
+            "name": "Authentications"
         }
     ],
     "paths": {
-        "/login": {
+        "/authentications/login": {
             "post": {
                 "tags": [
-                    "Authentication"
+                    "Authentications"
                 ],
                 "description": "Login an user",
                 "operationId": "loginUser",
@@ -168,13 +168,13 @@
         "UserLogin": {
             "type": "object",
             "required": [
-                "username",
+                "email",
                 "password"
             ],
             "properties": {
-                "username": {
+                "email": {
                     "type": "string",
-                    "description": "Username"
+                    "description": "email"
                 },
                 "password": {
                     "type": "string",
