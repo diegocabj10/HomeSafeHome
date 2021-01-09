@@ -6,6 +6,7 @@ const Op = db.Sequelize.Op;
 
 // Create and Save a new user
 exports.create = async (req, res) => {
+  // https://dev.to/halan/4-ways-of-symmetric-cryptography-and-javascript-how-to-aes-with-javascript-3o1b
   try {
     // Create and save a user
     const newUser = await userModel.create(
