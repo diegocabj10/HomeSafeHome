@@ -1,266 +1,29 @@
 {
-    "openapi": "3.0.1",
-    "info": {
-        "version": "1.0.0",
-        "title": "Home Safe Home Swagger",
-        "description": "",
-        "license": {
-            "name": "MIT",
-            "url": "https://opensource.org/licenses/MIT"
-        }
-    },
-    "servers": [
-        {
-            "url": "http://localhost:8080/api",
-            "description": "Dev Server"
-        }
-    ],
-    "tags": [
-        {
-            "name": "Events"
-        },
-        {
-            "name": "Notifications"
-        },
-        {
-            "name": "Authentications"
-        }
-    ],
-    "paths": {
-        "/authentications/login": {
-            "post": {
-                "tags": [
-                    "Authentications"
-                ],
-                "description": "Login an user",
-                "operationId": "loginUser",
-                "parameters": [],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/UserLogin"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "User login",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/UserLogin"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid parameters",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/Error"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/events": {
-            "post": {
-                "tags": [
-                    "Events"
-                ],
-                "description": "Create new event",
-                "operationId": "createEvent",
-                "parameters": [],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/Event"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "New event is created",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/Event"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid parameters",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/Error"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/notifications": {
-            "get": {
-                "tags": [
-                    "Notifications"
-                ],
-                "description": "Returns all notifications from the system that the user has access to",
-                "operationId": "getNotifications",
-                "parameters": [
-                    {
-                        "name": "size",
-                        "in": "query",
-                        "description": "Max records to return",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "page",
-                        "in": "query",
-                        "description": "Number of page",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "A list of notifications",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "$ref": "#/components/Notification"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid parameters",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/Error"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    },
-    "components": {
-        "UserLogin": {
-            "type": "object",
-            "required": [
-                "email",
-                "password"
-            ],
-            "properties": {
-                "email": {
-                    "type": "string",
-                    "description": "email"
-                },
-                "password": {
-                    "type": "string",
-                    "description": "Password"
-                }
-            }
-        },
-        "Event": {
-            "type": "object",
-            "required": [
-                "eventSignalId",
-                "eventDeviceId",
-                "eventValue"
-            ],
-            "properties": {
-                "signalId": {
-                    "type": "integer",
-                    "description": "Signal identification number",
-                    "example": 1
-                },
-                "deviceId": {
-                    "type": "integer",
-                    "description": "Device identification number",
-                    "example": 1
-                },
-                "value": {
-                    "type": "integer",
-                    "description": "Signal value",
-                    "example": 10
-                }
-            }
-        },
-        "Notification": {
-            "type": "object",
-            "required": [
-                "size",
-                "page"
-            ],
-            "properties": {
-                "notificationId": {
-                    "type": "integer",
-                    "description": "Notification identification number"
-                },
-                "notificationDate": {
-                    "type": "string",
-                    "description": "Notification date",
-                    "format": "date-time"
-                },
-                "readDate": {
-                    "type": "string",
-                    "description": "Read date of notification",
-                    "format": "date-time"
-                },
-                "userId": {
-                    "type": "integer",
-                    "description": "User identification number"
-                },
-                "eventId": {
-                    "type": "integer",
-                    "description": "Event identification number"
-                },
-                "deletionDate": {
-                    "type": "string",
-                    "description": "Deletion date of notification",
-                    "format": "date-time"
-                },
-                "title": {
-                    "type": "string",
-                    "description": "Title notification"
-                },
-                "message": {
-                    "type": "string",
-                    "description": "Message notification"
-                }
-            }
-        },
-        "Error": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
-                },
-                "internal_code": {
-                    "type": "string"
-                }
-            }
-        }
+  "openapi": "3.0.1",
+  "info": {
+    "version": "1.0.0",
+    "title": "Home Safe Home Swagger",
+    "description": "",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
     }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080/api",
+      "description": "Dev Server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Events"
+    },
+    {
+      "name": "Notifications"
+    },
+    {
+      "name": "Authentications"
+    }
+  ]
 }

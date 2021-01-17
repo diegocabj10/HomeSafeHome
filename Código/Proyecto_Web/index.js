@@ -1,11 +1,15 @@
 require("dotenv").config({ path: "./config/config.env" });
 const express = require("express");
 const bodyParser = require("body-parser");
-const swaggerUi = require("swagger-ui-express");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+
+const swaggerUi = require("swagger-ui-express");
+const swaggerDefinition = require("./swagger.json");
+const swaggerJSDoc = require("swagger-jsdoc");
+
 const db = require("./config/db.config");
-const swaggerDocument = require("./swagger.json");
+
 const { authenticate } = require("./app/Core/authenticate.middleware");
 const routeAuthentications = require("./app/Authentications/authentications.route");
 const routeEvents = require("./app/Events/events.route");
@@ -32,14 +36,24 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //Defining routes
 // simple route
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome everybody to HSH application." });
+  res.json({ message: "Welcome everybody to services of Home Safe Home." });
 });
 
-app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+const swaggerSpecifications = swaggerJSDoc({
+  swaggerDefinition,
+  apis: ["./app/*/*.swagger.js"],
+});
+
+app.use(
+  "/api/docs",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpecifications, { explorer: true })
+);
+
 app.use("/api/events", routeEvents);
 app.use("/api/devices", routeDevices);
 app.use("/api/signals", routeSignals);
-app.use("/api/notifications", authenticate, routeNotifications);
+app.use("/api/notifications", routeNotifications);
 app.use("/api/authentications", routeAuthentications);
 
 // set port, listen for requests
