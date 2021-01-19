@@ -1,6 +1,5 @@
 const Sequelize = require('sequelize');
 const dbConfig = require('../../config/db.config');
-const modelDevice = require('../Devices/devices.model');
 const modelSignal = require('../Signals/signals.model');
 const NotificationSetting = dbConfig.define('NotificationsSettings', {
     signalId: {
@@ -25,9 +24,4 @@ const NotificationSetting = dbConfig.define('NotificationsSettings', {
     }
 });
 
-const findValuesFromAndTo = async (signalId) => {
-    const valuesFromAndTo = await NotificationSetting.findAll({ raw: true, where: { signalId: signalId } });
-    return valuesFromAndTo;
-};
-
-module.exports = findValuesFromAndTo;
+module.exports = NotificationSetting;

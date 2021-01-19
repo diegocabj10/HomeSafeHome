@@ -17,13 +17,28 @@
   ],
   "tags": [
     {
+      "name": "Authentications"
+    },
+    {
+      "name": "Claims"
+    },
+    {
+      "name": "Devices"
+    },
+    {
       "name": "Events"
+    },
+    {
+      "name": "Notices"
     },
     {
       "name": "Notifications"
     },
     {
-      "name": "Authentications"
+      "name": "Signals"
+    },
+    {
+      "name": "Users"
     }
   ]
 }

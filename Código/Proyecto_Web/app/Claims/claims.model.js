@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 const dbConfig = require('../../config/db.config');
-const modelUser = require('../Users/users.model');
+const usersModel = require('../Users/users.model');
 const Claim = dbConfig.define('Claims', {
     claimDate: {
         type: Sequelize.DATE
@@ -17,7 +17,7 @@ const Claim = dbConfig.define('Claims', {
     userId: {
         type: Sequelize.INTEGER,
         references: {
-            model: modelUser,
+            model: usersModel,
             key: 'id'
         },
         allowNull: false

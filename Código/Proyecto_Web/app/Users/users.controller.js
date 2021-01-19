@@ -9,8 +9,7 @@ exports.create = async (req, res) => {
   // https://dev.to/halan/4-ways-of-symmetric-cryptography-and-javascript-how-to-aes-with-javascript-3o1b
   try {
     // Create and save a user
-    const newUser = await userModel.create(
-      {
+    const newUser = await userModel.create({
       startDate: new Date(),
       email: req.body.email,
       password: req.body.password,
@@ -23,7 +22,7 @@ exports.create = async (req, res) => {
 };
 
 // Retrieve all Users from the database.
-exports.findAll = (req, res) => {
+exports.findAll = async (req, res) => {
   const { page, size, email } = req.query;
   var condition = email ? { email: { [Op.like]: `%${email}%` } } : null;
 
@@ -44,7 +43,7 @@ exports.findAll = (req, res) => {
 };
 
 // Find a single User with an id
-exports.findOne = (req, res) => {
+exports.findOne = async (req, res) => {
   try {
     const data = await userModel.findByPk(req.params.id);
     res.send(data);
@@ -54,7 +53,7 @@ exports.findOne = (req, res) => {
 };
 
 // Update a User by the id in the request
-exports.update = (req, res) => {
+exports.update = async (req, res) => {
   try {
     const userUpdated = await claimModel.update(
       {
@@ -74,13 +73,30 @@ exports.update = (req, res) => {
 };
 
 // Delete a User with the specified id in the request
-exports.delete = (req, res) => {
+exports.delete = async (req, res) => {
   try {
     const data = await userModel.destroy({
       where: { id: req.params.id },
     });
     res.send(data);
   } catch (error) {
+    res.status(500).send({ message: err.message });
+  }
+};
+
+exports.validateUserExist = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const userExist = await userModel.findOne({
+      where: { email, password },
+      attributes: ["id", "login", "email", "name", "lastName", "deletionDate"],
+    });
+
+    if (!userExist) return res.status(404).send("User not found");
+
+    return userExist.dataValues;
+  } catch (err) {
     res.status(500).send({ message: err.message });
   }
 };

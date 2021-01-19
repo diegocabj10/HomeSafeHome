@@ -1,19 +1,7 @@
 const Sequelize = require("sequelize");
 const dbConfig = require("../../config/db.config");
 const usersModel = require("../Users/users.model");
-const Notice = dbConfig.define("Notices", {
-  noticeDate: {
-    type: Sequelize.DATE,
-  },
-  title: {
-    type: Sequelize.STRING,
-  },
-  message: {
-    type: Sequelize.STRING,
-  },
-  response: {
-    type: Sequelize.STRING,
-  },
+const Session = dbConfig.define("Sessions", {
   userId: {
     type: Sequelize.INTEGER,
     references: {
@@ -22,7 +10,10 @@ const Notice = dbConfig.define("Notices", {
     },
     allowNull: false,
   },
-  deletionDate: {
+  refreshToken: {
+    type: Sequelize.TEXT('long'),
+  },
+  deletioDate: {
     type: Sequelize.DATE,
   },
   createdAt: {
@@ -32,4 +23,5 @@ const Notice = dbConfig.define("Notices", {
     type: Sequelize.DATE,
   },
 });
-module.exports = Notice;
+
+module.exports = Session;

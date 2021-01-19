@@ -1,29 +1,42 @@
 const jwt = require("jsonwebtoken");
-
+const { validateUserExist } = require("../Users/users.controller");
+const { createSession } = require("../Sessions/sessions.controller");
 //Login an user
 const login = async (req, res) => {
-  //use the payload to store information about the user such as username, user role, etc.
-  const { email, password } = req.body;
-  const payload = req.body;
-  //create the access token with the shorter lifespan
-  let accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
-    algorithm: "HS256",
-    expiresIn: process.env.ACCESS_TOKEN_LIFE,
-  });
+  try {
+    const userExist = await validateUserExist(req, res);
 
-  //create the refresh token with the longer lifespan
-  let refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
-    algorithm: "HS256",
-    expiresIn: process.env.REFRESH_TOKEN_LIFE,
-  });
+    const payload = userExist;
 
-  //store the refresh token...
-  res.cookie("jwt", accessToken);
-  res.send();
+    let accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
+      algorithm: "HS256",
+      expiresIn: process.env.ACCESS_TOKEN_LIFE,
+    });
+
+    let refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
+      algorithm: "HS256",
+      expiresIn: process.env.REFRESH_TOKEN_LIFE,
+    });
+
+    const refreshedtoken = jwt.verify(
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET
+    );
+
+    const session = await createSession(userExist.id, refreshToken);
+
+    res.cookie("acessToken", accessToken);
+    res.cookie("refreshToken", refreshToken);
+
+    res.send();
+  } catch (error) {
+    return res.status(401).send(err);
+  }
 };
 
 const refresh = async (req, res) => {
   let accessToken = req.cookies.jwt;
+  let refreshToken = req.cookies.jwt;
 
   if (!accessToken) {
     return res.status(403).send();
@@ -42,8 +55,8 @@ const refresh = async (req, res) => {
   //verify the refresh token
   try {
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-  } catch (e) {
-    return res.status(401).send();
+  } catch (err) {
+    return res.status(401).send(err);
   }
 
   let newToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {

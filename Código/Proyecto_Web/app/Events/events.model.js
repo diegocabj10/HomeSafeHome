@@ -1,32 +1,32 @@
-const Sequelize = require('sequelize');
-const dbConfig = require('../../config/db.config');
-const modelDevice = require('../Devices/devices.model');
-const modelSignal = require('../Signals/signals.model');
-const Event = dbConfig.define('Events', {
+const Sequelize = require("sequelize");
+const dbConfig = require("../../config/db.config");
+const devicesModel = require("../Devices/devices.model");
+const signalsModel = require("../Signals/signals.model");
+const Event = dbConfig.define("Events", {
   eventDate: {
-    type: Sequelize.DATE
+    type: Sequelize.DATE,
   },
   signalId: {
     type: Sequelize.INTEGER,
     references: {
-      model: modelSignal,
-      key: 'id'
+      model: signalsModel,
+      key: "id",
     },
-    allowNull: false
+    allowNull: false,
   },
   deviceId: {
     type: Sequelize.INTEGER,
     references: {
-      model: modelDevice,
-      key: 'id'
+      model: devicesModel,
+      key: "id",
     },
-    allowNull: false
+    allowNull: false,
   },
   value: {
-    type: Sequelize.INTEGER
+    type: Sequelize.INTEGER,
   },
   deletioDate: {
-    type: Sequelize.DATE
-  }
+    type: Sequelize.DATE,
+  },
 });
 module.exports = Event;

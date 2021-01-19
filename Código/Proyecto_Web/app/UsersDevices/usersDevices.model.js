@@ -1,45 +1,40 @@
-const Sequelize = require('sequelize');
-const dbConfig = require('../../config/db.config');
-const modelDevice = require('../Devices/devices.model');
-const modelUser = require('../Users/users.model');
+const Sequelize = require("sequelize");
+const dbConfig = require("../../config/db.config");
+const devicesModel = require("../Devices/devices.model");
+const usersModel = require("../Users/users.model");
 
-const UserDevice = dbConfig.define('UsersDevices', {
+const UserDevice = dbConfig.define("UsersDevices", {
   deviceId: {
     type: Sequelize.INTEGER,
     references: {
-      model: modelDevice,
-      key: 'id'
+      model: devicesModel,
+      key: "id",
     },
-    allowNull: false
+    allowNull: false,
   },
   userId: {
     type: Sequelize.INTEGER,
     references: {
-      model: modelUser,
-      key: 'id'
+      model: usersModel,
+      key: "id",
     },
-    allowNull: false
+    allowNull: false,
   },
   startDate: {
-    type: Sequelize.DATE
+    type: Sequelize.DATE,
   },
   deletionDate: {
-    type: Sequelize.DATE
+    type: Sequelize.DATE,
   },
   dateAwayFromHome: {
-    type: Sequelize.DATE
+    type: Sequelize.DATE,
   },
   createdAt: {
-    type: Sequelize.DATE
+    type: Sequelize.DATE,
   },
   updatedAt: {
-    type: Sequelize.DATE
-  }  
+    type: Sequelize.DATE,
+  },
 });
 
-const findUserIdfromDeviceId = async (deviceId) => {
-  const userDevice = await UserDevice.findOne({ raw: true, where: { userId: deviceId } });
-  return userDevice;
-};
-
-module.exports = findUserIdfromDeviceId;
+module.exports = UserDevice;
