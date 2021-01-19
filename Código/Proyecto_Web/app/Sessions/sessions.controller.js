@@ -14,3 +14,14 @@ exports.createSession = async (userId, refreshToken) => {
     return err;
   }
 };
+
+exports.validateRefreshTokenExist = async (userId, refreshToken) => {
+  try {
+    const refreshTokenExist = await sessionsModel.findOne({
+      where: { userId, refreshToken },
+    });
+    return refreshTokenExist.dataValues;
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }
+};
