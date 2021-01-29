@@ -23,7 +23,7 @@ const login = async (req, res) => {
 
     const session = await createSession(userExist.id, refreshToken);
 
-    res.cookie("acessToken", accessToken);
+    res.cookie("accessToken", accessToken);
     res.cookie("refreshToken", refreshToken);
 
     res.send();
@@ -55,7 +55,10 @@ const refresh = async (req, res) => {
 
   //retrieve the refresh token from the DB...
   // let refreshToken = ''
-  const refreshTokenExist = await validateRefreshTokenExist(payloadRefreshToken.id, refreshToken);
+  const refreshTokenExist = await validateRefreshTokenExist(
+    payloadRefreshToken.id,
+    refreshToken
+  );
 
   if (!refreshTokenExist) return res.status(404).send("User not found");
 
@@ -64,7 +67,8 @@ const refresh = async (req, res) => {
     expiresIn: process.env.ACCESS_TOKEN_LIFE,
   });
 
-  res.cookie("jwt", newToken, { secure: true, httpOnly: true });
+  res.cookie("accessToken", newToken, { secure: true, httpOnly: true });
+  res.cookie("refreshToken", refreshToken);
   res.send();
 };
 

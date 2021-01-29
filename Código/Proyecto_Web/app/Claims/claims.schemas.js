@@ -1,15 +1,16 @@
 const joi = require("joi");
 
 const schemaCreateClaim = joi.object({
-  title: joi.string().alphanum().min(3).max(30).required(),
-  message: joi.string().alphanum().min(3).max(30).required(),
-  response: joi.string().alphanum().min(3).max(500).required(),
+  title: joi.string().required(),
+  message: joi.string().required(),
+  userId: joi.number().min(0).required(),
 });
 
 const schemaUpdateClaim = joi.object({
-  title: joi.string().alphanum().min(3).max(30).required(),
-  message: joi.string().alphanum().min(3).max(30).required(),
-  claimResponse: joi.string().alphanum().min(3).max(500).required(),
+  title: joi.string(),
+  message: joi.string(),
+  response: joi.string(),
+  userId: joi.number().min(0),
 });
 
 const schemaIdQueryParams = joi.object().keys({

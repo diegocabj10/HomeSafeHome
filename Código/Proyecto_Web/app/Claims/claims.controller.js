@@ -68,7 +68,7 @@ exports.update = async (req, res) => {
 };
 
 // Delete a claim with the specified id in the request
-exports.delete = (req, res) => {
+exports.delete = async (req, res) => {
   try {
     const data = await claimModel.destroy({
       where: { id: req.params.id },
