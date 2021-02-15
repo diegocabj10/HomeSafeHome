@@ -1,16 +1,21 @@
-const Sequelize = require("sequelize");
-const dbConfig = require("../../config/db.config");
-const usersModel = require("../Users/users.model");
-const eventsModel = require("../Events/events.model");
-const Notification = dbConfig.define("Notifications", {
+const Sequelize = require('sequelize');
+const dbConfig = require('../../config/db.config');
+const usersModel = require('../Users/users.model');
+const eventsModel = require('../Events/events.model');
+const moment = require('moment');
+const Notification = dbConfig.define('Notifications', {
   notificationDate: {
     type: Sequelize.DATE,
+    get: function (fieldName) {
+      const rawValue = this.getDataValue('createdAt');
+      return moment(rawValue).format('DD/MM/YY HH:mm');
+    },
   },
   eventId: {
     type: Sequelize.INTEGER,
     references: {
       model: eventsModel,
-      key: "id",
+      key: 'id',
     },
     allowNull: false,
   },
@@ -24,7 +29,7 @@ const Notification = dbConfig.define("Notifications", {
     type: Sequelize.INTEGER,
     references: {
       model: usersModel,
-      key: "id",
+      key: 'id',
     },
     allowNull: false,
   },
