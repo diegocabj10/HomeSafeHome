@@ -20,7 +20,7 @@ exports.create = async (req, res) => {
 }
 
 // Retrieve all notices from the database.
-exports.findAll = (req, res) => {
+exports.findAll = async (req, res) => {
   const { page, size, title, message } = req.query;
   var condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
   condition = condition + message ? { message: { [Op.like]: `%${message}%` } } : null;
@@ -49,7 +49,7 @@ exports.findOne = async (req, res) => {
 };
 
 // Update a notice by the id in the request
-exports.update = (req, res) => {
+exports.update = async (req, res) => {
   try {
     const claimUpdated = await noticeModel.update(
       {
@@ -68,7 +68,7 @@ exports.update = (req, res) => {
 };
 
 // Delete a notice with the specified id in the request
-exports.delete = (req, res) => {
+exports.delete = async (req, res) => {
   try {
     const data = await claimModel.destroy({
       where: { id: req.params.id },

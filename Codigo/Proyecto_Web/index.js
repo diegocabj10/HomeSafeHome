@@ -19,6 +19,7 @@ const routeDevices = require("./app/Devices/devices.route");
 const routeEvents = require("./app/Events/events.route");
 const routeNotifications = require("./app/Notifications/notifications.route");
 const routeSignals = require("./app/Signals/signals.route");
+const routeNotices = require("./app/Notices/notices.route");
 
 var corsOptions = {
   origin: "http://localhost:8080",
@@ -54,7 +55,8 @@ app.use(
 );
 
 app.use("/api/authentications", routeAuthentications);
-app.use("/api/claims", authenticate, routeClaims);
+app.use("/api/claims", routeClaims);
+app.use("/api/notices", routeNotices);
 app.use("/api/devices", routeDevices);
 app.use("/api/events", routeEvents);
 app.use("/api/notifications", routeNotifications);
