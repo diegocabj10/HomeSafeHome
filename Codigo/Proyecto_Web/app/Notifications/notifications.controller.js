@@ -22,7 +22,6 @@ exports.create = async (eventId, title, message, userId) => {
 exports.findAll = async (req, res) => {
     const { page, size, title, message } = req.query;
     var condition = title ? { titulo: { [Op.like]: `%${title}%` } } : null;
-  
     try {
       const { limit, offset } = getPagination(page, size);
       const data = await notificationModel.findAndCountAll({

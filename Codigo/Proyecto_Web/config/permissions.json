@@ -1,0 +1,46 @@
+"permissions" :
+[
+    "Home"
+    "HomeReports"
+
+    "Notifications"
+    "NotificationsGetAll"
+    "NotificationsGetById"
+
+    "Notices"
+    "NoticesGetAll"
+    "NoticesGetById"
+    "NoticesPut"
+    "NoticesPost"
+    "NoticesDelete"
+
+    "Claims"
+    "ClaimsGetAll"
+    "ClaimsGetById"
+    "ClaimsPut"
+    "ClaimsPost"
+    "ClaimsDelete"
+
+    "Contacts"
+    "ContactsGetAll"
+    "ContactsGetById"
+    "ContactsPut"
+    "ContactsPost"
+    "ContactsDelete"
+
+    "Devices"
+    "DevicesGetAll"
+    "DevicesGetById"
+    "DevicesPut"
+    "DevicesPost"
+    "DevicesDelete"
+
+    "Users"
+    "UsersGetById"
+    "UsersPut"
+    "UsersPost"
+    "UsersDelete"
+
+
+
+]

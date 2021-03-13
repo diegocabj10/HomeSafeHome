@@ -14,7 +14,7 @@
  *          name: page
  *          description: Number of page
  *          schema:
- *            type: integer      
+ *            type: integer
  *      responses:
  *        200:
  *          description: A user login
