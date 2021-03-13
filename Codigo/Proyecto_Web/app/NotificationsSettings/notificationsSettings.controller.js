@@ -15,10 +15,10 @@ exports.notificationCreator = async (evento) => {
   });
 
   if (MessageAndTitle) {
-    let { title, message } = MessageAndTitle ? MessageAndTitle : null;
-    const ee = new EventEmitter();
-    ee.addListener("New Notification", create);
-    ee.emit("New Notification", eventId, title, message, userId);
+    let { title, message } = MessageAndTitle;
+    const eventEmitter = new EventEmitter();
+    eventEmitter.once("New Notification", create);
+    eventEmitter.emit("New Notification", eventId, title, message, userId);
   }
 };
 

@@ -13,7 +13,7 @@ const Session = dbConfig.define("Sessions", {
   refreshToken: {
     type: Sequelize.TEXT('long'),
   },
-  deletioDate: {
+  deletionDate: {
     type: Sequelize.DATE,
   },
   createdAt: {

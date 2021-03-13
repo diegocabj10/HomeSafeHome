@@ -25,7 +25,7 @@ const Event = dbConfig.define("Events", {
   value: {
     type: Sequelize.INTEGER,
   },
-  deletioDate: {
+  deletionDate: {
     type: Sequelize.DATE,
   },
 });
