@@ -1,6 +1,5 @@
 require("dotenv").config({ path: "./config/config.env" });
 const express = require("express");
-const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
@@ -31,11 +30,11 @@ db.sync();
 app.use(cors(corsOptions));
 
 // parse requests of content-type - application/json
-app.use(bodyParser.json());
+app.use(express.json());
 app.use(cookieParser());
 
 // parse requests of content-type - application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded());
 
 //Defining routes
 // simple route

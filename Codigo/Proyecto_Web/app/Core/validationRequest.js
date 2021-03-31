@@ -1,6 +1,5 @@
 const validateIdQueryParam = (schema) => {
   return (req, res, next) => {
-    // Validate request
     const { error, value } = schema.validate(req.params);
     if (error) {
       res.status(400).send({
@@ -13,7 +12,6 @@ const validateIdQueryParam = (schema) => {
 };
 const validateBody = (schema) => {
   return (req, res, next) => {
-    // Validate request
     const { error, value } = schema.validate(req.body);
     if (error) {
       res.status(400).send({

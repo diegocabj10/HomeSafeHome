@@ -9,6 +9,8 @@ const login = async (req, res) => {
   try {
     const userExist = await validateUserExist(req, res);
 
+    if (!userExist) return res.status(401).send('User not found');
+
     const payload = userExist;
 
     let accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
@@ -26,7 +28,10 @@ const login = async (req, res) => {
     res.cookie("accessToken", accessToken);
     res.cookie("refreshToken", refreshToken);
 
-    res.send();
+    res.send({
+      message:
+        'Successfull refresh token. The accessToken and refreshToken are returned in two cookies name accessToken and refreshToken. You need to include these two cookies in subsequent requests.'
+    });
   } catch (error) {
     return res.status(401).send(err);
   }
@@ -36,7 +41,7 @@ const refresh = async (req, res) => {
   let accessToken = req.cookies.jwt;
   let refreshToken = req.cookies.jwt;
 
-  if (!accessToken) {
+  if (!accessToken || !refreshToken) {
     return res.status(403).send();
   }
 
@@ -49,8 +54,8 @@ const refresh = async (req, res) => {
       refreshToken,
       process.env.REFRESH_TOKEN_SECRET
     );
-  } catch (e) {
-    return res.status(401).send();
+  } catch (err) {
+    res.status(401).send({ message: err.message });
   }
 
   //retrieve the refresh token from the DB...
@@ -60,7 +65,7 @@ const refresh = async (req, res) => {
     refreshToken
   );
 
-  if (!refreshTokenExist) return res.status(404).send("User not found");
+  if (!refreshTokenExist) return res.status(404).send("Refresh token doestn't exist");
 
   let newToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
     algorithm: "HS256",

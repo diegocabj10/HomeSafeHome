@@ -1,5 +1,5 @@
-const db = require("../../config/db.config");
-const sessionsModel = require("./sessions.model");
+const db = require('../../config/db.config');
+const sessionsModel = require('./sessions.model');
 
 // Create and save a new session
 exports.createSession = async (userId, refreshToken) => {
@@ -20,7 +20,7 @@ exports.validateRefreshTokenExist = async (userId, refreshToken) => {
     const refreshTokenExist = await sessionsModel.findOne({
       where: { userId, refreshToken },
     });
-    return refreshTokenExist.dataValues;
+    return refreshTokenExist.get();
   } catch (err) {
     res.status(500).send({ message: err.message });
   }

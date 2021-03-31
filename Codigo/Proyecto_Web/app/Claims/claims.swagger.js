@@ -14,7 +14,7 @@
  *          name: page
  *          description: Number of page
  *          schema:
- *            type: integer      
+ *            type: integer
  *      responses:
  *        200:
  *          description: A user login
@@ -106,7 +106,7 @@
  *                message:
  *                  type: string
  *                  description: Message of claim.
- *                  example: Falta recargar los matafuegos de los departamentos. 
+ *                  example: Falta recargar los matafuegos de los departamentos.
  *      responses:
  *        200:
  *          description: New event is created

@@ -1,5 +1,4 @@
 const db = require("../../config/db.config");
-const dtoUser = require("./users.schemas");
 const userModel = require("./users.model");
 const { getPagination, getPagingData } = require("../Core/pagination");
 const Op = db.Sequelize.Op;
@@ -14,7 +13,7 @@ exports.create = async (req, res) => {
       email: req.body.email,
       password: req.body.password,
       name: req.body.name,
-      surname: req.body.surname,
+      lastname: req.body.lastname,
     });
   } catch (err) {
     res.status(500).send(err.message);
@@ -87,15 +86,11 @@ exports.delete = async (req, res) => {
 exports.validateUserExist = async (req, res) => {
   try {
     const { email, password } = req.body;
-
     const userExist = await userModel.findOne({
       where: { email, password },
-      attributes: ["id", "login", "email", "name", "lastName", "deletionDate"],
+      attributes: ['id', 'email', 'name', 'lastName'],
     });
-
-    if (!userExist) return res.status(404).send("User not found");
-
-    return userExist.dataValues;
+    return { userLogged: userExist.get() };
   } catch (err) {
     res.status(500).send({ message: err.message });
   }
