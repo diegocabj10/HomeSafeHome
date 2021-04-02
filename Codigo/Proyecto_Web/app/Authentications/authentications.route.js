@@ -1,6 +1,6 @@
 const authentications = require("./authentications.controller");
 const router = require("express").Router();
-const { validateBody } = require("../Core/validationRequest");
+const { validateBody } = require("../Shared/validationRequest");
 const { schemaLoginUser } = require("./authentications.schemas");
 
 // login a user

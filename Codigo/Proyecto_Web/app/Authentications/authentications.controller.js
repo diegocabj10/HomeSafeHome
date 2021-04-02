@@ -1,9 +1,9 @@
-const jwt = require("jsonwebtoken");
-const { validateUserExist } = require("../Users/users.controller");
+const jwt = require('jsonwebtoken');
+const { validateUserExist } = require('../Features/Users/users.controller');
 const {
   createSession,
   validateRefreshTokenExist,
-} = require("../Sessions/sessions.controller");
+} = require('../Features/Sessions/sessions.controller');
 //Login an user
 const login = async (req, res) => {
   try {
@@ -14,19 +14,19 @@ const login = async (req, res) => {
     const payload = userExist;
 
     let accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
-      algorithm: "HS256",
+      algorithm: 'HS256',
       expiresIn: process.env.ACCESS_TOKEN_LIFE,
     });
 
     let refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
-      algorithm: "HS256",
+      algorithm: 'HS256',
       expiresIn: process.env.REFRESH_TOKEN_LIFE,
     });
 
     const session = await createSession(userExist.id, refreshToken);
 
-    res.cookie("accessToken", accessToken);
-    res.cookie("refreshToken", refreshToken);
+    res.cookie('accessToken', accessToken);
+    res.cookie('refreshToken', refreshToken);
 
     res.send({
       message:
@@ -65,15 +65,15 @@ const refresh = async (req, res) => {
     refreshToken
   );
 
-  if (!refreshTokenExist) return res.status(404).send("Refresh token doestn't exist");
+  if (!refreshTokenExist) return res.status(404).send('Refresh token does not exist');
 
   let newToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
-    algorithm: "HS256",
+    algorithm: 'HS256',
     expiresIn: process.env.ACCESS_TOKEN_LIFE,
   });
 
-  res.cookie("accessToken", newToken, { secure: true, httpOnly: true });
-  res.cookie("refreshToken", refreshToken);
+  res.cookie('accessToken', newToken, { secure: true, httpOnly: true });
+  res.cookie('refreshToken', refreshToken);
   res.send();
 };
 
