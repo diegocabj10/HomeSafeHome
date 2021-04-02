@@ -15,30 +15,25 @@
       "description": "Dev Server"
     }
   ],
-  "tags": [
+  "components": {
+    "securitySchemes": {
+      "cookieAuth": [
+        {
+          "type": "apiKey",
+          "in": "cookie",
+          "name": "accessToken"
+        },
+        {
+          "type": "apiKey",
+          "in": "cookie",
+          "name": "refreshToken"
+        }
+      ]
+    }
+  },
+  "security": [
     {
-      "name": "Authentications"
-    },
-    {
-      "name": "Claims"
-    },
-    {
-      "name": "Devices"
-    },
-    {
-      "name": "Events"
-    },
-    {
-      "name": "Notices"
-    },
-    {
-      "name": "Notifications"
-    },
-    {
-      "name": "Signals"
-    },
-    {
-      "name": "Users"
+      "cookieAuth": []
     }
   ]
 }

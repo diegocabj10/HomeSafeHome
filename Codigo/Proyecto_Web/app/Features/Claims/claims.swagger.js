@@ -26,7 +26,7 @@
  *                  totalItems:
  *                    type: integer
  *                    description: Total items
- *                  lista:
+ *                  list:
  *                    type: array
  *                    items:
  *                      type: object

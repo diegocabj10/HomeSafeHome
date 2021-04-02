@@ -6,6 +6,10 @@ const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 
 const swaggerDefinition = require('./swagger.json');
+const swaggerSpecifications = swaggerJSDoc({
+  swaggerDefinition,
+  apis: ['./app/*/*.swagger.js','./app/Features/*/*.swagger.js'],
+});
 const db = require('./config/db.config');
 const corsOptions = require('./config/cors.config');
 
@@ -24,31 +28,17 @@ const routeNotices = require('./app/Features/Notices/notices.route');
 const app = express();
 db.sync();
 
+app.use(express.static('./public'));
 app.use(cors(corsOptions));
-
-// parse requests of content-type - application/json
 app.use(express.json());
 app.use(cookieParser());
-
-// parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded());
-
-//Defining routes
-// simple route
-app.get('/', (req, res) => {
-  res.json({ message: 'Welcome everybody to services of Home Safe Home.' });
-});
-
-const swaggerSpecifications = swaggerJSDoc({
-  swaggerDefinition,
-  apis: ['./app/Features/*/*.swagger.js'],
-});
-
 app.use(
   '/api/docs',
   swaggerUi.serve,
   swaggerUi.setup(swaggerSpecifications, { explorer: true })
 );
+
 
 app.use('/api/authentications', routeAuthentications);
 app.use('/api/claims', routeClaims);
@@ -58,7 +48,11 @@ app.use('/api/events', routeEvents);
 app.use('/api/notifications', routeNotifications);
 app.use('/api/signals', routeSignals);
 
-// set port, listen for requests
+
+app.get('/', (req, res) => {
+  res.render('index.html');
+});
+
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
