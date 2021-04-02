@@ -2,8 +2,10 @@ const Sequelize = require("sequelize");
 const dbConfig = require("../../../config/db.config");
 const devicesModel = require("../Devices/devices.model");
 const signalsModel = require("../Signals/signals.model");
+const { formatDate } = require('../../Shared/dateFormatter');
+
 const Event = dbConfig.define("Events", {
-  eventDate: {
+  date: {
     type: Sequelize.DATE,
   },
   signalId: {

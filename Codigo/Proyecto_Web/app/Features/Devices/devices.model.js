@@ -1,5 +1,6 @@
 const Sequelize = require("sequelize");
 const dbConfig = require("../../../config/db.config");
+const { formatDate } = require('../../Shared/dateFormatter');
 
 const Device = dbConfig.define("Devices", {
   deviceName: {
@@ -7,7 +8,7 @@ const Device = dbConfig.define("Devices", {
     unique: true,
     allowNull: false,
   },
-  deviceDate: {
+  date: {
     type: Sequelize.DATE,
     get: function (fieldName) {
       const formattedDate = formatDate(this.getDataValue(fieldName));

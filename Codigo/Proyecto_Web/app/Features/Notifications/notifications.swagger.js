@@ -35,7 +35,7 @@
  *                          type: integer
  *                          description: Identification number.
  *                          example: 1
- *                        notificationDate:
+ *                        date:
  *                          type: string
  *                          description: Notification date.
  *                          example: 2020-12-30T20:49:21.000Z

@@ -6,7 +6,7 @@ exports.create = async (eventId, title, message, userId) => {
   try {
     // Create and save a notification
     const newNotification = await notificationModel.create({
-      notificationDate: new Date(),
+      date: new Date(),
       readDate: null,
       userId: userId,
       eventId: eventId,
@@ -29,6 +29,7 @@ exports.findAll = async (req, res) => {
         where: condition,
         limit,
         offset,
+        order:[['date','DESC']],
       });
       const response = getPagingData(data, page, limit);
       res.send(response);

@@ -5,7 +5,7 @@ const eventsModel = require('../Events/events.model');
 const { formatDate } = require('../../Shared/dateFormatter');
 
 const Notification = dbConfig.define('Notifications', {
-  notificationDate: {
+  date: {
     type: Sequelize.DATE,
     get: function (fieldName) {
       const formattedDate = formatDate(this.getDataValue(fieldName));

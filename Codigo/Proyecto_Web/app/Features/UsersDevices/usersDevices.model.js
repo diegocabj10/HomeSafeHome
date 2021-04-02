@@ -2,6 +2,7 @@ const Sequelize = require("sequelize");
 const dbConfig = require("../../../config/db.config");
 const devicesModel = require("../Devices/devices.model");
 const usersModel = require("../Users/users.model");
+const { formatDate } = require('../../Shared/dateFormatter');
 
 const UserDevice = dbConfig.define("UsersDevices", {
   deviceId: {

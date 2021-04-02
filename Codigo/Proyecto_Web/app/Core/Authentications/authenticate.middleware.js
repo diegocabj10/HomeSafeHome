@@ -6,7 +6,7 @@ const authenticate = (req, res, next) => {
     req.body.userId = payload.userLogged.id;
     next();
   } catch (err) {
-    return res.status(401).send(err);
+    res.status(401).send({ message: err.message });
   }
 };
 

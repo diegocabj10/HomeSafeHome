@@ -6,7 +6,7 @@ exports.create = async (req, res) => {
   try {
     // Create and save an event
     const newEvent = await eventModel.create({
-      eventDate: new Date(),
+      date: new Date(),
       signalId: req.body.signalId,
       deviceId: req.body.deviceId,
       value: req.body.value,

@@ -8,7 +8,7 @@ exports.create = async (req, res) => {
   try {
     // Create and save a notice
     const newNotice = await noticeModel.create({
-      noticeDate: new Date(),
+      date: new Date(),
       title: req.body.title,
       message: req.body.message,
       userId: req.body.userId,
@@ -30,6 +30,7 @@ exports.findAll = async (req, res) => {
       where: condition,
       limit,
       offset,
+      order:[['date','DESC']],
     });
     const response = getPagingData(data, page, limit);
     res.send(response);

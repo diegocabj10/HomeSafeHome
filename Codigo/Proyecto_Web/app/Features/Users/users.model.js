@@ -1,5 +1,6 @@
 const Sequelize = require("sequelize");
 const dbConfig = require("../../../config/db.config");
+const { formatDate } = require('../../Shared/dateFormatter');
 
 const User = dbConfig.define("Users", {
   email: {

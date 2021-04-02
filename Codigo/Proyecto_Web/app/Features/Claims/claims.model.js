@@ -1,8 +1,11 @@
 const Sequelize = require('sequelize');
 const dbConfig = require("../../../config/db.config");
 const usersModel = require('../Users/users.model');
+const { formatDate } = require('../../Shared/dateFormatter');
+
+
 const Claim = dbConfig.define('Claims', {
-    claimDate: {
+    date: {
         type: Sequelize.DATE,
         get: function (fieldName) {
             const formattedDate = formatDate(this.getDataValue(fieldName));
