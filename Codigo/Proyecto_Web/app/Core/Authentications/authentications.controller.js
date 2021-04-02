@@ -1,15 +1,13 @@
 const jwt = require('jsonwebtoken');
-const { validateUserExist } = require('../Features/Users/users.controller');
+const { validateUserExist } = require('../../Features/Users/users.controller');
 const {
   createSession,
   validateRefreshTokenExist,
-} = require('../Features/Sessions/sessions.controller');
+} = require('../../Features/Sessions/sessions.controller');
 //Login an user
 const login = async (req, res) => {
   try {
     const userExist = await validateUserExist(req, res);
-
-    if (!userExist) return res.status(401).send('User not found');
 
     const payload = userExist;
 
@@ -32,8 +30,8 @@ const login = async (req, res) => {
       message:
         'Successfull refresh token. The accessToken and refreshToken are returned in two cookies name accessToken and refreshToken. You need to include these two cookies in subsequent requests.'
     });
-  } catch (error) {
-    return res.status(401).send(err);
+  } catch (err) {
+    res.status(401).send({ message: err.message });
   }
 };
 

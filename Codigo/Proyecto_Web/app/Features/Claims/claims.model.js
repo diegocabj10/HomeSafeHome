@@ -3,7 +3,11 @@ const dbConfig = require("../../../config/db.config");
 const usersModel = require('../Users/users.model');
 const Claim = dbConfig.define('Claims', {
     claimDate: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        get: function (fieldName) {
+            const formattedDate = formatDate(this.getDataValue(fieldName));
+            return formattedDate ? formattedDate : null;
+        },
     },
     title: {
         type: Sequelize.STRING
@@ -23,13 +27,25 @@ const Claim = dbConfig.define('Claims', {
         allowNull: false
     },
     deletionDate: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        get: function (fieldName) {
+            const formattedDate = formatDate(this.getDataValue(fieldName));
+            return formattedDate ? formattedDate : null;
+        },
     },
     createdAt: {
-      type: Sequelize.DATE
+        type: Sequelize.DATE,
+        get: function (fieldName) {
+            const formattedDate = formatDate(this.getDataValue(fieldName));
+            return formattedDate ? formattedDate : null;
+        },
     },
     updatedAt: {
-      type: Sequelize.DATE
-    }  
+        type: Sequelize.DATE,
+        get: function (fieldName) {
+            const formattedDate = formatDate(this.getDataValue(fieldName));
+            return formattedDate ? formattedDate : null;
+        },
+    },
 });
 module.exports = Claim;

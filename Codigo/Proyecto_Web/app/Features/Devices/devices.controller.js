@@ -31,7 +31,7 @@ exports.findAll = async (req, res) => {
     });
     const response = getPagingData(data, page, limit);
     res.send(response);
-  } catch (error) {
+  } catch (err) {
     res.status(500).send(err.message);
   }
 };
@@ -42,7 +42,7 @@ exports.findOne = async (req, res) => {
   try {
     const data = await deviceModel.findByPk(id);
     res.send(data);
-  } catch (error) {
+  } catch (err) {
     res.status(500).send({ message: err.message });
   }
 };
@@ -69,7 +69,7 @@ exports.delete = async (req, res) => {
       where: { id: req.params.id },
     });
     res.send(data);
-  } catch (error) {
+  } catch (err) {
     res.status(500).send({ message: err.message });
   }
 

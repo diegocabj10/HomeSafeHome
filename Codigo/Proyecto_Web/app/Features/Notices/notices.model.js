@@ -4,6 +4,10 @@ const usersModel = require("../Users/users.model");
 const Notice = dbConfig.define("Notices", {
   noticeDate: {
     type: Sequelize.DATE,
+    get: function (fieldName) {
+      const formattedDate = formatDate(this.getDataValue(fieldName));
+      return formattedDate ? formattedDate : null;
+    },
   },
   title: {
     type: Sequelize.STRING,
@@ -24,12 +28,24 @@ const Notice = dbConfig.define("Notices", {
   },
   deletionDate: {
     type: Sequelize.DATE,
+    get: function (fieldName) {
+      const formattedDate = formatDate(this.getDataValue(fieldName));
+      return formattedDate ? formattedDate : null;
+    },
   },
   createdAt: {
     type: Sequelize.DATE,
+    get: function (fieldName) {
+      const formattedDate = formatDate(this.getDataValue(fieldName));
+      return formattedDate ? formattedDate : null;
+    },
   },
   updatedAt: {
     type: Sequelize.DATE,
+    get: function (fieldName) {
+      const formattedDate = formatDate(this.getDataValue(fieldName));
+      return formattedDate ? formattedDate : null;
+    },
   },
 });
 module.exports = Notice;

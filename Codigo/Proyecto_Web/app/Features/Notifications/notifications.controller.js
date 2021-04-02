@@ -20,8 +20,9 @@ exports.create = async (eventId, title, message, userId) => {
 
 // Retrieve all Notifications from the database.
 exports.findAll = async (req, res) => {
-    const { page, size, title, message } = req.query;
-    var condition = title ? { titulo: { [Op.like]: `%${title}%` } } : null;
+    const { page, size } = req.query;
+    
+    var condition = {userId: req.body.userId};
     try {
       const { limit, offset } = getPagination(page, size);
       const data = await notificationModel.findAndCountAll({
@@ -31,7 +32,7 @@ exports.findAll = async (req, res) => {
       });
       const response = getPagingData(data, page, limit);
       res.send(response);
-    } catch (error) {
+    } catch (err) {
       res.status(500).send(err.message);
     }
 };
@@ -41,7 +42,7 @@ exports.findOne = async (req, res) => {
   try {
     const data = await notificationModel.findByPk(req.params.id);
     res.send(data);
-  } catch (error) {
+  } catch (err) {
     res.status(500).send({ message: err.message });
   }
 };

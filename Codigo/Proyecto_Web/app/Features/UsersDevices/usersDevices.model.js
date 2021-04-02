@@ -20,20 +20,40 @@ const UserDevice = dbConfig.define("UsersDevices", {
     },
     allowNull: false,
   },
+  dateAwayFromHome: {
+    type: Sequelize.DATE,
+    get: function (fieldName) {
+      const formattedDate = formatDate(this.getDataValue(fieldName));
+      return formattedDate ? formattedDate : null;
+    },
+  },
   startDate: {
     type: Sequelize.DATE,
+    get: function (fieldName) {
+      const formattedDate = formatDate(this.getDataValue(fieldName));
+      return formattedDate ? formattedDate : null;
+    },
   },
   deletionDate: {
     type: Sequelize.DATE,
-  },
-  dateAwayFromHome: {
-    type: Sequelize.DATE,
+    get: function (fieldName) {
+      const formattedDate = formatDate(this.getDataValue(fieldName));
+      return formattedDate ? formattedDate : null;
+    },
   },
   createdAt: {
     type: Sequelize.DATE,
+    get: function (fieldName) {
+      const formattedDate = formatDate(this.getDataValue(fieldName));
+      return formattedDate ? formattedDate : null;
+    },
   },
   updatedAt: {
     type: Sequelize.DATE,
+    get: function (fieldName) {
+      const formattedDate = formatDate(this.getDataValue(fieldName));
+      return formattedDate ? formattedDate : null;
+    },
   },
 });
 
@@ -48,8 +68,20 @@ UserDevice.sync().then(
       where: { id: 2 }
     });
     usersModel.findOrCreate({
-      defaults: { id: 1, email: 'diegocampos0909@gmail.com', name: 'Diego', lastName: 'Campos', password: 'asd1234', createdAt: Date.now(), updatedAt: Date.now() },
+      defaults: { id: 1, email: 'diegocampos0909@gmail.com', name: 'Diego', lastName: 'Campos', password: 'admin1234', createdAt: Date.now(), updatedAt: Date.now() },
       where: { id: 1 }
+    });
+    usersModel.findOrCreate({
+      defaults: { id: 2, email: 'francoluna@gmail.com', name: 'Franco', lastName: 'Luna', password: 'admin1234', createdAt: Date.now(), updatedAt: Date.now() },
+      where: { id: 2 }
+    });
+    usersModel.findOrCreate({
+      defaults: { id: 3, email: 'marcostavorda@gmail.com', name: 'Marcos', lastName: 'Tavorda', password: 'admin1234', createdAt: Date.now(), updatedAt: Date.now() },
+      where: { id: 3 }
+    });
+    usersModel.findOrCreate({
+      defaults: { id: 4, email: 'diegomarchetti@gmail.com', name: 'Diego', lastName: 'Marchetti', password: 'admin1234', createdAt: Date.now(), updatedAt: Date.now() },
+      where: { id: 4 }
     });
     UserDevice.findOrCreate({
       defaults: { id: 1, deviceId: 1, userId: 1, createdAt: Date.now(), updatedAt: Date.now() },

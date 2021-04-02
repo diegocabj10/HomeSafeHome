@@ -15,12 +15,24 @@ const Session = dbConfig.define("Sessions", {
   },
   deletionDate: {
     type: Sequelize.DATE,
+    get: function (fieldName) {
+      const formattedDate = formatDate(this.getDataValue(fieldName));
+      return formattedDate ? formattedDate : null;
+    },
   },
   createdAt: {
     type: Sequelize.DATE,
+    get: function (fieldName) {
+      const formattedDate = formatDate(this.getDataValue(fieldName));
+      return formattedDate ? formattedDate : null;
+    },
   },
   updatedAt: {
     type: Sequelize.DATE,
+    get: function (fieldName) {
+      const formattedDate = formatDate(this.getDataValue(fieldName));
+      return formattedDate ? formattedDate : null;
+    },
   },
 });
 

@@ -36,7 +36,7 @@ exports.findAll = async (req, res) => {
     });
     const response = getPagingData(data, page, limit);
     res.send(response);
-  } catch (error) {
+  } catch (err) {
     res.status(500).send(err.message);
   }
 };
@@ -46,7 +46,7 @@ exports.findOne = async (req, res) => {
   try {
     const data = await userModel.findByPk(req.params.id);
     res.send(data);
-  } catch (error) {
+  } catch (err) {
     res.status(500).send({ message: err.message });
   }
 };
@@ -78,7 +78,7 @@ exports.delete = async (req, res) => {
       where: { id: req.params.id },
     });
     res.send(data);
-  } catch (error) {
+  } catch (err) {
     res.status(500).send({ message: err.message });
   }
 };
@@ -92,6 +92,6 @@ exports.validateUserExist = async (req, res) => {
     });
     return { userLogged: userExist.get() };
   } catch (err) {
-    res.status(500).send({ message: err.message });
+    throw new Error('User not found');
   }
 };

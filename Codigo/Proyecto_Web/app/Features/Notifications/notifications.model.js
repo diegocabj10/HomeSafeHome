@@ -2,13 +2,14 @@ const Sequelize = require('sequelize');
 const dbConfig = require("../../../config/db.config");
 const usersModel = require('../Users/users.model');
 const eventsModel = require('../Events/events.model');
-const moment = require('moment');
+const { formatDate } = require('../../Shared/dateFormatter');
+
 const Notification = dbConfig.define('Notifications', {
   notificationDate: {
     type: Sequelize.DATE,
     get: function (fieldName) {
-      const rawValue = this.getDataValue('createdAt');
-      return moment(rawValue).format('DD/MM/YY HH:mm');
+      const formattedDate = formatDate(this.getDataValue(fieldName));
+      return formattedDate ? formattedDate : null;
     },
   },
   eventId: {
@@ -35,15 +36,31 @@ const Notification = dbConfig.define('Notifications', {
   },
   readDate: {
     type: Sequelize.DATE,
+    get: function (fieldName) {
+      const formattedDate = formatDate(this.getDataValue(fieldName));
+      return formattedDate ? formattedDate : null;
+    },
   },
   deletionDate: {
     type: Sequelize.DATE,
+    get: function (fieldName) {
+      const formattedDate = formatDate(this.getDataValue(fieldName));
+      return formattedDate ? formattedDate : null;
+    },
   },
   createdAt: {
     type: Sequelize.DATE,
+    get: function (fieldName) {
+      const formattedDate = formatDate(this.getDataValue(fieldName));
+      return formattedDate ? formattedDate : null;
+    },
   },
   updatedAt: {
     type: Sequelize.DATE,
+    get: function (fieldName) {
+      const formattedDate = formatDate(this.getDataValue(fieldName));
+      return formattedDate ? formattedDate : null;
+    },
   },
 });
 module.exports = Notification;

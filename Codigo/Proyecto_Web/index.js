@@ -8,14 +8,14 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerDefinition = require('./swagger.json');
 const swaggerSpecifications = swaggerJSDoc({
   swaggerDefinition,
-  apis: ['./app/*/*.swagger.js','./app/Features/*/*.swagger.js'],
+  apis: ['./app/Core/*/*.swagger.js', './app/Features/*/*.swagger.js'],
 });
 const db = require('./config/db.config');
 const corsOptions = require('./config/cors.config');
 
-const { authenticate } = require('./app/Authentications/authenticate.middleware');
+const { authenticate } = require('./app/Core/Authentications/authenticate.middleware');
 
-const routeAuthentications = require('./app/Authentications/authentications.route');
+const routeAuthentications = require('./app/Core/Authentications/authentications.route');
 const routeClaims = require('./app/Features/Claims/claims.route');
 const routeDevices = require('./app/Features/Devices/devices.route');
 const routeEvents = require('./app/Features/Events/events.route');
@@ -41,12 +41,12 @@ app.use(
 
 
 app.use('/api/authentications', routeAuthentications);
-app.use('/api/claims', routeClaims);
-app.use('/api/notices', routeNotices);
-app.use('/api/devices', routeDevices);
+app.use('/api/claims', authenticate, routeClaims);
+app.use('/api/notices', authenticate, routeNotices);
+app.use('/api/devices', authenticate, routeDevices);
 app.use('/api/events', routeEvents);
-app.use('/api/notifications', routeNotifications);
-app.use('/api/signals', routeSignals);
+app.use('/api/notifications', authenticate, routeNotifications);
+app.use('/api/signals', authenticate, routeSignals);
 
 
 app.get('/', (req, res) => {

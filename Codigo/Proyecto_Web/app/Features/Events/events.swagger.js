@@ -27,6 +27,7 @@
  *                  type: integer
  *                  description: Signal value.
  *                  example: 100
+ *      security: []
  *      responses:
  *        200:
  *          description: New event is created
