@@ -2,9 +2,6 @@ const Sequelize = require("sequelize");
 const dbConfig = require("../../config/db.config");
 
 const User = dbConfig.define("Users", {
-  login: {
-    type: Sequelize.STRING,
-  },
   email: {
     type: Sequelize.STRING,
     validate: {
@@ -29,9 +26,6 @@ const User = dbConfig.define("Users", {
   deletionDate: {
     type: Sequelize.DATE,
   },
-  endDate: {
-    type: Sequelize.DATE,
-  },
   createdAt: {
     type: Sequelize.DATE,
   },
@@ -39,4 +33,5 @@ const User = dbConfig.define("Users", {
     type: Sequelize.DATE,
   },
 });
+
 module.exports = User;

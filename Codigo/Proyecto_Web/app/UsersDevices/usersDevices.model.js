@@ -37,4 +37,28 @@ const UserDevice = dbConfig.define("UsersDevices", {
   },
 });
 
+
+
+
+UserDevice.sync().then(
+  () => {
+    devicesModel.findOrCreate({
+      defaults: { id: 1, deviceName: 'Arduino1', createdAt: Date.now(), updatedAt: Date.now() },
+      where: { id: 1 }
+    });
+    devicesModel.findOrCreate({
+      defaults: { id: 2, deviceName: 'Arduino2', createdAt: Date.now(), updatedAt: Date.now() },
+      where: { id: 2 }
+    });
+    usersModel.findOrCreate({
+      defaults: { id: 1, email: 'diegocampos0909@gmail.com', name: 'Diego', lastName: 'Campos', password: 'asd1234', createdAt: Date.now(), updatedAt: Date.now() },
+      where: { id: 1 }
+    });
+    UserDevice.findOrCreate({
+      defaults: { id: 1, deviceId: 1, userId: 1, createdAt: Date.now(), updatedAt: Date.now() },
+      where: { id: 1 }
+    });
+  }
+);
+
 module.exports = UserDevice;

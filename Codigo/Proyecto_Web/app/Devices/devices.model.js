@@ -20,4 +20,5 @@ const Device = dbConfig.define("Devices", {
     type: Sequelize.DATE,
   },
 });
+
 module.exports = Device;

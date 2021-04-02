@@ -20,4 +20,5 @@ const Signal = dbConfig.define("Signals", {
     type: Sequelize.DATE,
   },
 });
+
 module.exports = Signal;
