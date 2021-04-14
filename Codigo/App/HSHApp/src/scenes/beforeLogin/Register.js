@@ -1,7 +1,7 @@
 import React from 'react'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 
-const RegistreScreen = () => {
+const RegisterScreen = () => {
     return (
         <ScrollView style={styles.container}>
             <View style={styles.childContainer}>
@@ -23,4 +23,4 @@ const styles = StyleSheet.create({
 })
 
 
-export default RegistreScreen;
+export default RegisterScreen;

@@ -11,10 +11,13 @@ import { ThemeProvider } from 'react-native-elements';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import SetCookie from 'set-cookie-parser';
 
-import HomeScreen from './Screens/AfterLogin/Home';
+import HomeScreen from './scenes/afterLogin/Home';
 
-import LoginScreen from './Screens/BeforeLogin/Login';
-import RegistreScreen from './Screens/BeforeLogin/Register';
+import RegisterScreen from './scenes/beforeLogin/Register';
+import LoginScreen from './scenes/beforeLogin/Login';
+
+import {LOGIN} from './config/endpoints';
+
 
 const Stack = createStackNavigator();
 const AuthContext = React.createContext();
@@ -88,7 +91,7 @@ const App = () => {
   const authContext = React.useMemo(
     () => ({
       signIn: async data => {
-        const url = 'http://192.168.0.113:8080/api/authentications/login';
+        const url = LOGIN;
         const response = await fetch(url, {
           headers: {
             'Content-Type': 'application/json'
@@ -138,7 +141,7 @@ const App = () => {
                 : (
                   <>
                     <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-                    <Stack.Screen name="Register" component={RegistreScreen} options={{ headerShown: false }} />
+                    <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
                   </>
                 )}
             </Stack.Navigator>
