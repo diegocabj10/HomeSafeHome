@@ -1,8 +1,7 @@
-import React from 'react'
-import { StyleSheet, View } from 'react-native'
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
 import { Button, Input, Text } from 'react-native-elements';
-import { AuthContext } from '../../App';
-
+import * as api from '../../services/auth.services';
 
 const LoginScreen = ({ navigation }) => {
   const [formLogin, setFormLogin] = React.useState({
@@ -12,8 +11,14 @@ const LoginScreen = ({ navigation }) => {
 
   const { email, password } = formLogin;
 
-  const { signIn } = React.useContext(AuthContext);
 
+
+  const login = async (formLogin) => {
+    let response = await api.login(formLogin);
+    //TODO here
+
+
+  }
 
 
   return (
@@ -31,7 +36,7 @@ const LoginScreen = ({ navigation }) => {
       <Button
         type="outline"
         title="Entrar"
-        onPress={() => signIn({ email, password })}
+        onPress={() => login({ email, password })}
         containerStyle={{ width: '100%' }} />
 
       <View style={styles.buttons}>

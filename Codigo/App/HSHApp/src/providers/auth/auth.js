@@ -1,8 +1,9 @@
 import React from 'react';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import axios from 'axios';
+import jwt from 'jsonwebtoken';
 
-import { LOGIN } from '../../config/endpoints';
+import { LOGIN, ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from '../../config/endpoints';
 import reducer, { initialState, LOG_IN, LOG_OUT } from "./auth.reducer";
 
 import { ACCESS_TOKEN, REFRESH_TOKEN } from '../../core/auth.header'
@@ -14,7 +15,7 @@ const AuthProvider = (props) => {
 
     const [state, dispatch] = React.useReducer(reducer, initialState || {});
 
-
+    //stores the token and user's data, sets axios auth header and dispatches the user's data to the reducer to be saved
     const logIn = async data => {
         const url = LOGIN;
         const response = await fetch(url, {
@@ -24,8 +25,14 @@ const AuthProvider = (props) => {
             method: 'POST',
             body: JSON.stringify(data),
         });
-//TODO obtain from header los jwt
-        await EncryptedStorage.setItem(ACCESS_TOKEN, '');
+
+        await EncryptedStorage.setItem(ACCESS_TOKEN, response.headers.get(ACCESS_TOKEN));
+        await EncryptedStorage.setItem(REFRESH_TOKEN, response.headers.get(REFRESH_TOKEN));
+
+        axios.defaults.headers.common['x-access-token'] = response.headers.get(ACCESS_TOKEN);
+        axios.defaults.headers.common['x-refresh-token'] = response.headers.get(REFRESH_TOKEN);
+
+        const [payload] = jwt.decode(response.headers.get(ACCESS_TOKEN));
 
         let accessToken = await EncryptedStorage.getItem(ACCESS_TOKEN);
         let refreshToken = await EncryptedStorage.getItem(REFRESH_TOKEN);
@@ -48,6 +55,7 @@ const AuthProvider = (props) => {
         dispatch({ type: 'SIGN_IN', accessToken: '' });
     };
 
+    //returns user data if logged in
     const getAuthState = async () => {
         let accessToken = await EncryptedStorage.getItem(ACCESS_TOKEN);
         let refreshToken = await EncryptedStorage.getItem(REFRESH_TOKEN);
