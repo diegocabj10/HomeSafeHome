@@ -17,23 +17,27 @@
   ],
   "components": {
     "securitySchemes": {
-      "cookieAuth": [
+      "JWT": [
         {
           "type": "apiKey",
-          "in": "cookie",
-          "name": "accessToken"
+          "in": "header",
+          "name": "x-access-token",
+          "description": "x-access-token",
+          "value": "asd"
         },
         {
           "type": "apiKey",
-          "in": "cookie",
-          "name": "refreshToken"
+          "in": "header",
+          "name": "x-refresh-token",
+          "description": "x-access-token",
+          "value": "asd"
         }
       ]
     }
   },
   "security": [
     {
-      "cookieAuth": []
+      "JWT": []
     }
   ]
 }

@@ -25,14 +25,14 @@
  *      security: []
  *      responses:
  *        200:
- *          description: Successfully authenticated. The accessToken and refreshToken are returned in two cookies name `accessToken` and `refreshToken`. You need to include these two cookies in subsequent requests.
+ *          description: Successfully authenticated. The accessToken and refreshToken are returned in two headers name `x-access-token` and `x-refresh-token`. You need to include these two headers in subsequent requests.
  *          headers:
- *            Set-Cookie:
+ *            x-access-token:
  *              description: Json Web Token of access, this is valid for 24 hours
  *              schema:
  *                type: string
  *                example: accessToken=longjwt; Path=/; HttpOnly
- *            " Set-Cookie":
+ *            x-refresh-token:
  *              description: Json Web Token of refresh, this is valid for 14 days
  *              schema:
  *                type: string
@@ -56,14 +56,14 @@
  *      security: []
  *      responses:
  *        200:
- *          description: Successfull refresh token. The accessToken and refreshToken are returned in two cookies name `accessToken` and `refreshToken`. You need to include these two cookies in subsequent requests.
+ *          description: Successfully authenticated. The accessToken and refreshToken are returned in two headers name `x-access-token` and `x-refresh-token`. You need to include these two headers in subsequent requests.
  *          headers:
- *            Set-Cookie:
+ *            x-access-token:
  *              description: Json Web Token of access, this is valid for 24 hours
  *              schema:
  *                type: string
  *                example: accessToken=longjwt; Path=/; HttpOnly
- *            " Set-Cookie":
+ *            x-refresh-token:
  *              description: Json Web Token of refresh, this is valid for 14 days
  *              schema:
  *                type: string

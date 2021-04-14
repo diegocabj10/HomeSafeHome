@@ -23,12 +23,14 @@ const login = async (req, res) => {
 
     const session = await createSession(userExist.id, refreshToken);
 
-    res.cookie('accessToken', accessToken);
-    res.cookie('refreshToken', refreshToken);
+    res.set({
+      'x-access-token': accessToken,
+      'x-refresh-token': refreshToken
+    });
 
     res.send({
       message:
-        'Successfull refresh token. The accessToken and refreshToken are returned in two cookies name accessToken and refreshToken. You need to include these two cookies in subsequent requests.'
+        'Successfully authenticated. The accessToken and refreshToken are returned in two headers name x-access-token and x-refresh-token. You need to include these two headers in subsequent requests.'
     });
   } catch (err) {
     res.status(401).send({ message: err.message });
@@ -36,8 +38,8 @@ const login = async (req, res) => {
 };
 
 const refresh = async (req, res) => {
-  let accessToken = req.cookies.jwt;
-  let refreshToken = req.cookies.jwt;
+  let accessToken = req.headers['x-access-token'];
+  let refreshToken = req.headers['x-refresh-token'];
 
   if (!accessToken || !refreshToken) {
     return res.status(403).send();
@@ -70,8 +72,10 @@ const refresh = async (req, res) => {
     expiresIn: process.env.ACCESS_TOKEN_LIFE,
   });
 
-  res.cookie('accessToken', newToken, { secure: true, httpOnly: true });
-  res.cookie('refreshToken', refreshToken);
+  res.set({
+    'x-access-token': accessToken,
+    'x-refresh-token': refreshToken
+  });
   res.send();
 };
 

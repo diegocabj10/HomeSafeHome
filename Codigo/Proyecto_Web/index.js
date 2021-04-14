@@ -1,6 +1,5 @@
 require('dotenv').config({ path: './config/config.env' });
 const express = require('express');
-const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
@@ -31,7 +30,6 @@ db.sync();
 app.use(express.static('./public'));
 app.use(cors(corsOptions));
 app.use(express.json());
-app.use(cookieParser());
 app.use(express.urlencoded());
 app.use(
   '/api/docs',
