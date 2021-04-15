@@ -2,8 +2,10 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button, Input, Text } from 'react-native-elements';
 import * as api from '../../services/auth.services';
+import { useAuth } from '../../providers/auth/auth';
 
-const LoginScreen = ({ navigation }) => {
+
+const LogIn = ({ navigation }) => {
   const [formLogin, setFormLogin] = React.useState({
     email: '',
     password: ''
@@ -11,13 +13,12 @@ const LoginScreen = ({ navigation }) => {
 
   const { email, password } = formLogin;
 
+  const { handleLogIn } = useAuth();
 
 
-  const login = async (formLogin) => {
-    let response = await api.login(formLogin);
-    //TODO here
-
-
+  const logIn = async (formLogin) => {
+    let response = await api.logInService(formLogin);
+    await handleLogIn(response);
   }
 
 
@@ -36,7 +37,7 @@ const LoginScreen = ({ navigation }) => {
       <Button
         type="outline"
         title="Entrar"
-        onPress={() => login({ email, password })}
+        onPress={() => logIn({ email, password })}
         containerStyle={{ width: '100%' }} />
 
       <View style={styles.buttons}>
@@ -63,4 +64,4 @@ const styles = StyleSheet.create({
 })
 
 
-export default LoginScreen;
+export default LogIn;
