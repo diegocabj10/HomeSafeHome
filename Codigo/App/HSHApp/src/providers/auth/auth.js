@@ -15,19 +15,13 @@ const AuthProvider = (props) => {
 
     //stores the token and user's data, sets axios auth header and dispatches the user's data to the reducer to be saved
     const handleLogIn = async (data) => {
-        console.log(data.data);
-        
 
-        
-        // await EncryptedStorage.setItem(ACCESS_TOKEN, response.headers.get(ACCESS_TOKEN));
-        // await EncryptedStorage.setItem(REFRESH_TOKEN, response.headers.get(REFRESH_TOKEN));
+        const accessToken = await EncryptedStorage.setItem(ACCESS_TOKEN, data.headers[ACCESS_TOKEN]);
+        const refreshToken = await EncryptedStorage.setItem(REFRESH_TOKEN, data.headers[ACCESS_TOKEN]);
 
+        console.log(accessToken, refreshToken);
         // axios.defaults.headers.common['x-access-token'] = response.headers.get(ACCESS_TOKEN);
         // axios.defaults.headers.common['x-refresh-token'] = response.headers.get(REFRESH_TOKEN);
-
-
-        // let accessToken = await EncryptedStorage.getItem(ACCESS_TOKEN);
-        // let refreshToken = await EncryptedStorage.getItem(REFRESH_TOKEN);
 
         dispatch({ type: LOG_IN, accessToken, refreshToken });
     };
@@ -44,7 +38,7 @@ const AuthProvider = (props) => {
         // After getting token, we need to persist the token using `SecureStore`
         // In the example, we'll use a dummy token
 
-        dispatch({ type: 'SIGN_IN', accessToken: '' });
+        // dispatch({ type: 'SIGN_IN', accessToken: '' });
     };
 
     //returns user data if logged in

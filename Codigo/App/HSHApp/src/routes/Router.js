@@ -7,6 +7,7 @@ import Home from '../scenes/appStack/Home';
 
 import LogIn from '../scenes/authStack/LogIn';
 import Register from '../scenes/authStack/Register';
+import ChangePassword from '../scenes/authStack/ChangePassword';
 
 const Stack = createStackNavigator();
 
@@ -23,7 +24,9 @@ const Router = () => {
                     : (
                         <>
                             <Stack.Screen name="Login" component={LogIn} options={{ headerShown: false }} />
-                            <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
+                            <Stack.Screen name="Register" component={Register} options={{ title: 'Registrarse', headerStyle: { backgroundColor: '#667F90' }, headerTitleStyle: { color: 'white' }, headerTintColor: 'white' }} />
+                            <Stack.Screen name="ChangePassword" component={ChangePassword} options={{ title: 'Cambiar contraseña', headerStyle: { backgroundColor: '#667F90' }, headerTitleStyle: { color: 'white' }, headerTintColor: 'white' }} />
+
                         </>
                     )}
             </Stack.Navigator>

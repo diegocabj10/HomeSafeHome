@@ -8,9 +8,6 @@ import AuthProvider from './providers/auth/auth';
 import Router from './routes/Router';
 
 const theme = {
-  colors: {
-    primary: '#667F90',
-  },
   Button: {
     raised: true,
   },
@@ -18,21 +15,15 @@ const theme = {
     labelStyle: {
       color: 'white',
     }
-
-  }
+  },
 };
 
 const App = () => {
-
-
-
-
   return (
     <>
       <AuthProvider>
         <ThemeProvider theme={theme}>
-          <Router></Router>
-
+          <Router />
         </ThemeProvider>
       </AuthProvider>
     </>

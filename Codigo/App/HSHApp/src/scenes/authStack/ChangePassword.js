@@ -1,10 +1,9 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
-const Home = () => {
+const ChangePassword = () => {
     return (
-        <View>
-            <Text>Home</Text>
+        <View style={styles.container}>
         </View>
     )
 }
@@ -12,10 +11,11 @@ const Home = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: '#667F90',
         justifyContent: 'center',
         alignItems: 'center',
     },
 })
 
 
-export default Home;
+export default ChangePassword;

@@ -41,7 +41,7 @@ const LogIn = ({ navigation }) => {
         containerStyle={{ width: '100%' }} />
 
       <View style={styles.buttons}>
-        <Button type="clear" titleStyle={{ color: 'white' }} title="Has olvidad la contraseña?" onPress={() => console.log('Cambiar contraseña')} />
+        <Button type="clear" titleStyle={{ color: 'white' }} title="Has olvidado la contraseña?" onPress={() => navigation.navigate('ChangePassword')} />
         <Button type="clear" titleStyle={{ color: '#432F26' }} title="Registrarse" onPress={() => navigation.navigate('Register')} />
       </View>
     </View>

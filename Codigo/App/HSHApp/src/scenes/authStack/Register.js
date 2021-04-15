@@ -5,7 +5,6 @@ const Register = () => {
     return (
         <ScrollView style={styles.container}>
             <View style={styles.childContainer}>
-                <Text h3 h3Style={{ color: 'black' }}>Registrarse</Text>
             </View>
         </ScrollView>
     )
