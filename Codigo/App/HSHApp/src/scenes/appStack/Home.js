@@ -1,10 +1,14 @@
-import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import { Header, Icon } from 'react-native-elements';
 
-const Home = () => {
+const Home = ({ navigation }) => {
     return (
         <View>
-            <Text>Home</Text>
+            <Header
+                leftComponent={{ icon: 'menu', color: '#fff', onPress: () => navigation.toggleDrawer(), }}
+                centerComponent={{ text: 'MY TITLE', style: { color: '#fff' } }}
+            />
         </View>
     )
 }

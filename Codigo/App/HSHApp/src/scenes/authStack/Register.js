@@ -3,7 +3,7 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native'
 
 const Register = () => {
     return (
-        <ScrollView style={styles.container}>
+        <ScrollView>
             <View style={styles.childContainer}>
             </View>
         </ScrollView>
@@ -11,9 +11,6 @@ const Register = () => {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: '#667F90',
-    },
     childContainer: {
         flex: 1,
         justifyContent: 'center',

@@ -2,7 +2,7 @@ import React from 'react';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import axios from 'axios';
 
-import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from '../../config/endpoints';
+import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from '../../config/config';
 import reducer, { initialState, LOG_IN, LOG_OUT } from "./auth.reducer";
 
 import { ACCESS_TOKEN, REFRESH_TOKEN } from '../../core/auth.header'

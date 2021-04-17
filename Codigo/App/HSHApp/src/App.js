@@ -5,7 +5,7 @@ import { ThemeProvider } from 'react-native-elements';
 
 import AuthProvider from './providers/auth/auth';
 
-import Router from './routes/Router';
+import StackNavigator from './navigation/StackNavigator';
 
 const theme = {
   Button: {
@@ -16,6 +16,9 @@ const theme = {
       color: 'white',
     }
   },
+  Header:{
+    backgroundColor: '#667F90',
+  }
 };
 
 const App = () => {
@@ -23,7 +26,7 @@ const App = () => {
     <>
       <AuthProvider>
         <ThemeProvider theme={theme}>
-          <Router />
+          <StackNavigator />
         </ThemeProvider>
       </AuthProvider>
     </>

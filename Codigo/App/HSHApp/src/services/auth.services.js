@@ -1,5 +1,5 @@
 import axios from 'axios';
-import * as endpoints from '../config/endpoints';
+import * as endpoints from '../config/config';
 
 
 export const logInService = async (data) => {
