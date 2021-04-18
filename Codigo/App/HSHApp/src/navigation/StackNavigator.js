@@ -1,4 +1,5 @@
 import React from 'react';
+import EncryptedStorage from 'react-native-encrypted-storage';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Button, Input, Text } from 'react-native-elements';
@@ -25,13 +26,16 @@ const MyTheme = {
 
 const StackNavigator = () => {
 
-    const { state } = useAuth();
+    const { getAuthState, state } = useAuth();
+    
+    React.useEffect(async () => { await getAuthState();  }, []);
+    
     return (
         <NavigationContainer theme={MyTheme}>
             <Stack.Navigator >
-                {state.accessToken !== null ? (
+                {state.userLogged !== null ? (
                     <>
-                        <Stack.Screen name="DrawerNavigation" component={DrawerNavigation}  options={{ headerShown: false }} />
+                        <Stack.Screen name="DrawerNavigation" component={DrawerNavigation} options={{ headerShown: false }} />
                     </>)
                     : (
                         <>

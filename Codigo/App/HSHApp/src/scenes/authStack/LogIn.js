@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { Button, Input, Text } from 'react-native-elements';
 import * as api from '../../services/auth.services';
 import { useAuth } from '../../providers/auth/auth';
-
+import { ACCESS_TOKEN, REFRESH_TOKEN } from '../../config/auth.header';
 
 const LogIn = ({ navigation }) => {
   const [formLogin, setFormLogin] = React.useState({
@@ -18,7 +18,13 @@ const LogIn = ({ navigation }) => {
 
   const logIn = async (formLogin) => {
     let response = await api.logInService(formLogin);
-    await handleLogIn(response);
+
+    let accessToken = response.headers[ACCESS_TOKEN];
+    let refreshToken = response.headers[REFRESH_TOKEN];
+
+    //TODO decode accessToken
+    let userLogged = 'diego';
+    await handleLogIn({ accessToken, refreshToken, userLogged });
   }
 
 

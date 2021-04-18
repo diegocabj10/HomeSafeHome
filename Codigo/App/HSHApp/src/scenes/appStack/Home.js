@@ -1,13 +1,18 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Header, Icon } from 'react-native-elements';
+import { AuthContext, useAuth } from '../../providers/auth/auth';
 
 const Home = ({ navigation }) => {
+    const { getAuthState, state } = useAuth();
+    const { handleLogOut } = useAuth();
+
     return (
         <View>
             <Header
                 leftComponent={{ icon: 'menu', color: '#fff', onPress: () => navigation.toggleDrawer(), }}
                 centerComponent={{ text: 'MY TITLE', style: { color: '#fff' } }}
+                rightComponent={{ icon: 'code', color: '#fff', onPress: () => handleLogOut(), }}
             />
         </View>
     )

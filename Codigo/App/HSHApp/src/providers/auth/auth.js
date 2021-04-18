@@ -5,7 +5,7 @@ import axios from 'axios';
 import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from '../../config/config';
 import reducer, { initialState, LOG_IN, LOG_OUT } from "./auth.reducer";
 
-import { ACCESS_TOKEN, REFRESH_TOKEN } from '../../core/auth.header'
+import { ACCESS_TOKEN, REFRESH_TOKEN, USER_LOGGED } from '../../config/auth.header'
 
 const AuthContext = React.createContext();
 
@@ -13,22 +13,23 @@ const AuthProvider = (props) => {
 
     const [state, dispatch] = React.useReducer(reducer, initialState || {});
 
-    //stores the token and user's data, sets axios auth header and dispatches the user's data to the reducer to be saved
     const handleLogIn = async (data) => {
 
-        const accessToken = await EncryptedStorage.setItem(ACCESS_TOKEN, data.headers[ACCESS_TOKEN]);
-        const refreshToken = await EncryptedStorage.setItem(REFRESH_TOKEN, data.headers[ACCESS_TOKEN]);
+        await EncryptedStorage.setItem(ACCESS_TOKEN, data.accessToken);
+        await EncryptedStorage.setItem(REFRESH_TOKEN, data.refreshToken);
+        await EncryptedStorage.setItem(USER_LOGGED, data.userLogged);
 
-        console.log(accessToken, refreshToken);
-        // axios.defaults.headers.common['x-access-token'] = response.headers.get(ACCESS_TOKEN);
-        // axios.defaults.headers.common['x-refresh-token'] = response.headers.get(REFRESH_TOKEN);
+        axios.defaults.headers.common[ACCESS_TOKEN] = data.accessToken;
+        axios.defaults.headers.common[REFRESH_TOKEN] = data.refreshToken;
 
-        dispatch({ type: LOG_IN, accessToken, refreshToken });
+        dispatch({ type: LOG_IN, userLogged: data.userLogged });
     };
 
     const handleLogOut = async () => {
         await EncryptedStorage.removeItem(ACCESS_TOKEN);
         await EncryptedStorage.removeItem(REFRESH_TOKEN);
+        await EncryptedStorage.removeItem(USER_LOGGED);
+
         dispatch({ type: LOG_OUT });
     };
 
@@ -45,7 +46,12 @@ const AuthProvider = (props) => {
     const getAuthState = async () => {
         let accessToken = await EncryptedStorage.getItem(ACCESS_TOKEN);
         let refreshToken = await EncryptedStorage.getItem(REFRESH_TOKEN);
-        if (accessToken === null || refreshToken === null) await logOut;
+        let userLogged = await EncryptedStorage.getItem(USER_LOGGED);
+
+        if (accessToken !== null || refreshToken !== null) await handleLogIn({ accessToken, refreshToken, userLogged })
+        else await logOut;
+
+        return {userLogged}
     };
 
     const authContext = React.useMemo(() => {

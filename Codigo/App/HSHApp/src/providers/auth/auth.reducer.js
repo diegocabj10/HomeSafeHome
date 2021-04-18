@@ -8,30 +8,21 @@ const authReducer = (state = initialState, action) => {
         case LOG_IN:
             return {
                 ...state,
-                isSignout: false,
-                accessToken: action.accessToken,
-                refreshToken: action.refreshToken,
+                isLoggedIn: true,
+                userLogged: action.userLogged,
             };
         case LOG_OUT:
             return {
                 ...state,
                 ...initialState,
             };
-        // case 'RESTORE_TOKEN':
-        //   return {
-        //     ...state,
-        //     isLoading: false,
-        //     accessToken: action.accessToken,
-        //     refreshToken: action.refreshToken,
-        //   };
     }
 }
 
 export const initialState = {
     isLoading: true,
-    isSignout: false,
-    accessToken: null,
-    refreshToken: null,
+    isLoggedIn: false,
+    userLogged: null,
 }
 
 export default authReducer;
