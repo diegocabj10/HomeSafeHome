@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Button, Input, Text } from 'react-native-elements';
+import { Button, Card, Input, Overlay, Text } from 'react-native-elements';
 import * as api from '../../services/auth.services';
 import { useAuth } from '../../providers/auth/auth';
 import { ACCESS_TOKEN, REFRESH_TOKEN } from '../../config/auth.header';
@@ -10,21 +10,34 @@ const LogIn = ({ navigation }) => {
     email: '',
     password: ''
   })
+  const [visible, setVisible] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState('');
+
 
   const { email, password } = formLogin;
 
   const { handleLogIn } = useAuth();
 
+  const toggleOverlay = () => {
+    setVisible(!visible);
+  };
 
   const logIn = async (formLogin) => {
-    let response = await api.logInService(formLogin);
+    let response;
+    try {
+      response = await api.logInService(formLogin);
+      if (response) {
+        let accessToken = response.headers[ACCESS_TOKEN];
+        let refreshToken = response.headers[REFRESH_TOKEN];
 
-    let accessToken = response.headers[ACCESS_TOKEN];
-    let refreshToken = response.headers[REFRESH_TOKEN];
-
-    //TODO decode accessToken
-    let userLogged = 'diego';
-    await handleLogIn({ accessToken, refreshToken, userLogged });
+        //TODO decode accessToken
+        let userLogged = 'diego';
+        await handleLogIn({ accessToken, refreshToken, userLogged });
+      }
+    } catch (error) {
+      setErrorMessage(error.message);
+      toggleOverlay();
+    }
   }
 
 
@@ -50,6 +63,13 @@ const LogIn = ({ navigation }) => {
         <Button type="clear" titleStyle={{ color: 'white' }} title="Has olvidado la contraseña?" onPress={() => navigation.navigate('ChangePassword')} />
         <Button type="clear" titleStyle={{ color: '#432F26' }} title="Registrarse" onPress={() => navigation.navigate('Register')} />
       </View>
+      <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
+        <Card>
+          <Card.Title>Error</Card.Title>
+          <Text>{errorMessage}</Text>
+          <Button type="clear" title="Aceptar" onPress={() => toggleOverlay()} ></Button>
+        </Card>
+      </Overlay>
     </View>
   )
 }

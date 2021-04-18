@@ -28,7 +28,7 @@ const StackNavigator = () => {
 
     const { getAuthState, state } = useAuth();
     
-    React.useEffect(async () => { await getAuthState();  }, []);
+    React.useEffect(async () => { await getAuthState(); }, []);
     
     return (
         <NavigationContainer theme={MyTheme}>

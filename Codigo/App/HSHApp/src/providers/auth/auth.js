@@ -49,7 +49,7 @@ const AuthProvider = (props) => {
         let userLogged = await EncryptedStorage.getItem(USER_LOGGED);
 
         if (accessToken !== null || refreshToken !== null) await handleLogIn({ accessToken, refreshToken, userLogged })
-        else await logOut;
+        else await handleLogOut();
 
         return {userLogged}
     };

@@ -7,6 +7,7 @@ export const logInService = async (data) => {
         let res = await axios.post(endpoints.LOGIN, data)
         return res;
     } catch (error) {
-        console.error(error);
+        console.error(error.message);
+        throw new Error ('Los datos ingresados no son validos');
     }
 }
