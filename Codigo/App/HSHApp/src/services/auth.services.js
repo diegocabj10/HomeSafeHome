@@ -3,11 +3,11 @@ import * as endpoints from '../config/config';
 
 
 export const logInService = async (data) => {
+    let res;
     try {
-        let res = await axios.post(endpoints.LOGIN, data)
+        res = await axios.post(endpoints.LOGIN, data);
         return res;
     } catch (error) {
-        console.error(error.message);
-        throw new Error ('Los datos ingresados no son validos');
+        throw new Error(error.response.data.message);
     }
 }

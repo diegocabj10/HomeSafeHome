@@ -11,7 +11,7 @@ const Home = ({ navigation }) => {
         <View>
             <Header
                 leftComponent={{ icon: 'menu', color: '#fff', onPress: () => navigation.toggleDrawer(), }}
-                centerComponent={{ text: 'MY TITLE', style: { color: '#fff' } }}
+                centerComponent={{ text: 'HOME', style: { color: '#fff' } }}
                 rightComponent={{ icon: 'logout', color: '#fff', onPress: () => handleLogOut(), }}
             />
         </View>

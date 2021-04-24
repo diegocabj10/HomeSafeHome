@@ -30,9 +30,7 @@ const LogIn = ({ navigation }) => {
         let accessToken = response.headers[ACCESS_TOKEN];
         let refreshToken = response.headers[REFRESH_TOKEN];
 
-        //TODO decode accessToken
-        let userLogged = 'diego';
-        await handleLogIn({ accessToken, refreshToken, userLogged });
+        await handleLogIn({ accessToken, refreshToken });
       }
     } catch (error) {
       setErrorMessage(error.message);
