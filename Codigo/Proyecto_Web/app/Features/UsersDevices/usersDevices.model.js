@@ -59,28 +59,28 @@ const UserDevice = dbConfig.define("UsersDevices", {
 });
 
 UserDevice.sync().then(
-  () => {
-    devicesModel.findOrCreate({
+  async() => {
+    await devicesModel.findOrCreate({
       defaults: { id: 1, deviceName: 'Arduino1', createdAt: Date.now(), updatedAt: Date.now() },
       where: { id: 1 }
     });
-    devicesModel.findOrCreate({
+    await devicesModel.findOrCreate({
       defaults: { id: 2, deviceName: 'Arduino2', createdAt: Date.now(), updatedAt: Date.now() },
       where: { id: 2 }
     });
-    usersModel.findOrCreate({
+    await usersModel.findOrCreate({
       defaults: { id: 1, email: 'diegocampos0909@gmail.com', name: 'Diego', lastName: 'Campos', password: 'admin1234', createdAt: Date.now(), updatedAt: Date.now() },
       where: { id: 1 }
     });
-    usersModel.findOrCreate({
+    await usersModel.findOrCreate({
       defaults: { id: 2, email: 'francoluna@gmail.com', name: 'Franco', lastName: 'Luna', password: 'admin1234', createdAt: Date.now(), updatedAt: Date.now() },
       where: { id: 2 }
     });
-    usersModel.findOrCreate({
+    await usersModel.findOrCreate({
       defaults: { id: 3, email: 'marcostavorda@gmail.com', name: 'Marcos', lastName: 'Tavorda', password: 'admin1234', createdAt: Date.now(), updatedAt: Date.now() },
       where: { id: 3 }
     });
-    usersModel.findOrCreate({
+    await usersModel.findOrCreate({
       defaults: { id: 4, email: 'diegomarchetti@gmail.com', name: 'Diego', lastName: 'Marchetti', password: 'admin1234', createdAt: Date.now(), updatedAt: Date.now() },
       where: { id: 4 }
     });
