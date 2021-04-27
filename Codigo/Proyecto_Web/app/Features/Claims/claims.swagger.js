@@ -154,5 +154,4 @@
  * /claims/{id}:
  *   get:
  *     description: Get claim by id
- * 
  */

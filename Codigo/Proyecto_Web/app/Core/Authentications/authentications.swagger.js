@@ -25,7 +25,7 @@
  *      security: []
  *      responses:
  *        200:
- *          description: Successfully authenticated. The accessToken and refreshToken are returned in two headers name `x-access-token` and `x-refresh-token`. You need to include these two headers in subsequent requests.
+ *          description: Successfully authenticated. The accessToken and refreshToken are returned in two headers name x-access-token and x-refresh-token.
  *          headers:
  *            x-access-token:
  *              description: Json Web Token of access, this is valid for 24 hours
@@ -56,7 +56,7 @@
  *      security: []
  *      responses:
  *        200:
- *          description: Successfully authenticated. The accessToken and refreshToken are returned in two headers name `x-access-token` and `x-refresh-token`. You need to include these two headers in subsequent requests.
+ *          description: Successfully authenticated. The accessToken and refreshToken are returned in two headers name x-access-token and x-refresh-token.
  *          headers:
  *            x-access-token:
  *              description: Json Web Token of access, this is valid for 24 hours
