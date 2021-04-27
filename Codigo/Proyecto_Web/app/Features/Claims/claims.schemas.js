@@ -7,10 +7,7 @@ const schemaCreateClaim = joi.object({
 });
 
 const schemaUpdateClaim = joi.object({
-  title: joi.string(),
-  message: joi.string(),
   response: joi.string(),
-  userId: joi.number().min(0),
 });
 
 const schemaIdQueryParams = joi.object().keys({

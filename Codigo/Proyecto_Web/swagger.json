@@ -17,27 +17,24 @@
   ],
   "components": {
     "securitySchemes": {
-      "JWT": [
-        {
-          "type": "apiKey",
-          "in": "header",
-          "name": "x-access-token",
-          "description": "x-access-token",
-          "value": "asd"
-        },
-        {
-          "type": "apiKey",
-          "in": "header",
-          "name": "x-refresh-token",
-          "description": "x-access-token",
-          "value": "asd"
-        }
-      ]
+      "x-access-token": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-access-token",
+        "description": "x-access-token"
+      },
+      "x-refresh-token": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-refresh-token",
+        "description": "x-refresh-token"
+      }
     }
   },
   "security": [
     {
-      "JWT": []
+      "x-access-token": [],
+      "x-refresh-token": []
     }
   ]
 }

@@ -30,7 +30,7 @@ exports.findAll = async (req, res) => {
       where: condition,
       limit,
       offset,
-      order:[['date','DESC']],
+      order: [['date', 'DESC']],
     });
     const response = getPagingData(data, page, limit);
     res.send(response);
@@ -49,20 +49,18 @@ exports.findOne = async (req, res) => {
   }
 };
 
-// Update a claim by the id in the request
-exports.update = async (req, res) => {
+// Patch a claim by the id in the request
+exports.patch = async (req, res) => {
   try {
-    const claimUpdated = await claimModel.update(
+    const claimPatched = await claimModel.update(
       {
-        title: req.body.title,
-        message: req.body.message,
-        userId: req.body.userId,
+        response: req.body.response,
       },
       {
         where: { id: req.params.id },
       }
     );
-    res.send(claimUpdated);
+    res.send(claimPatched);
   } catch (err) {
     res.status(500).send({ message: err.message });
   }
