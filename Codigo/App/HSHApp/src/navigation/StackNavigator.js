@@ -8,9 +8,10 @@ import { AuthContext, useAuth } from '../providers/auth/auth';
 
 import DrawerNavigation from './DrawerNavigation';
 
-import LogIn from '../scenes/authStack/LogIn';
-import Register from '../scenes/authStack/Register';
-import ChangePassword from '../scenes/authStack/ChangePassword';
+import LogIn from '@authStack/LogIn';
+import Register from '@authStack/Register';
+import ChangePassword from '@authStack/ChangePassword';
+import Splash from '@authStack/Splash';
 
 const Stack = createStackNavigator();
 const MyTheme = {
@@ -28,24 +29,30 @@ const StackNavigator = () => {
 
     const { getAuthState, state } = useAuth();
     React.useEffect(async () => {
+         await new Promise(resolve => setTimeout(resolve, 1500));
          await getAuthState();
     }, []);
 
     return (
         <NavigationContainer theme={MyTheme}>
-            <Stack.Navigator >
-                {state.userLogged !== null ? (
-                    <>
-                        <Stack.Screen name="DrawerNavigation" component={DrawerNavigation} options={{ headerShown: false }} />
-                    </>)
-                    : (
+            <Stack.Navigator>            
+                { !state.isLoading ? (                     
+                    state.userLogged !== null ? (
                         <>
-                            <Stack.Screen name="Login" component={LogIn} options={{ headerShown: false }} />
-                            <Stack.Screen name="Register" component={Register} options={{ title: 'Registrarse' }} />
-                            <Stack.Screen name="ChangePassword" component={ChangePassword} options={{ title: 'Cambiar contraseña' }} />
+                            <Stack.Screen name="DrawerNavigation" component={DrawerNavigation} options={{ headerShown: false }} />
+                        </>)
+                        : (
+                            <>
+                                
+                                <Stack.Screen name="Login" component={LogIn} options={{ headerShown: false }} />                                
+                                <Stack.Screen name="Register" component={Register} options={{ title: 'Registrarse' }} />
+                                <Stack.Screen name="ChangePassword" component={ChangePassword} options={{ title: 'Cambiar contraseña' }} />
 
-                        </>
-                    )}
+                            </>
+                        )
+                ) : (
+                    <Stack.Screen name="Splash" component={Splash} options={{ headerShown: false, headerStatusBarHeight: 0 }} />                    
+                )}
             </Stack.Navigator>
         </NavigationContainer>
     )
