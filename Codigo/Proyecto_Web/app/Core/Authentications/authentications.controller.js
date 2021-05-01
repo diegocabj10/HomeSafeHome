@@ -30,7 +30,7 @@ const login = async (req, res) => {
 
     res.send({
       message:
-        'Successfully authenticated. The accessToken and refreshToken are returned in two headers name x-access-token and x-refresh-token. You need to include these two headers in subsequent requests.'
+        'Successfully authenticated. The accessToken and refreshToken are returned in two headers name x-access-token and x-refresh-token.'
     });
   } catch (err) {
     res.status(401).send({ message: err.message });

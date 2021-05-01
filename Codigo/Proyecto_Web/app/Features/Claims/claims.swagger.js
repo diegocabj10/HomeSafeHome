@@ -2,7 +2,7 @@
  * @swagger
  *  /claims:
  *    get:
- *      description: Returns all claims from the system that the user has access to
+ *      description: Get all claims
  *      tags: [Claims]
  *      parameters:
  *        - in: query
@@ -17,7 +17,7 @@
  *            type: integer
  *      responses:
  *        200:
- *          description: A user login
+ *          description: Get all claims with pagination
  *          content:
  *            application/json:
  *              schema:
@@ -28,6 +28,7 @@
  *                    description: Total items
  *                  list:
  *                    type: array
+ *                    description: List of claims
  *                    items:
  *                      type: object
  *                      properties:
@@ -47,14 +48,14 @@
  *                          type: string
  *                          description: Message of claim.
  *                          example: Falta recargar los matafuegos de los departamentos.
- *                        userId:
- *                          type: integer
- *                          description: User identification number.
- *                          example: 1
  *                        response:
  *                          type: string
  *                          description: Response to the claim.
  *                          example: null
+ *                        userId:
+ *                          type: integer
+ *                          description: User identification number.
+ *                          example: 1
  *                        deletionDate:
  *                          type: string
  *                          description: Deletion date.
@@ -75,8 +76,8 @@
  *                    type: integer
  *                    description: Current page
  *                    example: 0
- *        400:
- *          description: Invalid parameters
+ *        500:
+ *          description: Internal server error
  *          content:
  *            application/json:
  *              schema:
@@ -119,18 +120,14 @@
  *                  - devideId
  *                  - value
  *                properties:
- *                  signalId:
- *                    type: integer
- *                    description: Signal identification number.
- *                    example: 1
- *                  deviceId:
- *                    type: integer
- *                    description: Device identification number.
- *                    example: 1
- *                  value:
- *                    type: integer
- *                    description: Signal value.
- *                    example: 100
+ *                  title:
+ *                    type: string
+ *                    description: Title of claim.
+ *                    example: Falta recarga del matafuego
+ *                  message:
+ *                    type: string
+ *                    description: Message of claim.
+ *                    example: Falta recargar los matafuegos de los departamentos.
  *        400:
  *          description: Invalid parameters
  *          content:
@@ -142,4 +139,19 @@
  *                    type: string
  *                  internal code:
  *                    type: string
+ *        500:
+ *          description: Internal server error
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  message:
+ *                    type: string
+ *                  internal code:
+ *                    type: string
+ * @swagger
+ * /claims/{id}:
+ *   get:
+ *     description: Get claim by id
  */

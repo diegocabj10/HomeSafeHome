@@ -20,10 +20,10 @@ router.get("/", claims.findAll);
 router.get("/:id", claims.findOne);
 
 // Update a claim with id
-router.put(
+router.patch(
   "/:id",
   [validateIdQueryParam(schemaIdQueryParams), validateBody(schemaUpdateClaim)],
-  claims.update
+  claims.patch
 );
 
 // Delete a claim with id
