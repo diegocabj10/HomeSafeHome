@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { Header, Icon } from 'react-native-elements';
+import { Header, Button } from 'react-native-elements';
 import { AuthContext, useAuth } from '../../providers/auth/auth';
 
 const Home = ({ navigation }) => {
@@ -10,10 +10,17 @@ const Home = ({ navigation }) => {
     return (
         <View>
             <Header
-                leftComponent={{ icon: 'menu', color: '#fff', onPress: () => navigation.navigate('Notifications'), }}
-                centerComponent={{ text: 'HOME', style: { color: '#fff' } }}
                 rightComponent={{ icon: 'logout', color: '#fff', onPress: () => handleLogOut(), }}
             />
+            <Button type="clear" titleStyle={{ color: 'white' }}
+                title="Claims"
+                onPress={() => navigation.navigate('Claims')} />
+            <Button type="clear" titleStyle={{ color: 'white' }}
+                title="Notices"
+                onPress={() => navigation.navigate('Notices')} />
+            <Button type="clear" titleStyle={{ color: 'white' }}
+                title="Notifications"
+                onPress={() => navigation.navigate('Notifications')} />
         </View>
     )
 }

@@ -10,10 +10,10 @@ import ChangePassword from '@authStack/ChangePassword';
 import Splash from '@authStack/Splash';
 
 import Claims from '@appStack/Claims';
+import Home from '@appStack/Home';
 import Notices from '@appStack/Notices';
 import Notifications from '@appStack/Notifications';
 
-import Home from '@appStack/Home';
 
 const Stack = createStackNavigator();
 const MyTheme = {
@@ -42,8 +42,8 @@ const StackNavigator = () => {
                     state.userLogged !== null ? (
                         <>
                             <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
-                            <Stack.Screen name="Notifications" component={Claims} />
-                            <Stack.Screen name="Notifications" component={Notices} />
+                            <Stack.Screen name="Claims" component={Claims} />
+                            <Stack.Screen name="Notices" component={Notices} />
                             <Stack.Screen name="Notifications" component={Notifications} />
 
                         </>)
