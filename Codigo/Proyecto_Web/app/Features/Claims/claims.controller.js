@@ -1,6 +1,6 @@
-const dbConfig = require("../../../config/db.config");
 const claimModel = require("./claims.model");
 const { getPagination, getPagingData } = require("../../Shared/pagination");
+const dbConfig = require("../../../config/db.config");
 const Op = dbConfig.Sequelize.Op;
 
 // Create and Save a new claim
