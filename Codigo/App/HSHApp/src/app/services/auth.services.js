@@ -1,12 +1,11 @@
 import axios from 'axios';
-import * as endpoints from '../config/config';
+import { AUTHENTICATIONS_LOGIN } from '@config';
 
 
 export const logInService = async (data) => {
     let res;
     try {
-        console.log(endpoints.LOGIN);
-        res = await axios.post(endpoints.LOGIN, data);
+        res = await axios.post(AUTHENTICATIONS_LOGIN, data);
         return res;
     } catch (error) {
         throw new Error(error.response.data.message);

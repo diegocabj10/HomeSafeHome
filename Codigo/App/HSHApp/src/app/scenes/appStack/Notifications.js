@@ -1,17 +1,13 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Header, Icon } from 'react-native-elements';
-import { AuthContext, useAuth } from '../../providers/auth/auth';
 
-const Home = ({ navigation }) => {
-    const { getAuthState, state } = useAuth();
-    const { handleLogOut } = useAuth();
-
+const Notifications = ({navigation}) => {
     return (
         <View>
             <Header
-                leftComponent={{ icon: 'menu', color: '#fff', onPress: () => navigation.toggleDrawer(), }}
-                centerComponent={{ text: 'HOME', style: { color: '#fff' } }}
+                leftComponent={{ icon: 'back', color: '#fff', onPress: () => navigation.navigate('Home'), }}
+                centerComponent={{ text: 'NOTIFICATIONS', style: { color: '#fff' } }}
                 rightComponent={{ icon: 'logout', color: '#fff', onPress: () => handleLogOut(), }}
             />
         </View>
@@ -27,4 +23,4 @@ const styles = StyleSheet.create({
 })
 
 
-export default Home;
+export default Notifications;

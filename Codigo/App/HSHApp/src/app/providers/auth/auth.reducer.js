@@ -9,15 +9,15 @@ const authReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoggedIn: true,
-                userLogged: action.userLogged,         
-                isLoading: false   
+                userLogged: action.userLogged,
+                isLoading: false
             };
         case LOG_OUT:
             return {
                 ...state,
                 isLoading: false,
                 isLoggedIn: false,
-                userLogged: null,             
+                userLogged: null,
             };
     }
 }
