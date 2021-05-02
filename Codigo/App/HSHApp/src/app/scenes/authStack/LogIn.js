@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button, Card, Input, Overlay, Text } from 'react-native-elements';
-import * as api from '../../services/auth.services';
+import * as api from '../../services/authServices';
 import { useAuth } from '../../providers/auth/auth';
 import { ACCESS_TOKEN, REFRESH_TOKEN } from '@config';
 

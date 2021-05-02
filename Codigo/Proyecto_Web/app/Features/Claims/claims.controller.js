@@ -21,7 +21,7 @@ exports.create = async (req, res) => {
 
 // Retrieve all claims from the database.
 exports.findAll = async (req, res) => {
-  const { page, size, title, message } = req.query;
+  const { page, size, title } = req.query;
   var condition = title ? { titulo: { [Op.like]: `%${title}%` } } : null;
 
   try {

@@ -1,6 +1,7 @@
 const notificationModel = require("./notifications.model");
 const { getPagination, getPagingData } = require("../../Shared/pagination");
-
+const dbConfig = require("../../../config/db.config");
+const Op = dbConfig.Sequelize.Op;
 // Create and Save a new Notification
 exports.create = async (eventId, title, message, userId) => {
   try {
@@ -20,8 +21,8 @@ exports.create = async (eventId, title, message, userId) => {
 
 // Retrieve all Notifications from the database.
 exports.findAll = async (req, res) => {
-    const { page, size } = req.query;
-    
+  const { page, size, title } = req.query;
+  var condition = title ? { titulo: { [Op.like]: `%${title}%` } } : null;
     var condition = {userId: req.body.userId};
     try {
       const { limit, offset } = getPagination(page, size);

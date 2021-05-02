@@ -4,7 +4,7 @@ import axios from 'axios';
 import jwtDecode from 'jwt-decode';
 
 import { ACCESS_TOKEN, REFRESH_TOKEN } from '@config/';
-import reducer, { initialState, LOG_IN, LOG_OUT } from "./auth.reducer";
+import reducer, { initialState, LOG_IN, LOG_OUT } from "./authReducer";
 
 const AuthContext = React.createContext();
 
