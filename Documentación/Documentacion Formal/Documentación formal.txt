@@ -1,0 +1,99 @@
+- Selección y definición de un proyecto real para su desarrollo y posterior implementación. 
+- Estudio Inicial. Diagnóstico. Identificación de problemas, necesidades y oportunidades. 
+- Especificación de requerimientos. 
+- Definición del alcance. 
+- Elaboración de la propuesta. 
+- Plan General del Proyecto. 
+- Propuesta Metodológica. 
+- Análisis y Diseño del sistema. 
+- Construcción del Sistema. 
+- Documentación del sistema. 
+- Finalización del Proyecto y Pruebas. 
+- Plan de Implementación. 
+- Presentación del Proyecto.
+
+Estudio Inicial
+Objetivo del Proyecto
+Ambito o contexto de Aplicaciòn: descripción de la/s organización/es donde se implementaría o casos de aplicación. Empresas a relevar si corresponde
+Procesos involucrados: descripcion, flujos de proces, participantes, información que maneja, documentos, controles, sistemas. Mapa global de procesos del entorno
+Impulsos: Necesidades / Problemas / Oportunidad 
+Descripcion Solucion Propuesta: objetivo, alcances requerimientos/funcionalidades a incluir, tecnologia a implementar
+Pre-Factibilidad *
+Análisis de Impacto Ambiental *
+Informe de Capacitación / Investigación *
+
+Plan de Proyecto
+Declaración alcance de proyecto
+Propuesta Metodologica: Metodologias a utilizar y estimaciones generales
+Declaraciòn de Alcance del proyecto
+WBS
+Equipo de Trabajo
+Cronograma
+Plan de Riesgos
+Presupuesto
+Plan de Testing *
+
+Paper
+Poster
+
+Documentación de producto:
+Listado de épicas e historias de usuario: Pila de Producto (epicas e US)
+Definición de los temas agrupadores de las Historias de Usuarios
+
+Para cada tema:
+Trazabilidad de historias de usuario/casos de uso:
+	Descripción de historia/caso de uso
+	Diagramas de Comunicación/Secuencia
+	Identificación de Patrones de diseño utilizados: N-Tier, Dependency Injection, Singleton
+	Casos de prueba
+Diagrama de Clases
+Diagramas de estados
+DER
+Definición de la Arquitectura del sistema
+	Diagrama de Despliegue
+	Ambiente de Implementación
+
+Documentación de Seguimiento de Gestion de Proyecto:
+Definición de Product Owner
+Definición del Equipo y Scrum Manager
+Definición del Product Backlog Inicial (Listado Epics, US)
+Story Map (reunión de grooming)
+Definición de la Herramienta de software para la gestión del proyecto a utilizar: 
+	Nombre y breve descripción de la herramienta
+	Forma de coordinación del Trabajo 
+	Ciclo de Vida de los artefactos a utilizar en el desarrollo del proyecto: Epic, Caso de Uso, 	 Caso de Prueba, Defecto, etc
+Definición de la estructura de la documentación del producto.
+Técnica de estimación a utilizar
+Definición de la Tecnología a utilizar en el desarrollo del producto: Lenguaje de Programación, Base de Datos, etc.
+Pautas de Codificación y Testing; Reglas de Nombrado y desarrollo 
+Métricas del proyecto
+Gestión de Configuración del Proyecto: Plan de Gestion de la Configuración 
+Gestión de Despliegue del Proyecto
+
+
+-Gestión por Sprint (Sprint 1..n)
+un documento que se genera al finalizar cada sprint, el cual contendrà la planning, review y retrospective
+Introducción
+Planificación
+ 	Product Backlog actualizado y priorizado
+ 	Story Map (reunión de grooming)
+ 	Sprint Backlog (Pila del Sprint)
+ 	Estimación del Sprint
+Resultados
+	Resultado de la Review
+	Seguimiento del Sprint (Daily Meeting)
+	Métricas
+Resultado de la retrospectiva (proyecto)
+
+Manuales de procedimientos
+Manuales del Usuario
+Manuales de instalación
+
+
+
+
+
+
+
+
+
