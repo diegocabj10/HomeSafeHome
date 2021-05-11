@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Header, Button } from 'react-native-elements';
 import { AuthContext, useAuth } from '../../providers/auth/auth';
+import { TITLE_ENDPOINT } from '@config';
 
 const Home = ({ navigation }) => {
     const { getAuthState, state } = useAuth();
@@ -13,14 +14,14 @@ const Home = ({ navigation }) => {
                 rightComponent={{ icon: 'logout', color: '#fff', onPress: () => handleLogOut(), }}
             />
             <Button type="clear" titleStyle={{ color: 'white' }}
-                title="Claims"
-                onPress={() => navigation.navigate('Claims')} />
+                title="Reclamos"
+                onPress={() => navigation.navigate('GenericList', { title: TITLE_ENDPOINT.find(element => element.key == 'claims').title })} />
             <Button type="clear" titleStyle={{ color: 'white' }}
-                title="Notices"
-                onPress={() => navigation.navigate('Notices')} />
+                title="Avisos"
+                onPress={() => navigation.navigate('GenericList', { title: TITLE_ENDPOINT.find(element => element.key == 'notices').title })} />
             <Button type="clear" titleStyle={{ color: 'white' }}
-                title="Notifications"
-                onPress={() => navigation.navigate('Notifications')} />
+                title="Notificaciones"
+                onPress={() => navigation.navigate('GenericList', { title: TITLE_ENDPOINT.find(element => element.key == 'notifications').title })} />
         </View>
     )
 }

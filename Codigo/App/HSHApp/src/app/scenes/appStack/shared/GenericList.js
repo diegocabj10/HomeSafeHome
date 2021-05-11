@@ -1,28 +1,30 @@
 import React from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { ListItem } from 'react-native-elements';
-import { NOTIFICATIONS } from '@config';
 import { getAllWithFilter } from '@services/baseServices'
-const Notifications = ({ navigation }) => {
-    const [notifications, setNotifications] = React.useState({});
+import { TITLE_ENDPOINT } from '@config';
+
+
+const GenericList = ({ navigation, route }) => {
+    const [data, setData] = React.useState({});
     const [page, setPage] = React.useState(0);
     const [size, setSize] = React.useState(10);
-    const [title, setTitle] = React.useState('sarasa');
     const [totalPages, setTotalPages] = React.useState(0);
     const [totalItems, settTotalItems] = React.useState(0);
 
     React.useEffect(async () => {
-        const { totalItems, list, totalPages, currentPage } = await getAllWithFilter(NOTIFICATIONS, page, size, title);
+        //TODO dynamic filter
+        const { totalItems, list, totalPages, currentPage } = await getAllWithFilter(route.params.title, page, size);
         setPage(currentPage);
         setTotalPages(totalPages);
         settTotalItems(totalItems);
-        setNotifications(list);
+        setData(list);
     }, [page]);
 
     const keyExtractor = (item, index) => index.toString()
 
     const renderItem = ({ item }) => (
-        <ListItem bottomDivider>
+        <ListItem onPress={() => navigation.navigate('GenericItemDetail', { title: TITLE_ENDPOINT.find(element => element.title == route.params.title).detailTitle, id: item.id })} bottomDivider>
             <ListItem.Content>
                 <ListItem.Title>Fecha: {item.date}</ListItem.Title>
                 <ListItem.Title>{item.title}</ListItem.Title>
@@ -43,7 +45,7 @@ const Notifications = ({ navigation }) => {
 
             <FlatList
                 keyExtractor={keyExtractor}
-                data={notifications}
+                data={data}
                 renderItem={renderItem}
                 ListFooterComponent={<FooterComponent />}
                 ListFooterComponentStyle={{ flex: 1, justifyContent: 'flex-end', height: 20 }}
@@ -61,4 +63,4 @@ const styles = StyleSheet.create({
 })
 
 
-export default Notifications;
+export default GenericList;
