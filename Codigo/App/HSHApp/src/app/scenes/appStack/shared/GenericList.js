@@ -26,15 +26,15 @@ const GenericList = ({ navigation, route }) => {
     const renderItem = ({ item }) => (
         <ListItem onPress={() => navigation.navigate('GenericItemDetail', { title: TITLE_ENDPOINT.find(element => element.title == route.params.title).detailTitle, id: item.id })} bottomDivider>
             <ListItem.Content>
-                <ListItem.Title>Fecha: {item.date}</ListItem.Title>
                 <ListItem.Title>{item.title}</ListItem.Title>
+                <ListItem.Subtitle>Fecha: {item.date}</ListItem.Subtitle>
                 <ListItem.Subtitle>{item.message}</ListItem.Subtitle>
             </ListItem.Content>
             <ListItem.Chevron />
         </ListItem>
     )
 
-    const FooterComponent = () => {
+    const HeaderComponent = () => {
         return (<View>
             <Text>Total Items: {totalItems} - Page: {page} - TotalPages: {totalPages}</Text>
         </View>);
@@ -42,13 +42,13 @@ const GenericList = ({ navigation, route }) => {
 
     return (
         <View>
-
+            {/* TODO filter */}
             <FlatList
                 keyExtractor={keyExtractor}
                 data={data}
                 renderItem={renderItem}
-                ListFooterComponent={<FooterComponent />}
-                ListFooterComponentStyle={{ flex: 1, justifyContent: 'flex-end', height: 20 }}
+                ListHeaderComponent={<HeaderComponent />}
+                ListHeaderComponentStyle={{ flex: 1, justifyContent: 'flex-end', height: 20, backgroundColor: 'white' }}
             />
         </View>
     )

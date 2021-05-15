@@ -39,7 +39,7 @@ const StackNavigator = () => {
                 {!state.isLoading ? (
                     state.userLogged !== null ? (
                         <>
-                            <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
+                            <Stack.Screen name="Home" component={Home}  />
                             <Stack.Screen name="GenericList" component={GenericList} options={({ route }) => ({ title: route.params.title })} />
                             <Stack.Screen name="GenericItemDetail" component={GenericItemDetail} options={({ route }) => ({ title: route.params.title })} />
                         </>)

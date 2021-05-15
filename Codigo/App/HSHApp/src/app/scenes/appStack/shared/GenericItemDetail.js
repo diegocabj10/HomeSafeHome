@@ -16,8 +16,8 @@ const GenericItemDetail = ({ navigation, route }) => {
     return (
         <View>
             <Card>
-                <Text>Fecha: {data.date}</Text>
                 <Card.Title>{data.title}</Card.Title>
+                <Text>Fecha: {data.date}</Text>
                 <Card.Divider />
                 <Text>{data.message}</Text>
                 <Text>{data.response}</Text>
