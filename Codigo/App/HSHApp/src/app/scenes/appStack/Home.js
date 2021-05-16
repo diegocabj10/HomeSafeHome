@@ -9,7 +9,7 @@ const Home = ({ navigation }) => {
     const { handleLogOut } = useAuth();
 
     return (
-        <View>
+        <View >
             <Button type="clear" titleStyle={{ color: 'white' }}
                 title="Reclamos"
                 onPress={() => navigation.navigate('GenericList', { title: TITLE_ENDPOINT.find(element => element.key == 'claims').title })} />
@@ -27,11 +27,7 @@ const Home = ({ navigation }) => {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
+
 })
 
 

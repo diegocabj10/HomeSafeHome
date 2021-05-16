@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { TITLE_ENDPOINT } from '@config';
 
-export const getAllWithFilter = async (title, page, size) => {
+export const getAllWithFilter = async (title, page, size, filter) => {
     let res;
     try {
-        res = await axios.get(resolveEndpoint(title), { params: { page, size } });
+        res = await axios.get(resolveEndpoint(title), { params: { page, size, title: filter } });
         return res.data;
     } catch (error) {
         console.log(error);

@@ -1,30 +1,40 @@
 import React from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
-import { ListItem } from 'react-native-elements';
+import { FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { Icon, Input, ListItem } from 'react-native-elements';
 import { getAllWithFilter } from '@services/baseServices'
 import { TITLE_ENDPOINT } from '@config';
-
+import { ScrollView } from 'react-native';
 
 const GenericList = ({ navigation, route }) => {
-    const [data, setData] = React.useState({});
-    const [page, setPage] = React.useState(0);
-    const [size, setSize] = React.useState(10);
-    const [totalPages, setTotalPages] = React.useState(0);
-    const [totalItems, settTotalItems] = React.useState(0);
+    // const [data, setData] = React.useState({});
+    // const [title, setTitle] = React.useState('');
+    // const [page, setPage] = React.useState(0);
+    // const [size, setSize] = React.useState(6);
+    // const [totalPages, setTotalPages] = React.useState(0);
+    // const [totalItems, settTotalItems] = React.useState(0);
+
+    const [formGenericList, setFormGenericList] = React.useState({
+        data: {},
+        title: '',
+        page: 0,
+        size: 6,
+        totalPages: 0,
+        totalItems: 0,
+    });
+
 
     React.useEffect(async () => {
         //TODO dynamic filter
-        const { totalItems, list, totalPages, currentPage } = await getAllWithFilter(route.params.title, page, size);
-        setPage(currentPage);
-        setTotalPages(totalPages);
-        settTotalItems(totalItems);
-        setData(list);
-    }, [page]);
+        const { totalItems, data, totalPages } = await getAllWithFilter(route.params.title, formGenericList.page, formGenericList.size, formGenericList.title);
+        setFormGenericList({ ...formGenericList, totalItems, totalPages, data });
+    }, [formGenericList.page]);
 
     const keyExtractor = (item, index) => index.toString()
 
     const renderItem = ({ item }) => (
-        <ListItem onPress={() => navigation.navigate('GenericItemDetail', { title: TITLE_ENDPOINT.find(element => element.title == route.params.title).detailTitle, id: item.id })} bottomDivider>
+        <ListItem onPress={() =>
+            navigation.navigate('GenericItemDetail', { title: TITLE_ENDPOINT.find(element => element.title == route.params.title).detailTitle, id: item.id })}
+            bottomDivider>
             <ListItem.Content>
                 <ListItem.Title>{item.title}</ListItem.Title>
                 <ListItem.Subtitle>Fecha: {item.date}</ListItem.Subtitle>
@@ -34,30 +44,81 @@ const GenericList = ({ navigation, route }) => {
         </ListItem>
     )
 
-    const HeaderComponent = () => {
-        return (<View>
-            <Text>Total Items: {totalItems} - Page: {page} - TotalPages: {totalPages}</Text>
-        </View>);
-    }
+    const Paginator = () => (
+        <>
+            <Text style={{ textAlign: 'right' }}>Total: {formGenericList.totalItems}</Text>
+            <View style={styles.sameLine}>
+                <Icon
+                    reverse
+                    color='#667F90'
+                    size={16}
+                    name='angle-double-left'
+                    type='font-awesome'
+                    disabled={formGenericList.page === 0}
+                    onPress={() => { setFormGenericList({ ...formGenericList, page: 0 }) }} />
+                <Icon
+                    reverse
+                    color='#667F90'
+                    size={16}
+                    name='angle-left'
+                    type='font-awesome'
+                    disabled={formGenericList.page === 0}
+                    onPress={() => { setFormGenericList({ ...formGenericList, page: (formGenericList.page - 1) }) }} />
+                <Text>{(formGenericList.page + 1)}/{formGenericList.totalPages}</Text>
+                <Icon
+                    reverse
+                    color='#667F90'
+                    size={16}
+                    name='angle-right'
+                    type='font-awesome'
+                    disabled={formGenericList.page === (formGenericList.totalPages - 1)}
+                    onPress={() => { setFormGenericList({ ...formGenericList, page: (formGenericList.page + 1) }) }} />
+                <Icon
+                    reverse
+                    color='#667F90'
+                    size={16}
+                    name='angle-double-right'
+                    type='font-awesome'
+                    disabled={formGenericList.page === (formGenericList.totalPages - 1)}
+                    onPress={() => { setFormGenericList({ ...formGenericList, page: (formGenericList.totalPages - 1) }) }} />
+            </View>
+        </>
+    )
 
     return (
-        <View>
-            {/* TODO filter */}
+        <SafeAreaView style={styles.container}>
+            <Input
+                placeholder='Buscar por título'
+                onChangeText={(value) => setFormGenericList({ ...formGenericList, title: value })}
+                rightIcon={<Icon
+                    reverse
+                    color='#667F90'
+                    size={16}
+                    name='search'
+                    type='font-awesome'
+                    onPress={() => { setFormGenericList({ ...formGenericList, page: 0 }) }} />
+                }
+
+            />
             <FlatList
                 keyExtractor={keyExtractor}
-                data={data}
+                contentContainerStyle={styles.listFooter}
+                data={formGenericList.data}
                 renderItem={renderItem}
-                ListHeaderComponent={<HeaderComponent />}
-                ListHeaderComponentStyle={{ flex: 1, justifyContent: 'flex-end', height: 20, backgroundColor: 'white' }}
             />
-        </View>
+            <Paginator />
+        </SafeAreaView>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
+        backgroundColor: 'white',
+    },
+    sameLine: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         alignItems: 'center',
     },
 })

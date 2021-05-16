@@ -18,7 +18,7 @@ const theme = {
   },
   Header:{
     backgroundColor: '#667F90',
-  }
+  },
 };
 
 const App = () => {

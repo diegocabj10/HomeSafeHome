@@ -22,21 +22,21 @@ exports.create = async (eventId, title, message, userId) => {
 // Retrieve all Notifications from the database.
 exports.findAll = async (req, res) => {
   const { page, size, title } = req.query;
-  var condition = title ? { titulo: { [Op.like]: `%${title}%` } } : null;
-    var condition = {userId: req.body.userId};
-    try {
-      const { limit, offset } = getPagination(page, size);
-      const data = await notificationModel.findAndCountAll({
-        where: condition,
-        limit,
-        offset,
-        order:[['date','DESC']],
-      });
-      const response = getPagingData(data, page, limit);
-      res.send(response);
-    } catch (err) {
-      res.status(500).send(err.message);
-    }
+  let condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
+  condition = { ...condition, userId: req.body.userId };
+  try {
+    const { limit, offset } = getPagination(page, size);
+    const data = await notificationModel.findAndCountAll({
+      where: condition,
+      limit,
+      offset,
+      order: [['date', 'DESC']],
+    });
+    const response = getPagingData(data, page, limit);
+    res.send(response);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
 };
 
 // Find a single Notification with an id

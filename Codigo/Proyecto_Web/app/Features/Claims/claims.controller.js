@@ -22,7 +22,8 @@ exports.create = async (req, res) => {
 // Retrieve all claims from the database.
 exports.findAll = async (req, res) => {
   const { page, size, title } = req.query;
-  var condition = title ? { titulo: { [Op.like]: `%${title}%` } } : null;
+  let condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
+  condition = {...condition, userId: req.body.userId };
 
   try {
     const { limit, offset } = getPagination(page, size);
