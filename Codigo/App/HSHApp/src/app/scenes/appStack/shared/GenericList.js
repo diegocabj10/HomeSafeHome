@@ -6,13 +6,6 @@ import { TITLE_ENDPOINT } from '@config';
 import { ScrollView } from 'react-native';
 
 const GenericList = ({ navigation, route }) => {
-    // const [data, setData] = React.useState({});
-    // const [title, setTitle] = React.useState('');
-    // const [page, setPage] = React.useState(0);
-    // const [size, setSize] = React.useState(6);
-    // const [totalPages, setTotalPages] = React.useState(0);
-    // const [totalItems, settTotalItems] = React.useState(0);
-
     const [formGenericList, setFormGenericList] = React.useState({
         data: {},
         title: '',
@@ -24,7 +17,6 @@ const GenericList = ({ navigation, route }) => {
 
 
     React.useEffect(async () => {
-        //TODO dynamic filter
         const { totalItems, data, totalPages } = await getAllWithFilter(route.params.title, formGenericList.page, formGenericList.size, formGenericList.title);
         setFormGenericList({ ...formGenericList, totalItems, totalPages, data });
     }, [formGenericList.page]);
@@ -33,7 +25,9 @@ const GenericList = ({ navigation, route }) => {
 
     const renderItem = ({ item }) => (
         <ListItem onPress={() =>
-            navigation.navigate('GenericItemDetail', { title: TITLE_ENDPOINT.find(element => element.title == route.params.title).detailTitle, id: item.id })}
+            navigation.navigate('GenericItemDetail',
+                { title: TITLE_ENDPOINT.find(element => element.title == route.params.title).detailTitle, id: item.id }
+            )}
             bottomDivider>
             <ListItem.Content>
                 <ListItem.Title>{item.title}</ListItem.Title>
@@ -122,6 +116,5 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
 })
-
 
 export default GenericList;
