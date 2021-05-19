@@ -52,7 +52,7 @@ exports.findOne = async (req, res) => {
 };
 
 // Patch a contact by the id in the request
-exports.update = async (req, res) => {
+exports.put = async (req, res) => {
     try {
         const contactUpdated = await contactModel.update(
             {

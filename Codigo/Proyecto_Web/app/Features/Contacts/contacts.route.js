@@ -20,10 +20,10 @@ router.get("/", contacts.findAll);
 router.get("/:id", contacts.findOne);
 
 // Update a contact with id
-router.update(
+router.put(
   "/:id",
   [validateIdQueryParam(schemaIdQueryParams), validateBody(schemaUpdateContact)],
-  contacts.update
+  contacts.put
 );
 
 // Delete a contact with id
