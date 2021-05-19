@@ -21,6 +21,7 @@ const routeEvents = require('./app/Features/Events/events.route');
 const routeNotifications = require('./app/Features/Notifications/notifications.route');
 const routeSignals = require('./app/Features/Signals/signals.route');
 const routeNotices = require('./app/Features/Notices/notices.route');
+const routeContacts = require('./app/Features/Contacts/contacts.route');
 
 
 
@@ -44,6 +45,8 @@ app.use('/api/devices', authenticate, routeDevices);
 app.use('/api/events', routeEvents);
 app.use('/api/notifications', authenticate, routeNotifications);
 app.use('/api/signals', authenticate, routeSignals);
+app.use('/api/contacts', authenticate, routeContacts);
+
 
 
 app.get('/', (req, res) => {

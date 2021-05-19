@@ -1,7 +1,5 @@
-"permissions" :
-[
-    "Home"
-    "HomeReports"
+"permissions": [
+    "Reports"
 
     "Notifications"
     "NotificationsGetAll"
@@ -41,6 +39,18 @@
     "UsersPost"
     "UsersDelete"
 
+    "Signals"
+    "SignalsGetAll"
+    "SignalsGetById"
+    "SignalsPut"
+    "SignalsPost"
+    "SignalsDelete"
 
+    "NotificationsSettings"
+    "NotificationsSettingsGetAll"
+    "NotificationsSettingsGetById"
+    "NotificationsSettingsPut"
+    "NotificationsSettingsPost"
+    "NotificationsSettingsDelete"
 
 ]
