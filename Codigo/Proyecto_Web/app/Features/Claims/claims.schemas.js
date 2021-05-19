@@ -3,7 +3,6 @@ const joi = require("joi");
 const schemaCreateClaim = joi.object({
   title: joi.string().required(),
   message: joi.string().required(),
-  userId: joi.number().min(0).required(),
 });
 
 const schemaUpdateClaim = joi.object({
