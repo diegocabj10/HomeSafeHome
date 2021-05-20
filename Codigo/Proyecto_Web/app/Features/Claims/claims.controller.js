@@ -23,7 +23,7 @@ exports.create = async (req, res) => {
 exports.findAll = async (req, res) => {
   const { page, size, title } = req.query;
   let condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
-  condition = {...condition, userId: req.body.userId };
+  condition = { ...condition, userId: req.body.userId };
 
   try {
     const { limit, offset } = getPagination(page, size);
@@ -64,6 +64,23 @@ exports.patch = async (req, res) => {
     res.send(claimPatched);
   } catch (err) {
     res.status(500).send({ message: err.message });
+  }
+};
+
+// Update a claim by the id in the request
+exports.put = async (req, res) => {
+  try {
+    const claimUpdated = await claimModel.update({
+      title: req.body.title,
+      message: req.body.message,
+    },
+      {
+        where: { id: req.params.id },
+      }
+    );
+    res.send(claimUpdated);
+  } catch (err) {
+    res.status(500).send(err.message);
   }
 };
 

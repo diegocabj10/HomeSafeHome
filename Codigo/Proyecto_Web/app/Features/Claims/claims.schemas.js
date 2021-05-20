@@ -5,8 +5,13 @@ const schemaCreateClaim = joi.object({
   message: joi.string().required(),
 });
 
-const schemaUpdateClaim = joi.object({
+const schemaPatchClaim = joi.object({
   response: joi.string(),
+});
+
+const schemaUpdateClaim = joi.object({
+  title: joi.string().required(),
+  message: joi.string().required(),
 });
 
 const schemaIdQueryParams = joi.object().keys({
@@ -16,5 +21,6 @@ const schemaIdQueryParams = joi.object().keys({
 module.exports = {
   schemaCreateClaim,
   schemaUpdateClaim,
+  schemaPatchClaim,
   schemaIdQueryParams,
 };
