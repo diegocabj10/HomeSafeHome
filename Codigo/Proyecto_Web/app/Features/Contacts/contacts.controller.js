@@ -32,7 +32,7 @@ exports.findAll = async (req, res) => {
             where: condition,
             limit,
             offset,
-            order: [['date', 'DESC']],
+            order: [['email', 'ASC']],
         });
         const response = getPagingData(data, page, limit);
         res.send(response);
