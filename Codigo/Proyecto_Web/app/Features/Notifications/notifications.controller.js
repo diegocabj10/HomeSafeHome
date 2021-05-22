@@ -2,22 +2,10 @@ const notificationModel = require("./notifications.model");
 const { getPagination, getPagingData } = require("../../Shared/pagination");
 const dbConfig = require("../../../config/db.config");
 const Op = dbConfig.Sequelize.Op;
-// Create and Save a new Notification
-exports.create = async (eventId, title, message, userId) => {
-  try {
-    // Create and save a notification
-    const newNotification = await notificationModel.create({
-      date: new Date(),
-      readDate: null,
-      userId: userId,
-      eventId: eventId,
-      title: title,
-      message: message,
-    });
-  } catch (err) {
-    res.status(500).send(err.message);
-  }
-};
+const EventEmitter = require("events");
+const userDeviceController = require("../UsersDevices/usersDevice.controller");
+const notificationSettingsControler = require("../NotificationsSettings/notificationsSettings.controller");
+
 
 // Retrieve all Notifications from the database.
 exports.findAll = async (req, res) => {
@@ -46,5 +34,47 @@ exports.findOne = async (req, res) => {
     res.send(data);
   } catch (err) {
     res.status(500).send({ message: err.message });
+  }
+};
+
+exports.notificationCreator = async (evento) => {
+  let { id: eventId, signalId, deviceId, value } = evento.get();
+
+  const MessageAndTitle = await getMessageAndTitle(signalId, value);
+
+  let { userId: ownerUserId } = await userDeviceController.findOwnerUserIdfromDeviceId(deviceId);
+
+  //TODO Buscar en contactos todos los usuarios a los cuales se le va a generar la notificacion
+
+  if (MessageAndTitle) {
+    let { title, message } = MessageAndTitle;
+    const eventEmitter = new EventEmitter();
+    eventEmitter.once("New Notification", create);
+    eventEmitter.emit("New Notification", eventId, title, message, ownerUserId);
+    //TODO crear notificaciones para cada uno de los contactos de confianza de los usuarios dueños
+  }
+};
+
+const getMessageAndTitle = async (signalId, value) => {
+  const valuesFromAndTo = await notificationSettingsControler.findValuesFromAndTo(signalId);
+  return valuesFromAndTo.find((valueFromAndTo) => {
+    return valueFromAndTo.valueFrom <= value && value <= valueFromAndTo.valueTo;
+  });
+}
+
+// Create and Save a new Notification
+const create = async (eventId, title, message, userId) => {
+  try {
+    // Create and save a notification
+    const newNotification = await notificationModel.create({
+      date: new Date(),
+      readDate: null,
+      userId: userId,
+      eventId: eventId,
+      title: title,
+      message: message,
+    });
+  } catch (err) {
+    res.status(500).send(err.message);
   }
 };

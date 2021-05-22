@@ -1,5 +1,5 @@
 const eventModel = require("./events.model");
-const { notificationCreator } = require("../NotificationsSettings/notificationsSettings.controller");
+const { notificationCreator } = require("../Notifications/notifications.controller");
 
 // Create and Save a new event
 exports.create = async (req, res) => {
