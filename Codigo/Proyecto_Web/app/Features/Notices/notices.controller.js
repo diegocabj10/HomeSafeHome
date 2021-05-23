@@ -11,7 +11,7 @@ exports.create = async (req, res) => {
       date: new Date(),
       title: req.body.title,
       message: req.body.message,
-      userId: req.body.userId,
+      administratorUserId: req.body.userId,
     });
     res.send(newClaim);
   } catch (err) {
@@ -23,7 +23,8 @@ exports.create = async (req, res) => {
 exports.findAll = async (req, res) => {
   const { page, size, title, message } = req.query;
   var condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
-  condition = condition + message ? { message: { [Op.like]: `%${message}%` } } : null;
+  //TODO buscar en base al usuario que esta logueado quien es su administrador y en base a eso filtrar los avisos por administratorUserId
+  // condition = { ...condition, administratorUserId: req.body.userId };
   try {
     const { limit, offset } = getPagination(page, size);
     const data = await noticeModel.findAndCountAll({

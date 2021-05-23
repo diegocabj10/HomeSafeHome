@@ -83,3 +83,12 @@ exports.delete = async (req, res) => {
         res.status(500).send({ message: err.message });
     }
 };
+
+
+exports.findContactsfromOwnerId = async (deviceId) => {
+    const userDevice = await usersDevicesModel.findOne({
+      raw: true,
+      where: { userId: deviceId },
+    });
+    return userDevice;
+  };

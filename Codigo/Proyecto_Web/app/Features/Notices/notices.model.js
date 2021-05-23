@@ -17,7 +17,7 @@ const Notice = dbConfig.define("Notices", {
   message: {
     type: Sequelize.STRING,
   },
-  userId: {
+  administratorUserId: {
     type: Sequelize.INTEGER,
     references: {
       model: usersModel,

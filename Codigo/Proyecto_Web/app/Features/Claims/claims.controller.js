@@ -6,6 +6,8 @@ const Op = dbConfig.Sequelize.Op;
 // Create and Save a new claim
 exports.create = async (req, res) => {
   try {
+
+    //Antes de crear el reclamo buscar el usuario del adminsitrador asi seteamos como userId el usuario del administrador
     // Create and save a claim
     const newClaim = await claimModel.create({
       date: new Date(),
@@ -23,7 +25,8 @@ exports.create = async (req, res) => {
 exports.findAll = async (req, res) => {
   const { page, size, title } = req.query;
   let condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
-  condition = { ...condition, userId: req.body.userId };
+  //TODO buscar que perfil sos y en base a eso obtener el usuario del administrador asi filtramos los reclamos en base al id del usuario administrador
+  // condition = { ...condition, userId: req.body.userId };
 
   try {
     const { limit, offset } = getPagination(page, size);
