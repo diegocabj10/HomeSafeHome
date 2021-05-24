@@ -7,9 +7,9 @@ const Op = dbConfig.Sequelize.Op;
 
 // Retrieve all signals from the database.
 exports.findAll = async (req, res) => {
-  const { page, size, signalName } = req.query;
-  var condition = signalName
-    ? { signalName: { [Op.like]: `%${signalName}%` } }
+  const { page, size, name } = req.query;
+  var condition = name
+    ? { name: { [Op.like]: `%${name}%` } }
     : null;
   try {
     const { limit, offset } = getPagination(page, size);
