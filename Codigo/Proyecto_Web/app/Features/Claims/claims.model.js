@@ -21,7 +21,7 @@ const Claim = dbConfig.define('Claims', {
     response: {
         type: Sequelize.STRING
     },
-    userId: {
+    inhabitantUserId: {
         type: Sequelize.INTEGER,
         references: {
             model: usersModel,
