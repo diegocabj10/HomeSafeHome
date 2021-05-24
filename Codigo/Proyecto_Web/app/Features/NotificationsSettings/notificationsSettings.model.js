@@ -27,19 +27,19 @@ const NotificationSetting = dbConfig.define('NotificationsSettings', {
 NotificationSetting.sync().then(
     async() => {
         await signalModel.findOrCreate({
-            defaults: { id: 1, signalName: 'MONOXIDO DE CARBONO', createdAt: Date.now(), updatedAt: Date.now() },
+            defaults: { id: 1, name: 'MONOXIDO DE CARBONO', createdAt: Date.now(), updatedAt: Date.now() },
             where: { id: 1 }
         });
         await signalModel.findOrCreate({
-            defaults: { id: 2, signalName: 'LUZ', createdAt: Date.now(), updatedAt: Date.now() },
+            defaults: { id: 2, name: 'LUZ', createdAt: Date.now(), updatedAt: Date.now() },
             where: { id: 2 }
         });
         await signalModel.findOrCreate({
-            defaults: { id: 3, signalName: 'PUERTA', createdAt: Date.now(), updatedAt: Date.now() },
+            defaults: { id: 3, name: 'PUERTA', createdAt: Date.now(), updatedAt: Date.now() },
             where: { id: 3 }
         });
         await signalModel.findOrCreate({
-            defaults: { id: 4, signalName: 'GARAGE', createdAt: Date.now(), updatedAt: Date.now() },
+            defaults: { id: 4, name: 'GARAGE', createdAt: Date.now(), updatedAt: Date.now() },
             where: { id: 4 }
         });
         NotificationSetting.findOrCreate({
