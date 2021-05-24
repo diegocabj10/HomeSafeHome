@@ -3,7 +3,7 @@ const dbConfig = require("../../../config/db.config");
 const { formatDate } = require('../../Shared/dateFormatter');
 
 const Device = dbConfig.define("Devices", {
-  deviceName: {
+  name: {
     type: Sequelize.STRING,
     unique: true,
     allowNull: false,

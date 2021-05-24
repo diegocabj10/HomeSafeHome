@@ -20,6 +20,9 @@ const Notification = dbConfig.define('Notifications', {
     },
     allowNull: false,
   },
+  deviceName: {
+    type: Sequelize.STRING,
+  },
   title: {
     type: Sequelize.STRING,
   },

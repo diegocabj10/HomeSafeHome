@@ -61,11 +61,11 @@ const UserDevice = dbConfig.define("UsersDevices", {
 UserDevice.sync().then(
   async() => {
     await devicesModel.findOrCreate({
-      defaults: { id: 1, deviceName: 'Arduino1', createdAt: Date.now(), updatedAt: Date.now() },
+      defaults: { id: 1, name: 'Arduino1', createdAt: Date.now(), updatedAt: Date.now() },
       where: { id: 1 }
     });
     await devicesModel.findOrCreate({
-      defaults: { id: 2, deviceName: 'Arduino2', createdAt: Date.now(), updatedAt: Date.now() },
+      defaults: { id: 2, name: 'Arduino2', createdAt: Date.now(), updatedAt: Date.now() },
       where: { id: 2 }
     });
     await usersModel.findOrCreate({

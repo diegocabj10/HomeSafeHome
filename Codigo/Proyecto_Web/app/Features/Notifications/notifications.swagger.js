@@ -51,6 +51,10 @@
  *                          type: string
  *                          description: Message notification.
  *                          example: Presencia de CO (+0.01%) Cefalea leve en 2 o 3 horas.
+ *                        deviceName:
+ *                          type: string
+ *                          description: Device name.
+ *                          example: Arduino1
  *                        userId:
  *                          type: integer
  *                          description: User identification number.

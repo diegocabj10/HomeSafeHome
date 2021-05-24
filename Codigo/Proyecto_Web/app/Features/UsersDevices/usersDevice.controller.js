@@ -3,7 +3,7 @@ const usersDevicesModel = require("./usersDevices.model");
 exports.findOwnerUserIdfromDeviceId = async (deviceId) => {
   const userDevice = await usersDevicesModel.findOne({
     raw: true,
-    where: { userId: deviceId },
+    where: { deviceId: deviceId },
   });
   return userDevice;
 };

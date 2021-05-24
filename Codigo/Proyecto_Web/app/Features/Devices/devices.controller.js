@@ -8,7 +8,7 @@ exports.create = async (req, res) => {
   try {
     // Create and save a device
     const newDevice = await deviceModel.create({
-      deviceName: req.body.deviceName,
+      name: req.body.name,
     });
     res.send(newDevice);
   } catch (err) {
@@ -18,9 +18,9 @@ exports.create = async (req, res) => {
 
 // Retrieve all devices from the database.
 exports.findAll = async (req, res) => {
-  const { page, size, deviceName } = req.query;
-  var condition = deviceName
-    ? { deviceName: { [Op.like]: `%${deviceName}%` } }
+  const { page, size, name } = req.query;
+  var condition = name
+    ? { name: { [Op.like]: `%${name}%` } }
     : null;
   try {
     const { limit, offset } = getPagination(page, size);
@@ -53,7 +53,7 @@ exports.update = async (req, res) => {
     // Update device in the database
     const deviceUpdated = await deviceModel.update(
       {
-        deviceName: req.body.deviceName,
+        name: req.body.name,
       },
       { where: { id: req.params.id } }
     );
@@ -72,5 +72,12 @@ exports.delete = async (req, res) => {
   } catch (err) {
     res.status(500).send({ message: err.message });
   }
+};
 
+exports.findDeviceNamefromDeviceId = async (deviceId) => {
+  const device = await deviceModel.findOne({
+    raw: true,
+    where: { id: deviceId },
+  });
+  return device;
 };

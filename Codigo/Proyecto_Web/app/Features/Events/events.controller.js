@@ -11,8 +11,8 @@ exports.create = async (req, res) => {
       deviceId: req.body.deviceId,
       value: req.body.value,
     });
-    notificationCreator(newEvent);
-    res.send(newEvent);
+    notificationCreator(newEvent.get());
+    res.send(newEvent.get());
   } catch (err) {
     res.status(500).send(err.message);
   }

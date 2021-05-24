@@ -25,6 +25,13 @@ const Notice = dbConfig.define("Notices", {
     },
     allowNull: false,
   },
+  readDate: {
+    type: Sequelize.DATE,
+    get: function (fieldName) {
+      const formattedDate = formatDate(this.getDataValue(fieldName));
+      return formattedDate ? formattedDate : null;
+    },
+  },
   deletionDate: {
     type: Sequelize.DATE,
     get: function (fieldName) {
