@@ -52,9 +52,9 @@
  *                          type: string
  *                          description: Response to the claim.
  *                          example: null
- *                        userId:
+ *                        inhabitantUserId:
  *                          type: integer
- *                          description: User identification number.
+ *                          description: Inhabitant user identification number.
  *                          example: 1
  *                        deletionDate:
  *                          type: string

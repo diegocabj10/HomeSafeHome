@@ -13,7 +13,7 @@ exports.create = async (req, res) => {
       date: new Date(),
       title: req.body.title,
       message: req.body.message,
-      userId: req.body.userId,
+      inhabitantUserId: req.body.userId,
     });
     res.send(newClaim);
   } catch (err) {
